@@ -22,15 +22,13 @@ i never learned much formal music theory. I built my ear through experimentation
 my goal is to make it so easy to make a song you like have a little house, trap, or whimsicalness to it. here are 4 ways sound soup does this:
 
 ### 1. built-in chords
-No need to know what notes make up a G7 or C minor. Just press a button and the chord plays for you. the strumplate is programmed to match the chord you're playing n the matrix so that it can be strummed on top of the chord, and there's no way it could sound bad. this is the omnichord fucntionality of the board, except it can be harp, house, or trap as well.
+No need to know what notes make up a G7 or C minor. Just press a button and the chord plays for you. the harp-like strumplate is programmed to match the chord you're playing n the matrix so that it can be strummed on top of the chord, and there's no way it could sound bad. this is the omnichord fucntionality of the board, except it can be house or trap as well.
 
 ### 2. sound modes across the board
 Switch between different vibes:
 - **Omnichord** – The classic warm, harp-like sound
-- **Harp** – Bright and ethereal
 - **House** – Punchy and electronic
-- **Trap** – Dark and moody
-- **Drop** – Heavy bass for those big moments
+- **Trap** – Dark lower base beats
 
 ### 3. piano & sound effects
 access to a piano and sound effects allows another tier of freedom in case you want to add in a melody here and there. of course, you have a few sound options to choose from here. these are controlled with an on/off button so that keyboard controls are not overriden between features of the board.
