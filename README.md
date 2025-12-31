@@ -19,8 +19,7 @@ i never learned much formal music theory. I built my ear through experimentation
 
 ## what i love about sound soup <3
 
-### multiple sounds
-i've added sounds that i believe make it so easy to make anything have a little house, trap, or whimsicalness to it. here's the 3 main ways.
+my goal is to make it so easy to make a song you like have a little house, trap, or whimsicalness to it. here are 4 ways sound soup does this:
 
 ### 1. built-in chords
 No need to know what notes make up a G7 or C minor. Just press a button and the chord plays for you. the strumplate is programmed to match the chord you're playing n the matrix so that it can be strummed on top of the chord, and there's no way it could sound bad. this is the omnichord fucntionality of the board, except it can be harp, house, or trap as well.
@@ -36,7 +35,7 @@ Switch between different vibes:
 ### 3. piano & sound effects
 access to a piano and sound effects allows another tier of freedom in case you want to add in a melody here and there. of course, you have a few sound options to choose from here. these are controlled with an on/off button so that keyboard controls are not overriden between features of the board.
 
-### 3. record your beat/voice and layer!
+### 4. record your beat/voice and layer!
 layer up to 4 tracks and loop them together. build a beat with the board and voice record whatever sounds you want to add. you can record another track while the other tracks playback by clicking "play all" (like you're ed sheeran on stage looping a song together #aurapoints)
 
 ---
