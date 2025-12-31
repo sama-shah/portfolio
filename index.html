@@ -692,8 +692,11 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
       // Check for piano keys first (only when piano is powered)
       const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
-      if (pianoKey && pianoPowered && !fxPowered) {
-        playPianoNote(pianoKey.note);
+      if (pianoKey) {
+        if (pianoPowered && !fxPowered) {
+          playPianoNote(pianoKey.note);
+        }
+        // Don't process piano keys as chord keys, even when piano is off
         return;
       }
 
