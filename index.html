@@ -91,7 +91,7 @@ function SoundSoup() {
   const [activeKeys, setActiveKeys] = useState(new Set());
   const [volume, setVolume] = useState(-10);
   const [chordMode, setChordMode] = useState('omnichord');
-  const [pianoMode, setPianoMode] = useState('omnichord');
+  const [pianoMode, setPianoMode] = useState('piano');
   const [pianoOctave, setPianoOctave] = useState(0);
   const [metronomeOn, setMetronomeOn] = useState(false);
   const [bpm, setBpm] = useState(120);
@@ -119,6 +119,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
   const omnichordSynthRef = useRef(null);
   const harpSynthRef = useRef(null);
+  const pianoSynthRef = useRef(null);
   const houseSynthRef = useRef(null);
   const trapSynthRef = useRef(null);
   const dropSynthRef = useRef(null);
@@ -177,7 +178,14 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       oscillator: { type: 'triangle' },
       envelope: { attack: 0.0001, decay: 0.8, sustain: 0.5, release: 3.5 }
     }).connect(strumplateReverb);
-    
+
+    // Piano mode - Classic piano sound with harmonics
+    const pianoReverb = new Tone.Reverb({ decay: 1.5, wet: 0.2 }).connect(strumplateVolume);
+    pianoSynthRef.current = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.001, decay: 0.5, sustain: 0.3, release: 1.5 }
+    }).connect(pianoReverb);
+
     // House mode - DJ scratch/vinyl effect (short, punchy with pitch bend)
     const houseFilter = new Tone.Filter(3000, 'lowpass').connect(strumplateReverb);
     const housePitchShift = new Tone.PitchShift(0).connect(houseFilter);
@@ -306,8 +314,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
     const freq = baseFreq * Math.pow(2, pianoOctave);
 
     let synth;
-    if (pianoMode === 'omnichord') synth = omnichordSynthRef.current;
-    else if (pianoMode === 'harp') synth = harpSynthRef.current;
+    if (pianoMode === 'piano') synth = pianoSynthRef.current;
+    else if (pianoMode === 'omnichord') synth = omnichordSynthRef.current;
     else if (pianoMode === 'house') synth = houseSynthRef.current;
     else if (pianoMode === 'trap') synth = trapSynthRef.current;
     else synth = dropSynthRef.current;
@@ -323,8 +331,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
   }, [pianoMode, pianoOctave, isAudioReady, isRecording, triggerVisualizer]);
 
   const releasePianoNote = useCallback(() => {
+    if (pianoSynthRef.current) pianoSynthRef.current.releaseAll();
     if (omnichordSynthRef.current) omnichordSynthRef.current.releaseAll();
-    if (harpSynthRef.current) harpSynthRef.current.releaseAll();
     if (houseSynthRef.current) houseSynthRef.current.releaseAll();
     if (trapSynthRef.current) trapSynthRef.current.releaseAll();
     if (dropSynthRef.current) dropSynthRef.current.releaseAll();
@@ -1036,7 +1044,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                 </div>
               )}
               <div className="grid grid-cols-5 gap-1 mb-2">
-                {['omnichord', 'harp', 'house', 'trap', 'drop'].map(mode => (
+                {['piano', 'omnichord', 'house', 'trap', 'drop'].map(mode => (
                   <button
                     key={mode}
                     onClick={() => setPianoMode(mode)}
@@ -1180,7 +1188,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                 MODE.SELECT
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {['omnichord', 'harp', 'house', 'trap'].map(mode => (
+                {['omnichord', 'house', 'trap'].map(mode => (
                   <button
                     key={mode}
                     onClick={() => setChordMode(mode)}
