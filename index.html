@@ -1095,9 +1095,16 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                 <div className="absolute top-0 left-0 right-0 h-14 flex">
                   {PIANO_KEYS.map((pk, i) => {
                     if (pk.isBlack) {
-                      const whiteKeysBefore = PIANO_KEYS.slice(0, i).filter(k => !k.isBlack).length;
+                      // Map each black key to its position between white keys
+                      const blackKeyPositions = {
+                        'C#': 0.65,  // Between C (0) and D (1)
+                        'D#': 1.7,   // Between D (1) and E (2)
+                        'F#': 3.68,  // Between F (3) and G (4)
+                        'G#': 4.7,   // Between G (4) and A (5)
+                        'A#': 5.7    // Between A (5) and B (6)
+                      };
                       const whiteKeyWidth = 100 / 7; // 7 white keys total
-                      const leftPercent = (whiteKeysBefore * whiteKeyWidth) + (whiteKeyWidth * 0.7);
+                      const leftPercent = blackKeyPositions[pk.note] * whiteKeyWidth;
                       return (
                         <button
                           key={pk.key}
