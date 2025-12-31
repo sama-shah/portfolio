@@ -109,7 +109,11 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
   const [playingTracks, setPlayingTracks] = useState(new Set());
   const [trackPositions, setTrackPositions] = useState({});
   const [allPlaying, setAllPlaying] = useState(false);
-  
+
+  // Voice recording state
+  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
+  const [micPermission, setMicPermission] = useState(null);
+
   const omnichordSynthRef = useRef(null);
   const harpSynthRef = useRef(null);
   const houseSynthRef = useRef(null);
@@ -120,6 +124,12 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
   const drumSynthsRef = useRef({});
   const recordingRef = useRef({ startTime: 0, events: [] });
   const playbackIntervalsRef = useRef({});
+
+  // Voice recording refs
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const voiceRecordingRef = useRef({ startTime: 0 });
+  const voicePlayerRef = useRef(null);
 
   // Trigger visualizer animation - smoother by adding to existing levels
   const triggerVisualizer = useCallback(() => {
@@ -384,18 +394,22 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
   const playAllTracks = () => {
     if (tracks.length === 0) return;
     setAllPlaying(true);
-    
+
     // Reset all track positions to 0
     const resetPositions = {};
     tracks.forEach(track => {
       resetPositions[track.id] = 0;
     });
     setTrackPositions(resetPositions);
-    
-    // Start all tracks
+
+    // Start all tracks (both beat and voice)
     tracks.forEach(track => {
       if (!playingTracks.has(track.id)) {
-        playTrack(track, true);
+        if (track.type === 'voice') {
+          playVoiceTrack(track, true);
+        } else {
+          playTrack(track, true);
+        }
       }
     });
   };
@@ -405,7 +419,11 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
     setAllPlaying(false);
     setIsRecording(false);
     tracks.forEach(track => {
-      pauseTrack(track.id);
+      if (track.type === 'voice') {
+        pauseVoiceTrack(track.id);
+      } else {
+        pauseTrack(track.id);
+      }
     });
   };
 
@@ -520,6 +538,103 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
     setTrackPositions(prev => {
       const next = { ...prev };
       delete next[trackId];
+      return next;
+    });
+  };
+
+  // Voice recording functions
+  const startVoiceRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setMicPermission('granted');
+
+      audioChunksRef.current = [];
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const duration = Date.now() - voiceRecordingRef.current.startTime;
+
+        const newTrack = {
+          id: Date.now(),
+          type: 'voice',
+          audioUrl,
+          audioBlob,
+          duration,
+          name: `Voice ${tracks.filter(t => t.type === 'voice').length + 1}`
+        };
+
+        setTracks(prev => [...prev, newTrack]);
+        setTrackPositions(prev => ({ ...prev, [newTrack.id]: 0 }));
+
+        // Stop all tracks from the stream
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      voiceRecordingRef.current = { startTime: Date.now() };
+      mediaRecorder.start();
+      setIsVoiceRecording(true);
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+      setMicPermission('denied');
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      setIsVoiceRecording(false);
+    }
+  };
+
+  // Play voice track
+  const playVoiceTrack = (track, fromPlayAll = false) => {
+    if (playingTracks.has(track.id)) return;
+
+    const newPlayingTracks = new Set(playingTracks);
+    newPlayingTracks.add(track.id);
+    setPlayingTracks(newPlayingTracks);
+
+    const audio = new Audio(track.audioUrl);
+    audio.volume = Math.pow(10, volume / 20); // Convert dB to linear
+    voicePlayerRef.current = { [track.id]: audio };
+
+    const startPosition = fromPlayAll ? 0 : (trackPositions[track.id] || 0);
+    audio.currentTime = startPosition / 1000;
+
+    // Update position
+    const interval = setInterval(() => {
+      const currentPos = audio.currentTime * 1000;
+      setTrackPositions(prev => ({ ...prev, [track.id]: currentPos }));
+
+      // Loop when finished
+      if (audio.ended) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }, 10);
+
+    playbackIntervalsRef.current[track.id] = interval;
+    audio.play();
+  };
+
+  const pauseVoiceTrack = (trackId) => {
+    if (voicePlayerRef.current && voicePlayerRef.current[trackId]) {
+      voicePlayerRef.current[trackId].pause();
+      delete voicePlayerRef.current[trackId];
+    }
+    clearInterval(playbackIntervalsRef.current[trackId]);
+    setPlayingTracks(prev => {
+      const next = new Set(prev);
+      next.delete(trackId);
       return next;
     });
   };
@@ -1049,13 +1164,13 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
             {/* Column Headers */}
             <div className="flex mb-2">
-              <div className="w-20" />
+              <div className="w-16" />
               {CHORD_ROOTS.map((root, i) => (
                 <div key={root} className="flex-1 text-center">
-                  <div className="text-xs mb-1" style={{ color: colors.text }}>
+                  <div className="text-xs mb-0.5" style={{ color: colors.text, fontSize: '9px' }}>
                     {String(i + 1).padStart(2, '0')}
                   </div>
-                  <div className="text-lg font-bold" style={{ color: colors.cyan }}>
+                  <div className="text-sm font-bold" style={{ color: colors.cyan }}>
                     {root}
                   </div>
                 </div>
@@ -1068,43 +1183,58 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
               { type: 'minor', keys: MINOR_KEYS, label: 'MINOR', color: colors.lime },
               { type: '7th', keys: SEVENTH_KEYS, label: '7TH', color: colors.magenta }
             ].map(({ type, keys, label, color }) => (
-              <div key={type} className="flex items-center mb-3">
-                <div className="w-20 pr-4">
+              <div key={type} className="flex items-center mb-2">
+                <div className="w-16 pr-3">
                   <div className="text-xs tracking-widest text-right" style={{ color }}>
                     {label}
                   </div>
-                  <div className="text-xs text-right" style={{ color: colors.text }}>
+                  <div className="text-xs text-right" style={{ color: colors.text, fontSize: '9px' }}>
                     {type === 'major' ? 'Q-O' : type === 'minor' ? 'A-L' : 'Z-.'}
                   </div>
                 </div>
-                <div className="flex-1 flex gap-2">
+                <div className="flex-1 flex gap-1">
                   {keys.map((key, i) => (
                     <button
                       key={key}
                       onMouseDown={() => playChord(CHORD_ROOTS[i], type)}
                       onMouseUp={() => releaseChord()}
                       onMouseLeave={() => releaseChord()}
-                      className="flex-1 h-14 relative transition-all group"
+                      className="flex-1 h-10 relative transition-all group"
                       style={{
-                        background: isKeyActive(key) 
+                        background: isKeyActive(key)
                           ? `${color}25`
                           : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
                         border: `1px solid ${isKeyActive(key) ? color : colors.border}`,
                         boxShadow: isKeyActive(key) ? `0 0 20px ${color}40, inset 0 0 15px ${color}15` : 'none'
                       }}
                     >
-                      {/* Grid lines inside button */}
-                      <div className="absolute inset-0 opacity-20" style={{
-                        background: `repeating-linear-gradient(90deg, transparent, transparent 4px, ${colors.border} 4px, ${colors.border} 5px)`
+                      {/* Checkered pattern background */}
+                      <div className="absolute inset-0 opacity-15" style={{
+                        backgroundImage: `
+                          repeating-linear-gradient(
+                            45deg,
+                            transparent,
+                            transparent 3px,
+                            ${colors.border} 3px,
+                            ${colors.border} 6px
+                          ),
+                          repeating-linear-gradient(
+                            -45deg,
+                            transparent,
+                            transparent 3px,
+                            ${colors.border} 3px,
+                            ${colors.border} 6px
+                          )
+                        `
                       }} />
-                      
+
                       {/* Key indicator */}
-                      <span className="relative z-10 text-xs font-bold" style={{ 
-                        color: isKeyActive(key) ? color : colors.text 
+                      <span className="relative z-10 text-xs font-bold" style={{
+                        color: isKeyActive(key) ? color : colors.text
                       }}>
                         {key === ',' ? ',' : key === '.' ? '.' : key.toUpperCase()}
                       </span>
-                      
+
                       {/* Active indicator bar */}
                       {isKeyActive(key) && (
                         <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: color }} />
@@ -1211,8 +1341,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                     )}
                     {allPlaying ? 'STOP ALL' : 'PLAY ALL'}
                   </button>
-                  
-                  {/* Record button - only enabled when all tracks are playing */}
+
+                  {/* Beat Record button - only enabled when all tracks are playing */}
                   <button
                     onClick={isRecording ? stopRecording : startRecording}
                     className="px-3 py-2 text-xs tracking-wider transition-all flex items-center gap-2"
@@ -1225,11 +1355,31 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                     }}
                     disabled={!allPlaying && tracks.length > 0}
                   >
-                    <div className="w-3 h-3 rounded-full" style={{ 
+                    <div className="w-3 h-3 rounded-full" style={{
                       background: isRecording ? colors.magenta : colors.text,
                       animation: isRecording ? 'pulse 1s infinite' : 'none'
                     }} />
-                    {isRecording ? 'STOP REC' : 'RECORD'}
+                    {isRecording ? 'STOP' : 'BEAT'}
+                  </button>
+
+                  {/* Voice Record button */}
+                  <button
+                    onClick={isVoiceRecording ? stopVoiceRecording : startVoiceRecording}
+                    className="px-3 py-2 text-xs tracking-wider transition-all flex items-center gap-2"
+                    style={{
+                      background: isVoiceRecording ? `${colors.cyan}30` : 'transparent',
+                      border: `1px solid ${isVoiceRecording ? colors.cyan : colors.border}`,
+                      color: isVoiceRecording ? colors.cyan : colors.text,
+                      boxShadow: isVoiceRecording ? `0 0 15px ${colors.cyan}40` : 'none'
+                    }}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
+                      <rect x="5" y="1" width="2" height="5" rx="1" />
+                      <path d="M3 5 Q3 8 6 8 Q9 8 9 5" stroke="currentColor" fill="none" strokeWidth="1" />
+                      <line x1="6" y1="8" x2="6" y2="10" stroke="currentColor" strokeWidth="1" />
+                      <line x1="4" y1="10" x2="8" y2="10" stroke="currentColor" strokeWidth="1" />
+                    </svg>
+                    {isVoiceRecording ? 'STOP' : 'VOICE'}
                   </button>
                 </div>
               </div>
@@ -1253,28 +1403,40 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                   </div>
                 ) : (
                   tracks.map(track => (
-                    <div key={track.id} className="p-3" style={{ 
-                      background: '#000', 
-                      border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}` 
+                    <div key={track.id} className="p-3" style={{
+                      background: '#000',
+                      border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}`
                     }}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold" style={{ color: colors.cyan }}>{track.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold" style={{ color: colors.cyan }}>{track.name}</span>
+                          {track.type === 'voice' && (
+                            <span className="text-xs px-1 py-0.5" style={{
+                              color: colors.cyan,
+                              background: `${colors.cyan}20`,
+                              border: `1px solid ${colors.cyan}`,
+                              fontSize: '8px'
+                            }}>
+                              MIC
+                            </span>
+                          )}
+                        </div>
                         <span className="text-xs" style={{ color: colors.text }}>
                           {formatTime(trackPositions[track.id] || 0)} / {formatTime(track.duration)}
                         </span>
                       </div>
-                      
+
                       {/* Progress bar */}
                       <div className="relative h-1 mb-2" style={{ background: colors.border }}>
-                        <div 
+                        <div
                           className="absolute h-full transition-all"
-                          style={{ 
+                          style={{
                             width: `${((trackPositions[track.id] || 0) / track.duration) * 100}%`,
                             background: playingTracks.has(track.id) ? colors.lime : colors.cyan
                           }}
                         />
                       </div>
-                      
+
                       {/* Controls */}
                       <div className="flex gap-1">
                         <button
@@ -1288,10 +1450,16 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                           </svg>
                         </button>
                         <button
-                          onClick={() => playingTracks.has(track.id) ? pauseTrack(track.id) : playTrack(track)}
+                          onClick={() => {
+                            if (playingTracks.has(track.id)) {
+                              track.type === 'voice' ? pauseVoiceTrack(track.id) : pauseTrack(track.id);
+                            } else {
+                              track.type === 'voice' ? playVoiceTrack(track) : playTrack(track);
+                            }
+                          }}
                           className="flex-1 py-1 flex items-center justify-center transition-all hover:opacity-80"
-                          style={{ 
-                            border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}`, 
+                          style={{
+                            border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}`,
                             color: playingTracks.has(track.id) ? colors.lime : colors.text,
                             background: playingTracks.has(track.id) ? `${colors.lime}20` : 'transparent'
                           }}
