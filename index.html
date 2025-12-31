@@ -99,6 +99,7 @@ function SoundSoup() {
   const [fxPowered, setFxPowered] = useState(false);
   const [pianoPowered, setPianoPowered] = useState(false);
   const [audioLevels, setAudioLevels] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
+  const [chordVolume, setChordVolume] = useState(0); // Chord matrix volume in dB
 
 // FX key mappings when powered on
 const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
@@ -255,12 +256,13 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
     if (!synth) return;
 
-    // Attack only - will release when key is released
-    synth.triggerAttack(freqs);
+    // Apply chord volume
+    const volumeMultiplier = Math.pow(10, chordVolume / 20);
+    synth.triggerAttack(freqs, Tone.now(), volumeMultiplier);
     setCurrentChord({ root, type, notes });
     recordEvent('chord', { root, type, freqs, chordMode });
     triggerVisualizer();
-  }, [isAudioReady, isRecording, triggerVisualizer, chordMode]);
+  }, [isAudioReady, isRecording, triggerVisualizer, chordMode, chordVolume]);
 
   const releaseChord = useCallback(() => {
     if (omnichordSynthRef.current) omnichordSynthRef.current.releaseAll();
@@ -1167,6 +1169,36 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                     {mode.toUpperCase()}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Chord Matrix Volume Control */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-xs tracking-widest" style={{ color: colors.text, width: '60px' }}>
+                  VOL
+                </span>
+                <div className="relative flex-1 h-2" style={{ background: colors.border }}>
+                  <div
+                    className="absolute h-full transition-all"
+                    style={{
+                      width: `${((chordVolume + 20) / 20) * 100}%`,
+                      background: `linear-gradient(90deg, ${colors.cyan}, ${colors.lime})`
+                    }}
+                  />
+                  <input
+                    type="range"
+                    min="-20"
+                    max="0"
+                    step="1"
+                    value={chordVolume}
+                    onChange={(e) => setChordVolume(Number(e.target.value))}
+                    className="absolute inset-0 w-full opacity-0 cursor-pointer"
+                  />
+                </div>
+                <span className="text-xs" style={{ color: colors.lime, width: '40px', textAlign: 'right' }}>
+                  {chordVolume}dB
+                </span>
               </div>
             </div>
 
