@@ -180,10 +180,19 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
     }).connect(strumplateReverb);
 
     // Piano mode - Classic piano sound with harmonics
-    const pianoReverb = new Tone.Reverb({ decay: 1.5, wet: 0.2 }).connect(strumplateVolume);
+    const pianoReverb = new Tone.Reverb({ decay: 2.5, wet: 0.15 }).connect(strumplateVolume);
     pianoSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.001, decay: 0.5, sustain: 0.3, release: 1.5 }
+      oscillator: {
+        type: 'fatsawtooth',
+        count: 3,
+        spread: 30
+      },
+      envelope: {
+        attack: 0.005,
+        decay: 0.3,
+        sustain: 0.1,
+        release: 2.5
+      }
     }).connect(pianoReverb);
 
     // House mode - DJ scratch/vinyl effect (short, punchy with pitch bend)
