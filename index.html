@@ -699,14 +699,16 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
       if (e.repeat) return;
 
-      // Check for piano keys first - only when piano is powered
-      const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
-      if (pianoKey && pianoPowered && !fxPowered) {
-        playPianoNote(pianoKey.note);
-        return;
+      // When piano is powered, check for piano keys and play them
+      if (pianoPowered && !fxPowered) {
+        const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
+        if (pianoKey) {
+          playPianoNote(pianoKey.note);
+          return;
+        }
       }
 
-      // Process chord keys when FX and piano are not powered
+      // Process chord keys when FX is not powered and piano is not powered
       if (!fxPowered && !pianoPowered) {
         const majorIdx = MAJOR_KEYS.indexOf(key);
         if (majorIdx !== -1) {
