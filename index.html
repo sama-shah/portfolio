@@ -100,6 +100,7 @@ function SoundSoup() {
   const [pianoPowered, setPianoPowered] = useState(false);
   const [audioLevels, setAudioLevels] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
   const [chordVolume, setChordVolume] = useState(0); // Chord matrix volume in dB
+  const [showTutorial, setShowTutorial] = useState(false);
 
 // FX key mappings when powered on
 const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
@@ -652,7 +653,13 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
   useEffect(() => {
     const handleKeyDown = (e) => {
       const key = e.key.toLowerCase();
-      
+
+      // Close tutorial with ESC
+      if (e.key === 'Escape' && showTutorial) {
+        setShowTutorial(false);
+        return;
+      }
+
       // Handle octave control with arrow keys (allow repeat)
       if (e.key === 'ArrowUp') {
         e.preventDefault();
@@ -749,7 +756,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [playChord, playHarpNote, releaseChord, releaseHarpNote, playPianoNote, releasePianoNote, fxPowered, pianoPowered, playDrum]);
+  }, [playChord, playHarpNote, releaseChord, releaseHarpNote, playPianoNote, releasePianoNote, fxPowered, pianoPowered, playDrum, showTutorial]);
 
   useEffect(() => {
     if (volumeRef.current) {
@@ -814,6 +821,17 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
         <div className="px-3 py-1 text-xs" style={{ border: `1px solid ${colors.border}`, color: colors.text }}>
           AUDIO.SYS
         </div>
+        <button
+          onClick={() => setShowTutorial(true)}
+          className="px-3 py-1 text-xs transition-all"
+          style={{
+            border: `1px solid ${colors.lime}`,
+            color: colors.lime,
+            background: 'transparent'
+          }}
+        >
+          TUTORIAL
+        </button>
         <div className="flex-1" />
         <div className="px-3 py-1 text-xs" style={{ border: `1px solid ${colors.border}`, color: colors.text }}>
           {new Date().toLocaleTimeString()}
@@ -1676,6 +1694,113 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       <div className="mt-4 text-center text-xs" style={{ color: colors.text, opacity: 0.6 }}>
         CHORDS: Q-O = MAJOR | A-L = MINOR | Z-. = 7TH &nbsp;&nbsp;•&nbsp;&nbsp; STRUMPLATE: 1-= PLAYS CHORD NOTES
       </div>
+
+      {/* Tutorial Modal */}
+      {showTutorial && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-6 z-50"
+          style={{ background: 'rgba(0, 0, 0, 0.9)' }}
+          onClick={() => setShowTutorial(false)}
+        >
+          <div
+            className="max-w-4xl max-h-[90vh] overflow-y-auto p-6"
+            style={{
+              background: colors.panel,
+              border: `2px solid ${colors.lime}`,
+              boxShadow: `0 0 30px ${colors.lime}40`
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6 pb-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
+              <h2 className="text-xl tracking-widest" style={{ color: colors.lime }}>
+                SOUND SOUP // TUTORIAL
+              </h2>
+              <button
+                onClick={() => setShowTutorial(false)}
+                className="px-3 py-1 text-xs transition-all"
+                style={{
+                  border: `1px solid ${colors.magenta}`,
+                  color: colors.magenta
+                }}
+              >
+                CLOSE [ESC]
+              </button>
+            </div>
+
+            {/* Tutorial Content */}
+            <div className="space-y-6">
+              {/* Left Panel - Strumplate Control */}
+              <div>
+                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.cyan }}>
+                  LEFT PANEL: STRUMPLATE CONTROL
+                </h3>
+                <div className="text-xs space-y-2" style={{ color: colors.text }}>
+                  <div><span style={{ color: colors.cyan }}>• ACTIVE CHORD:</span> Shows the currently selected chord</div>
+                  <div><span style={{ color: colors.cyan }}>• STRUMPLATE [1-=]:</span> 12 keys that play notes in the active chord. Click or drag across keys for a strum effect</div>
+                  <div><span style={{ color: colors.cyan }}>• PIANO [Z-M,]:</span> One octave piano keyboard. Use ↑/↓ arrows to shift octaves. Toggle power ON/OFF</div>
+                  <div><span style={{ color: colors.cyan }}>• VOLUME:</span> Master volume control (-40dB to 0dB)</div>
+                  <div><span style={{ color: colors.cyan }}>• METRONOME:</span> Click tempo guide. Adjust BPM (40-240)</div>
+                </div>
+              </div>
+
+              {/* Center Panel - Chord Matrix */}
+              <div>
+                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.lime }}>
+                  CENTER PANEL: CHORD MATRIX
+                </h3>
+                <div className="text-xs space-y-2" style={{ color: colors.text }}>
+                  <div><span style={{ color: colors.lime }}>• MODE SELECT:</span> Choose sound mode (Omnichord, Harp, House, Trap)</div>
+                  <div><span style={{ color: colors.lime }}>• VOL:</span> Volume control for chord matrix playback (-20dB to 0dB)</div>
+                  <div><span style={{ color: colors.lime }}>• CHORD GRID:</span> 27 chords (9 roots × 3 types)</div>
+                  <div className="ml-4">- MAJOR [Q-O]: Bright, happy chords</div>
+                  <div className="ml-4">- MINOR [A-L]: Darker, moody chords</div>
+                  <div className="ml-4">- 7TH [Z-.]: Jazz/blues flavor chords</div>
+                </div>
+              </div>
+
+              {/* Right Panel - System */}
+              <div>
+                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.magenta }}>
+                  RIGHT PANEL: SYSTEM & RECORDING
+                </h3>
+                <div className="text-xs space-y-2" style={{ color: colors.text }}>
+                  <div><span style={{ color: colors.magenta }}>• AUDIO VISUALIZER:</span> Shows audio activity levels</div>
+                  <div><span style={{ color: colors.magenta }}>• FX PANEL:</span> Sound effects and percussion</div>
+                  <div className="ml-4">- SWEEP/LASER/DROP: Transition effects</div>
+                  <div className="ml-4">- KICK/SNARE/HAT/CLAP: Drum sounds</div>
+                  <div className="ml-4">- Power toggle to enable/disable FX section</div>
+                  <div><span style={{ color: colors.magenta }}>• RECORDING CONTROLS:</span></div>
+                  <div className="ml-4">- PLAY ALL: Play all recorded tracks in sync</div>
+                  <div className="ml-4">- BEAT: Record instrument/chord performance</div>
+                  <div className="ml-4">- VOICE: Record microphone input</div>
+                  <div><span style={{ color: colors.magenta }}>• TRACK LIST:</span> Manage recorded tracks</div>
+                  <div className="ml-4">- VOL: Individual track volume (-20dB to 0dB)</div>
+                  <div className="ml-4">- Progress bar shows playback position</div>
+                  <div className="ml-4">- Play/Pause, Seek forward/backward, Delete controls</div>
+                  <div className="ml-4">- CLEAR ALL: Delete all tracks</div>
+                </div>
+              </div>
+
+              {/* Quick Start */}
+              <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1rem' }}>
+                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.cyan }}>
+                  QUICK START GUIDE
+                </h3>
+                <div className="text-xs space-y-1" style={{ color: colors.text }}>
+                  <div>1. Click a chord button (try C Major - press Q)</div>
+                  <div>2. Play the strumplate by clicking keys 1-= or dragging across them</div>
+                  <div>3. Try different MODE.SELECT options (Omnichord, Harp, House, Trap)</div>
+                  <div>4. Click BEAT to start recording, play chords/notes, then STOP to save</div>
+                  <div>5. Layer more tracks by clicking PLAY ALL, then BEAT again</div>
+                  <div>6. Adjust individual track volumes with the VOL sliders</div>
+                  <div>7. Add voice with the VOICE button (microphone permission required)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
