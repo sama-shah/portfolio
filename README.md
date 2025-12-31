@@ -1,7 +1,7 @@
 # 🎹 Sound Soup
 https://sama-shah.github.io/sound-soup/
 
-**A web-based music synthesizer for creating layered beats without music theory.**
+**A web-based music synthesizer to experimentally remix the music you love.**
 
 Built for experimental musicians who play by ear and want to make music that *feels* good.
 
