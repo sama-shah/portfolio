@@ -57,7 +57,7 @@ const MINOR_KEYS = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
 const SEVENTH_KEYS = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'];
 const HARP_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
 
-// Piano keys - one octave (C to C)
+// Piano keys - one octave (C to B)
 const PIANO_KEYS = [
   { note: 'C', key: 'z', isBlack: false },
   { note: 'C#', key: 's', isBlack: true },
@@ -70,8 +70,7 @@ const PIANO_KEYS = [
   { note: 'G#', key: 'h', isBlack: true },
   { note: 'A', key: 'n', isBlack: false },
   { note: 'A#', key: 'j', isBlack: true },
-  { note: 'B', key: 'm', isBlack: false },
-  { note: 'C', key: ',', isBlack: false }
+  { note: 'B', key: 'm', isBlack: false }
 ];
 
 // Effects
@@ -991,7 +990,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  PIANO [Z-M,]
+                  PIANO [Z-M]
                 </div>
                 <div className="flex items-center gap-2">
                   {/* Power button for Piano section */}
@@ -1794,7 +1793,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                 <div className="text-xs space-y-2" style={{ color: colors.text }}>
                   <div><span style={{ color: colors.cyan }}>• ACTIVE CHORD:</span> Shows the currently selected chord</div>
                   <div><span style={{ color: colors.cyan }}>• HARP STRUMPLATE [1-=]:</span> 12 keys that play notes in the active chord. Click or drag across keys for a strum effect</div>
-                  <div><span style={{ color: colors.cyan }}>• PIANO [Z-M,]:</span> One octave piano keyboard. Use ↑/↓ arrows to shift octaves. Toggle power ON/OFF</div>
+                  <div><span style={{ color: colors.cyan }}>• PIANO [Z-M]:</span> One octave piano keyboard. Use ↑/↓ arrows to shift octaves. Toggle power ON/OFF</div>
                   <div><span style={{ color: colors.cyan }}>• VOLUME:</span> Master volume control (-40dB to 0dB)</div>
                   <div><span style={{ color: colors.cyan }}>• METRONOME:</span> Click tempo guide. Adjust BPM (40-240)</div>
                 </div>
