@@ -1096,7 +1096,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                   {PIANO_KEYS.map((pk, i) => {
                     if (pk.isBlack) {
                       const whiteKeysBefore = PIANO_KEYS.slice(0, i).filter(k => !k.isBlack).length;
-                      const leftPercent = (whiteKeysBefore / 8) * 100 - 2;
+                      const whiteKeyWidth = 100 / 7; // 7 white keys total
+                      const leftPercent = (whiteKeysBefore * whiteKeyWidth) + (whiteKeyWidth * 0.7);
                       return (
                         <button
                           key={pk.key}
@@ -1106,7 +1107,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                           className="absolute transition-all"
                           style={{
                             left: `${leftPercent}%`,
-                            width: '8%',
+                            width: `${whiteKeyWidth * 0.6}%`,
                             height: '100%',
                             background: (isKeyActive(pk.key) && pianoPowered)
                               ? `linear-gradient(180deg, ${colors.cyan} 0%, ${colors.cyan}80 100%)`
