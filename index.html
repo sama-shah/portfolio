@@ -1227,27 +1227,41 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
               </div>
             </div>
 
-            {/* Chord Grid - Vertical Layout */}
-            <div className="space-y-2">
-              {CHORD_ROOTS.map((root, rootIdx) => (
-                <div key={root}>
-                  {/* Root Header */}
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="text-xs font-bold" style={{ color: colors.cyan, width: '24px' }}>
-                      {root}
-                    </div>
-                    <div className="text-xs" style={{ color: colors.text, fontSize: '8px' }}>
-                      {String(rootIdx + 1).padStart(2, '0')}
-                    </div>
-                  </div>
+            {/* Chord Grid - Compressed Layout with Column Headers */}
+            <div>
+              {/* Column Headers */}
+              <div className="grid grid-cols-4 gap-1 mb-2">
+                <div className="text-xs font-bold" style={{ color: colors.text, fontSize: '9px' }}>
+                  ROOT
+                </div>
+                <div className="text-xs font-bold text-center" style={{ color: colors.cyan, fontSize: '9px' }}>
+                  MAJ
+                </div>
+                <div className="text-xs font-bold text-center" style={{ color: colors.lime, fontSize: '9px' }}>
+                  MIN
+                </div>
+                <div className="text-xs font-bold text-center" style={{ color: colors.magenta, fontSize: '9px' }}>
+                  7TH
+                </div>
+              </div>
 
-                  {/* Chord Type Buttons */}
-                  <div className="grid grid-cols-3 gap-1 mb-3">
+              {/* Chord Rows */}
+              <div className="space-y-1">
+                {CHORD_ROOTS.map((root, rootIdx) => (
+                  <div key={root} className="grid grid-cols-4 gap-1">
+                    {/* Root Label */}
+                    <div className="flex items-center">
+                      <div className="text-xs font-bold" style={{ color: colors.cyan }}>
+                        {root}
+                      </div>
+                    </div>
+
+                    {/* Chord Type Buttons */}
                     {[
-                      { type: 'major', keys: MAJOR_KEYS, label: 'MAJ', color: colors.cyan },
-                      { type: 'minor', keys: MINOR_KEYS, label: 'MIN', color: colors.lime },
-                      { type: '7th', keys: SEVENTH_KEYS, label: '7TH', color: colors.magenta }
-                    ].map(({ type, keys, label, color }) => {
+                      { type: 'major', keys: MAJOR_KEYS, color: colors.cyan },
+                      { type: 'minor', keys: MINOR_KEYS, color: colors.lime },
+                      { type: '7th', keys: SEVENTH_KEYS, color: colors.magenta }
+                    ].map(({ type, keys, color }) => {
                       const key = keys[rootIdx];
                       return (
                         <button
@@ -1255,7 +1269,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                           onMouseDown={() => playChord(root, type)}
                           onMouseUp={() => releaseChord()}
                           onMouseLeave={() => releaseChord()}
-                          className="h-10 relative transition-all group"
+                          className="h-12 relative transition-all group"
                           style={{
                             background: isKeyActive(key)
                               ? `${color}25`
@@ -1284,19 +1298,10 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                             `
                           }} />
 
-                          {/* Label */}
-                          <span className="relative z-10 text-xs font-bold block" style={{
+                          {/* Key indicator - larger and centered */}
+                          <span className="relative z-10 text-xs font-bold" style={{
                             color: isKeyActive(key) ? color : colors.text,
-                            fontSize: '9px'
-                          }}>
-                            {label}
-                          </span>
-
-                          {/* Key indicator */}
-                          <span className="relative z-10 text-xs block" style={{
-                            color: isKeyActive(key) ? color : colors.text,
-                            fontSize: '7px',
-                            opacity: 0.6
+                            fontSize: '11px'
                           }}>
                             {key === ',' ? ',' : key === '.' ? '.' : key.toUpperCase()}
                           </span>
@@ -1309,8 +1314,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                       );
                     })}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
