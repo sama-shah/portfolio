@@ -682,8 +682,6 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
       if (e.repeat) return;
 
-      setActiveKeys(prev => new Set([...prev, key]));
-
       // Check for piano keys first (only when piano is powered)
       const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
       if (pianoKey && pianoPowered && !fxPowered) {
@@ -695,18 +693,21 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       if (!fxPowered && !pianoPowered) {
         const majorIdx = MAJOR_KEYS.indexOf(key);
         if (majorIdx !== -1) {
+          setActiveKeys(prev => new Set([...prev, key]));
           playChord(CHORD_ROOTS[majorIdx], 'major');
           return;
         }
 
         const minorIdx = MINOR_KEYS.indexOf(key);
         if (minorIdx !== -1) {
+          setActiveKeys(prev => new Set([...prev, key]));
           playChord(CHORD_ROOTS[minorIdx], 'minor');
           return;
         }
 
         const seventhIdx = SEVENTH_KEYS.indexOf(key);
         if (seventhIdx !== -1) {
+          setActiveKeys(prev => new Set([...prev, key]));
           playChord(CHORD_ROOTS[seventhIdx], '7th');
           return;
         }
