@@ -9,7 +9,7 @@ Inspired by the way i use dj.app and onlineomnichord.com, i designed sound soup 
 
 ---
 
-## 🎵 why did i make this?
+## why did i make this?
 
 i've played piano my whole life. not competitively, but experimentally. i'd listen to songs I loved and recreate them by ear, boften turning mellow songs upbeat or upbeat songs mellow. my taste in music spans pop, whimsical vibes, house/trap, and dark R&B. What I chase is the **dopamine rush** i get when i hear a small artist on tik tok make a remix of a song that only 60 ppl on the internet has seen yet it just changed my life. like what do you mean you just casually made a bollywood pop song sound bossa nova?? and flawlessly too.
 
