@@ -746,6 +746,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       if (pianoPowered && !fxPowered) {
         const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
         if (pianoKey) {
+          setActiveKeys(prev => new Set([...prev, key]));
           playPianoNote(pianoKey.note);
           return;
         }
