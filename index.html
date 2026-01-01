@@ -288,7 +288,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
     if (houseSynthRef.current) houseSynthRef.current.releaseAll();
     if (trapSynthRef.current) trapSynthRef.current.releaseAll();
     if (dropSynthRef.current) dropSynthRef.current.releaseAll();
-  }, []);
+    recordEvent('chordRelease', {});
+  }, [isRecording]);
 
   const playHarpNote = useCallback(async (index) => {
     if (!isAudioReady) await initAudio();
@@ -314,7 +315,8 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
   const releaseHarpNote = useCallback(() => {
     if (harpSynthRef.current) harpSynthRef.current.releaseAll();
-  }, []);
+    recordEvent('harpRelease', {});
+  }, [isRecording]);
 
   const playPianoNote = useCallback(async (note) => {
     if (!isAudioReady) await initAudio();
@@ -341,11 +343,12 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
 
   const releasePianoNote = useCallback(() => {
     if (pianoSynthRef.current) pianoSynthRef.current.releaseAll();
+    recordEvent('pianoRelease', {});
     if (omnichordSynthRef.current) omnichordSynthRef.current.releaseAll();
     if (houseSynthRef.current) houseSynthRef.current.releaseAll();
     if (trapSynthRef.current) trapSynthRef.current.releaseAll();
     if (dropSynthRef.current) dropSynthRef.current.releaseAll();
-  }, []);
+  }, [isRecording]);
 
   const playDrum = async (drumName) => {
     if (!isAudioReady) await initAudio();
@@ -486,14 +489,39 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
                                event.data.chordMode === 'house' ? houseSynthRef.current :
                                event.data.chordMode === 'trap' ? trapSynthRef.current :
                                event.data.chordMode === 'drop' ? dropSynthRef.current : omnichordSynthRef.current;
-            chordSynth?.triggerAttackRelease(event.data.freqs, '2n', Tone.now(), volumeMultiplier);
+            chordSynth?.triggerAttack(event.data.freqs, Tone.now(), volumeMultiplier);
+          } else if (event.type === 'chordRelease') {
+            omnichordSynthRef.current?.releaseAll();
+            harpSynthRef.current?.releaseAll();
+            houseSynthRef.current?.releaseAll();
+            trapSynthRef.current?.releaseAll();
+            dropSynthRef.current?.releaseAll();
           } else if (event.type === 'harp') {
             const synth = event.data.strumplateMode === 'omnichord' ? omnichordSynthRef.current :
                          event.data.strumplateMode === 'harp' ? harpSynthRef.current :
                          event.data.strumplateMode === 'house' ? houseSynthRef.current :
                          event.data.strumplateMode === 'trap' ? trapSynthRef.current :
                          event.data.strumplateMode === 'drop' ? dropSynthRef.current : harpSynthRef.current;
-            synth?.triggerAttackRelease(event.data.freq, '8n', Tone.now(), volumeMultiplier);
+            synth?.triggerAttack(event.data.freq, Tone.now(), volumeMultiplier);
+          } else if (event.type === 'harpRelease') {
+            harpSynthRef.current?.releaseAll();
+          } else if (event.type === 'piano') {
+            const pianoSynth = event.data.pianoMode === 'piano' ? pianoSynthRef.current :
+                              event.data.pianoMode === 'omnichord' ? omnichordSynthRef.current :
+                              event.data.pianoMode === 'house' ? houseSynthRef.current :
+                              event.data.pianoMode === 'trap' ? trapSynthRef.current :
+                              event.data.pianoMode === 'drop' ? dropSynthRef.current : pianoSynthRef.current;
+            if (event.data.pianoMode === 'drop') {
+              pianoSynth?.triggerAttackRelease(event.data.freq, '2n', Tone.now(), volumeMultiplier);
+            } else {
+              pianoSynth?.triggerAttack(event.data.freq, Tone.now(), volumeMultiplier);
+            }
+          } else if (event.type === 'pianoRelease') {
+            pianoSynthRef.current?.releaseAll();
+            omnichordSynthRef.current?.releaseAll();
+            houseSynthRef.current?.releaseAll();
+            trapSynthRef.current?.releaseAll();
+            dropSynthRef.current?.releaseAll();
           } else if (event.type === 'drum') {
             const drumSynth = drumSynthsRef.current[event.data.drumName];
             if (drumSynth) {
