@@ -474,9 +474,16 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
         const loopedElapsed = elapsed % track.duration;
         setTrackPositions(prev => ({ ...prev, [track.id]: loopedElapsed }));
 
-        // Detect loop restart
+        // Detect loop restart - reset immediately and play events at start of loop
         if (loopedElapsed < lastLoopTime) {
           currentEventIndex = 0;
+          // Release all notes when looping to prevent hanging notes
+          omnichordSynthRef.current?.releaseAll();
+          harpSynthRef.current?.releaseAll();
+          houseSynthRef.current?.releaseAll();
+          trapSynthRef.current?.releaseAll();
+          dropSynthRef.current?.releaseAll();
+          pianoSynthRef.current?.releaseAll();
         }
         lastLoopTime = loopedElapsed;
 
@@ -555,7 +562,7 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
           }
           currentEventIndex++;
         }
-      }, 10);
+      }, 5); // 5ms interval for precise timing and immediate loop restart
 
       playbackIntervalsRef.current[track.id] = interval;
       return interval;
