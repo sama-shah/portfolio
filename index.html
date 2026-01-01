@@ -465,14 +465,14 @@ const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
       if (currentEventIndex === -1) currentEventIndex = 0;
       let lastLoopTime = 0;
 
-      // Get track volume (0dB default)
-      const trackVol = trackVolumes[track.id] ?? 0;
-      const volumeMultiplier = Math.pow(10, trackVol / 20); // Convert dB to linear multiplier
-
       const interval = setInterval(() => {
         const elapsed = (Date.now() - startTime) + startPosition;
         const loopedElapsed = elapsed % track.duration;
         setTrackPositions(prev => ({ ...prev, [track.id]: loopedElapsed }));
+
+        // Get track volume (0dB default) - updated in real-time
+        const trackVol = trackVolumes[track.id] ?? 0;
+        const volumeMultiplier = Math.pow(10, trackVol / 20); // Convert dB to linear multiplier
 
         // Detect loop restart - reset immediately and play events at start of loop
         if (loopedElapsed < lastLoopTime) {
