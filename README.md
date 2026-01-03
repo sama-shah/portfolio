@@ -1,3 +1,3 @@
 https://sama-shah.github.io/portfolio/
 
-I vibe coded my posrtfolio website :)
+I vibe coded my portfolio website :)
