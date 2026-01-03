@@ -1,1 +1,3 @@
-<h1>i vibe coded my portfolio website. check it out: https://sama-shah.github.io/portfolio/</h1>
+https://sama-shah.github.io/portfolio/
+
+I vibe coded my posrtfolio website :)
