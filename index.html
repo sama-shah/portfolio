@@ -176,18 +176,23 @@
 
         /* About Section */
         .about {
-            background: var(--cream);
-            color: var(--navy);
+            background: var(--navy);
+            color: var(--cream);
             padding: 8rem 3rem;
             position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
 
         .about-grid {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 6rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
             max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
+            align-items: center;
         }
 
         .about-label {
@@ -202,17 +207,18 @@
 
         .about-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 6vw, 5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 400;
             font-style: italic;
-            line-height: 1.1;
-            margin-bottom: 2rem;
+            line-height: 1.2;
+            margin-bottom: 3rem;
+            color: var(--coral);
         }
 
         .about-text {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: rgba(26, 26, 94, 0.8);
+            color: var(--cream);
             max-width: 600px;
         }
 
@@ -220,24 +226,30 @@
             margin-bottom: 1.5rem;
         }
 
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
+        .about-image {
+            width: 100%;
+            height: 80vh;
+            object-fit: cover;
+            object-position: center;
         }
 
-        .skill-tag {
-            padding: 0.6rem 1.2rem;
-            border: 1px solid var(--navy);
-            font-size: 0.85rem;
-            font-weight: 500;
+        .contact-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--coral);
+            color: var(--coral);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 2rem;
             transition: all 0.3s ease;
         }
 
-        .skill-tag:hover {
-            background: var(--navy);
-            color: var(--cream);
+        .contact-button:hover {
+            background: var(--coral);
+            color: var(--navy);
         }
 
         /* Projects Section */
@@ -537,21 +549,17 @@
     <section class="about" id="about">
         <div class="about-grid">
             <div>
-                <p class="about-label">About Me</p>
-                <h2 class="about-title">Creative mind with a passion for design</h2>
+                <div class="about-text">
+                    <p>There are so many products out there that are always <em>so close</em> to being... better.</p>
+                    <p>I believe that the best products are designed by the people who use it, and I am the person who finds those people and facilitates + translates those conversations into <em>intentional design</em>.</p>
+                    <p>Currently, I'm building a femtech wearble and transforming AI & product innovation @ McCarthy Building Companies. I built this portfolio website because demonstrating my strategic thinking process helps me grow as a creative - in all forms.</p>
+                </div>
+                <a href="#contact" class="contact-button">Contact</a>
             </div>
             <div>
-                <div class="about-text">
-                    <p>I'm a multidisciplinary designer and creative director based in New York. With over 8 years of experience, I specialize in crafting meaningful brand experiences that connect with audiences.</p>
-                    <p>My work spans brand identity, digital design, art direction, and creative strategy. I believe in the power of thoughtful design to tell stories and create lasting impressions.</p>
-                </div>
-                <div class="skills-list">
-                    <span class="skill-tag">Brand Identity</span>
-                    <span class="skill-tag">Art Direction</span>
-                    <span class="skill-tag">Digital Design</span>
-                    <span class="skill-tag">Typography</span>
-                    <span class="skill-tag">Creative Strategy</span>
-                </div>
+                <p class="about-label">SAMA SHAH</p>
+                <h2 class="about-title">Product Design & Development</h2>
+                <img src="headshot.jpg" alt="Sama Shah" class="about-image">
             </div>
         </div>
     </section>
