@@ -241,7 +241,7 @@
             font-family: 'Familjen Grotesk', sans-serif;
             /* font-size: clamp(2.5rem, 5vw, 4rem); */
             font-size: 2rem;
-            font-weight: 300;
+            font-weight: 50;
             /* font-style: italic; */
             line-height: 1.2;
             margin-bottom: 3rem;
@@ -288,175 +288,9 @@
 
         /* Projects Section */
         .projects {
-            background: var(--navy);
-            padding: 8rem 3rem;
-        }
-
-        .projects-header {
-            max-width: 1400px;
-            margin: 0 auto 4rem;
-        }
-
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(4rem, 10vw, 8rem);
-            font-weight: 300;
-            color: var(--coral);
-            line-height: 1;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .project-card {
-            position: relative;
-            aspect-ratio: 4/3;
-            overflow: hidden;
-            cursor: pointer;
-            background: var(--navy-light);
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(26, 26, 94, 0.9), transparent 60%);
-            z-index: 1;
-            transition: opacity 0.4s ease;
-        }
-
-        .project-card:hover::before {
-            opacity: 0.7;
-        }
-
-        .project-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .project-card:hover .project-image {
-            transform: scale(1.05);
-        }
-
-        .project-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 2rem;
-            z-index: 2;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-
-        .project-card:hover .project-info {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .project-category {
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--coral);
-            margin-bottom: 0.5rem;
-        }
-
-        .project-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
-            font-weight: 400;
-            color: var(--cream);
-        }
-
-        .project-placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 4rem;
-            font-weight: 300;
-            color: var(--coral);
-            opacity: 0.3;
-        }
-
-        /* Contact Section */
-        .contact {
             background: var(--coral);
-            color: var(--navy);
             padding: 8rem 3rem;
-            text-align: center;
-        }
-
-        .contact-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 400;
-            font-style: italic;
-            margin-bottom: 2rem;
-        }
-
-        .contact-text {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 3rem;
-            line-height: 1.7;
-        }
-
-        .contact-email {
-            display: inline-block;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            color: var(--navy);
-            text-decoration: none;
-            border-bottom: 2px solid var(--navy);
-            padding-bottom: 0.25rem;
-            transition: all 0.3s ease;
-        }
-
-        .contact-email:hover {
-            border-color: transparent;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .social-links a {
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--navy);
-            text-decoration: none;
-            position: relative;
-        }
-
-        .social-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--navy);
-            transition: width 0.3s ease;
-        }
-
-        .social-links a:hover::after {
-            width: 100%;
+            min-height: 50vh;
         }
 
         /* Footer */
@@ -515,10 +349,6 @@
             .about-grid {
                 grid-template-columns: 1fr;
                 gap: 3rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
             }
 
             nav {
@@ -592,7 +422,7 @@
                     <p>I believe that the best products are designed by the people who use it, and I am the person who finds those people and facilitates + translates those conversations into <em>intentional design</em>.</p>
                     <p>Currently, I'm building a femtech wearble and transforming AI & product innovation @ McCarthy Building Companies. I built this portfolio website because demonstrating my strategic thinking process helps me grow as a creative - in all forms.</p>
                 </div>
-                <a href="#contact" class="contact-button">Contact</a>
+                <a href="https://samashah.carrd.co/" class="contact-button" target="_blank" rel="noopener noreferrer">Contact</a>
             </div>
             <div class="about-right">
             </div>
@@ -600,51 +430,6 @@
     </section>
 
     <section class="projects" id="projects">
-        <div class="projects-header">
-            <h2 class="section-title">Selected Work</h2>
-        </div>
-        <div class="projects-grid">
-            <div class="project-card reveal">
-                <div class="project-placeholder">01</div>
-                <div class="project-info">
-                    <p class="project-category">Brand Identity</p>
-                    <h3 class="project-title">Lumina Cosmetics</h3>
-                </div>
-            </div>
-            <div class="project-card reveal">
-                <div class="project-placeholder">02</div>
-                <div class="project-info">
-                    <p class="project-category">Digital Design</p>
-                    <h3 class="project-title">Archi Studio</h3>
-                </div>
-            </div>
-            <div class="project-card reveal">
-                <div class="project-placeholder">03</div>
-                <div class="project-info">
-                    <p class="project-category">Art Direction</p>
-                    <h3 class="project-title">Vogue Editorial</h3>
-                </div>
-            </div>
-            <div class="project-card reveal">
-                <div class="project-placeholder">04</div>
-                <div class="project-info">
-                    <p class="project-category">Creative Strategy</p>
-                    <h3 class="project-title">Bloom & Wild</h3>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="contact" id="contact">
-        <h2 class="contact-title">Let's create together</h2>
-        <p class="contact-text">I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
-        <a href="mailto:hello@samashah.com" class="contact-email">hello@samashah.com</a>
-        <div class="social-links">
-            <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
-            <a href="#">Behance</a>
-            <a href="#">Dribbble</a>
-        </div>
     </section>
 
     <footer>
