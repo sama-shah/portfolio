@@ -178,7 +178,7 @@
         .about {
             background: var(--navy);
             color: var(--cream);
-            padding: 8rem 3rem;
+            padding: 2rem 3rem 8rem;
             position: relative;
             min-height: 100vh;
             display: flex;
@@ -192,7 +192,14 @@
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
-            align-items: center;
+            align-items: flex-start;
+        }
+
+        .about-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
         }
 
         .about-label {
@@ -556,10 +563,10 @@
                 </div>
                 <a href="#contact" class="contact-button">Contact</a>
             </div>
-            <div>
+            <div class="about-right">
+                <img src="headshot.jpg" alt="Sama Shah" class="about-image">
                 <p class="about-label">SAMA SHAH</p>
                 <h2 class="about-title">Product Design & Development</h2>
-                <img src="headshot.jpg" alt="Sama Shah" class="about-image">
             </div>
         </div>
     </section>
