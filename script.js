@@ -38,11 +38,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Edit Mode Functionality
 // SHA-256 hash of the password
-// Current password is: "portfolio2026"
-// To change password:
-//   1. Open browser console on this page
-//   2. Run: hashPassword('yournewpassword').then(hash => console.log(hash))
-//   3. Copy the output hash and replace PASSWORD_HASH below
 const PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 let editMode = false;
 
