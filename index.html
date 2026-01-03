@@ -639,7 +639,7 @@
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#projects">All Projects</a></li>
+            <li><a href="#projects">Projects</a></li>
         </ul>
     </nav>
 
@@ -838,7 +838,7 @@
 
         // Add Text
         document.getElementById('addText').addEventListener('click', () => {
-            const text = createText(300, 150, 0, 'Double-click to edit', 'coral');
+            const text = createText(300, 150, 0, 'Double-click to edit', 'coral', 1.2);
             projectsSection.appendChild(text);
             selectElement(text);
         });
@@ -960,7 +960,7 @@
         }
 
         // Create Text element
-        function createText(x, y, rotation, content, color = 'coral') {
+        function createText(x, y, rotation, content, color = 'coral', fontSize = 1.2) {
             const text = document.createElement('div');
             text.className = 'text-element';
             text.style.left = x + 'px';
@@ -968,6 +968,8 @@
             text.style.transform = `rotate(${rotation}deg)`;
             text.dataset.rotation = rotation;
             text.dataset.color = color;
+            text.dataset.fontSize = fontSize;
+            text.style.fontSize = fontSize + 'rem';
             text.contentEditable = 'true';
             text.textContent = content;
 
@@ -1132,7 +1134,7 @@
 
             // Position panel above the text using fixed positioning
             const rect = text.getBoundingClientRect();
-            panel.style.top = (rect.top - 65) + 'px';
+            panel.style.top = (rect.top - 100) + 'px';
             panel.style.left = rect.left + 'px';
 
             const colorSelect = document.createElement('select');
@@ -1155,7 +1157,23 @@
                 text.style.color = colorValue;
             });
 
+            const fontSizeSelect = document.createElement('select');
+            const currentFontSize = text.dataset.fontSize || '1.2';
+            fontSizeSelect.innerHTML = `
+                <option value="0.8" ${currentFontSize === '0.8' ? 'selected' : ''}>Small</option>
+                <option value="1.2" ${currentFontSize === '1.2' ? 'selected' : ''}>Medium</option>
+                <option value="1.6" ${currentFontSize === '1.6' ? 'selected' : ''}>Large</option>
+                <option value="2.0" ${currentFontSize === '2.0' ? 'selected' : ''}>X-Large</option>
+                <option value="3.0" ${currentFontSize === '3.0' ? 'selected' : ''}>XX-Large</option>
+            `;
+            fontSizeSelect.addEventListener('change', (e) => {
+                e.stopPropagation();
+                text.dataset.fontSize = fontSizeSelect.value;
+                text.style.fontSize = fontSizeSelect.value + 'rem';
+            });
+
             panel.appendChild(colorSelect);
+            panel.appendChild(fontSizeSelect);
             return panel;
         }
 
@@ -1235,6 +1253,7 @@
                 } else if (data.type === 'text') {
                     data.content = el.textContent;
                     data.color = el.dataset.color || 'coral';
+                    data.fontSize = parseFloat(el.dataset.fontSize) || 1.2;
                 }
 
                 elements.push(data);
@@ -1268,7 +1287,7 @@
                         data.width || 150
                     );
                 } else if (data.type === 'text') {
-                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral');
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral', data.fontSize || 1.2);
                 }
                 if (element) {
                     projectsSection.appendChild(element);
@@ -1298,7 +1317,7 @@
                         data.width || 150
                     );
                 } else if (data.type === 'text') {
-                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral');
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral', data.fontSize || 1.2);
                 }
                 if (element) {
                     projectsSection.appendChild(element);
