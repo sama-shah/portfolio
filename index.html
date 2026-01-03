@@ -933,9 +933,15 @@
             const color = arrow.dataset.color || 'coral';
             const flipH = arrow.dataset.flipH === 'true';
             const flipV = arrow.dataset.flipV === 'true';
-            const colorValue = color === 'coral' ?
-                getComputedStyle(document.documentElement).getPropertyValue('--coral') :
-                getComputedStyle(document.documentElement).getPropertyValue('--cream');
+
+            let colorValue;
+            if (color === 'coral') {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--coral');
+            } else if (color === 'cream') {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--cream');
+            } else {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--navy');
+            }
 
             const uniqueId = Date.now() + Math.random();
             let scaleX = flipH ? -1 : 1;
@@ -965,9 +971,14 @@
             text.contentEditable = 'true';
             text.textContent = content;
 
-            const colorValue = color === 'coral' ?
-                getComputedStyle(document.documentElement).getPropertyValue('--coral') :
-                getComputedStyle(document.documentElement).getPropertyValue('--cream');
+            let colorValue;
+            if (color === 'coral') {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--coral');
+            } else if (color === 'cream') {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--cream');
+            } else {
+                colorValue = getComputedStyle(document.documentElement).getPropertyValue('--navy');
+            }
             text.style.color = colorValue;
 
             addDragListeners(text);
@@ -1024,6 +1035,11 @@
             deleteHandle.className = 'delete-handle';
             deleteHandle.textContent = '×';
             deleteHandle.addEventListener('click', () => {
+                // Remove control panel if it exists
+                if (element.dataset.controlPanelId) {
+                    const panel = document.querySelector(`[data-element-id="${element.dataset.controlPanelId}"]`);
+                    if (panel) panel.remove();
+                }
                 element.remove();
                 selectedElement = null;
             });
@@ -1078,6 +1094,7 @@
             colorSelect.innerHTML = `
                 <option value="coral" ${arrow.dataset.color === 'coral' ? 'selected' : ''}>Orange</option>
                 <option value="cream" ${arrow.dataset.color === 'cream' ? 'selected' : ''}>White</option>
+                <option value="navy" ${arrow.dataset.color === 'navy' ? 'selected' : ''}>Dark Gray</option>
             `;
             colorSelect.addEventListener('change', (e) => {
                 e.stopPropagation();
@@ -1122,13 +1139,19 @@
             colorSelect.innerHTML = `
                 <option value="coral" ${text.dataset.color === 'coral' ? 'selected' : ''}>Orange</option>
                 <option value="cream" ${text.dataset.color === 'cream' ? 'selected' : ''}>White</option>
+                <option value="navy" ${text.dataset.color === 'navy' ? 'selected' : ''}>Dark Gray</option>
             `;
             colorSelect.addEventListener('change', (e) => {
                 e.stopPropagation();
                 text.dataset.color = colorSelect.value;
-                const colorValue = colorSelect.value === 'coral' ?
-                    getComputedStyle(document.documentElement).getPropertyValue('--coral') :
-                    getComputedStyle(document.documentElement).getPropertyValue('--cream');
+                let colorValue;
+                if (colorSelect.value === 'coral') {
+                    colorValue = getComputedStyle(document.documentElement).getPropertyValue('--coral');
+                } else if (colorSelect.value === 'cream') {
+                    colorValue = getComputedStyle(document.documentElement).getPropertyValue('--cream');
+                } else {
+                    colorValue = getComputedStyle(document.documentElement).getPropertyValue('--navy');
+                }
                 text.style.color = colorValue;
             });
 
