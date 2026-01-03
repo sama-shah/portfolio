@@ -288,9 +288,207 @@
 
         /* Projects Section */
         .projects {
-            background: var(--coral);
+            background: var(--navy);
             padding: 8rem 3rem;
             min-height: 50vh;
+            position: relative;
+        }
+
+        /* Edit Mode Styles */
+        .edit-toolbar {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--navy-light);
+            border: 2px solid var(--coral);
+            padding: 1rem;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+        }
+
+        .edit-toolbar.active {
+            display: block;
+        }
+
+        .edit-toolbar button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--coral);
+            color: var(--navy);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .edit-toolbar button:hover {
+            opacity: 0.8;
+        }
+
+        .edit-toolbar button:last-child {
+            margin-bottom: 0;
+            background: var(--navy);
+            color: var(--coral);
+            border: 2px solid var(--coral);
+        }
+
+        .polaroid {
+            position: absolute;
+            background: var(--cream);
+            padding: 1rem;
+            padding-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+            cursor: move;
+            user-select: none;
+        }
+
+        .polaroid.selected {
+            outline: 3px solid var(--coral);
+        }
+
+        .polaroid-image {
+            width: 200px;
+            height: 200px;
+            background: var(--navy-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--coral);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .polaroid-caption {
+            text-align: center;
+            color: var(--navy);
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            outline: none;
+        }
+
+        .arrow-element {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+        }
+
+        .arrow-element.selected {
+            outline: 2px dashed var(--coral);
+        }
+
+        .arrow-svg {
+            width: 100px;
+            height: 100px;
+        }
+
+        .text-element {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            color: var(--coral);
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            min-width: 100px;
+            outline: none;
+        }
+
+        .text-element.selected {
+            outline: 2px dashed var(--coral);
+        }
+
+        .rotate-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--coral);
+            border: 2px solid var(--cream);
+            border-radius: 50%;
+            cursor: grab;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .rotate-handle:active {
+            cursor: grabbing;
+        }
+
+        .delete-handle {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #e74c3c;
+            border: 2px solid var(--cream);
+            border-radius: 50%;
+            cursor: pointer;
+            top: -10px;
+            right: -10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+
+        .password-modal.active {
+            display: flex;
+        }
+
+        .password-modal-content {
+            background: var(--navy-light);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid var(--coral);
+            text-align: center;
+        }
+
+        .password-modal input {
+            padding: 0.75rem;
+            margin: 1rem 0;
+            width: 250px;
+            background: var(--navy);
+            border: 2px solid var(--coral);
+            color: var(--cream);
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+
+        .password-modal button {
+            padding: 0.75rem 2rem;
+            margin: 0 0.5rem;
+            background: var(--coral);
+            color: var(--navy);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-weight: 600;
+        }
+
+        .password-modal button:hover {
+            opacity: 0.8;
         }
 
         /* Footer */
@@ -432,6 +630,25 @@
     <section class="projects" id="projects">
     </section>
 
+    <!-- Edit Mode Toolbar -->
+    <div class="edit-toolbar" id="editToolbar">
+        <button id="addPolaroid">Add Polaroid</button>
+        <button id="addArrow">Add Arrow</button>
+        <button id="addText">Add Text</button>
+        <button id="saveExit">Save & Exit</button>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <h3 style="color: var(--coral); margin-bottom: 1rem;">Enter Password</h3>
+            <input type="password" id="passwordInput" placeholder="Password">
+            <br>
+            <button id="passwordSubmit">Enter</button>
+            <button id="passwordCancel">Cancel</button>
+        </div>
+    </div>
+
     <footer>
         <p>© 2026 Sama Shah. All rights reserved.</p>
     </footer>
@@ -471,6 +688,313 @@
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Edit Mode Functionality
+        const EDIT_PASSWORD = 'portfolio2025'; // Change this to your desired password
+        let editMode = false;
+        let selectedElement = null;
+        let dragElement = null;
+        let dragOffset = { x: 0, y: 0 };
+        let rotateElement = null;
+        let rotateStartAngle = 0;
+        let currentRotation = 0;
+
+        const projectsSection = document.getElementById('projects');
+        const editToolbar = document.getElementById('editToolbar');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('passwordInput');
+
+        // Press 'E' to open password modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'e' || e.key === 'E') {
+                if (!editMode) {
+                    passwordModal.classList.add('active');
+                    passwordInput.focus();
+                }
+            }
+        });
+
+        // Password modal handlers
+        document.getElementById('passwordSubmit').addEventListener('click', () => {
+            if (passwordInput.value === EDIT_PASSWORD) {
+                enterEditMode();
+                passwordModal.classList.remove('active');
+                passwordInput.value = '';
+            } else {
+                alert('Incorrect password');
+                passwordInput.value = '';
+            }
+        });
+
+        document.getElementById('passwordCancel').addEventListener('click', () => {
+            passwordModal.classList.remove('active');
+            passwordInput.value = '';
+        });
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('passwordSubmit').click();
+            }
+        });
+
+        // Enter edit mode
+        function enterEditMode() {
+            editMode = true;
+            editToolbar.classList.add('active');
+            loadElements();
+        }
+
+        // Exit edit mode
+        function exitEditMode() {
+            editMode = false;
+            editToolbar.classList.remove('active');
+            saveElements();
+            // Remove all selection and handles
+            document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.rotate-handle, .delete-handle').forEach(el => el.remove());
+        }
+
+        // Save & Exit button
+        document.getElementById('saveExit').addEventListener('click', () => {
+            exitEditMode();
+        });
+
+        // Add Polaroid
+        document.getElementById('addPolaroid').addEventListener('click', () => {
+            const polaroid = createPolaroid(100, 100, 0, 'Project Title');
+            projectsSection.appendChild(polaroid);
+            selectElement(polaroid);
+        });
+
+        // Add Arrow
+        document.getElementById('addArrow').addEventListener('click', () => {
+            const arrow = createArrow(200, 200, 45);
+            projectsSection.appendChild(arrow);
+            selectElement(arrow);
+        });
+
+        // Add Text
+        document.getElementById('addText').addEventListener('click', () => {
+            const text = createText(300, 150, 0, 'Double-click to edit');
+            projectsSection.appendChild(text);
+            selectElement(text);
+        });
+
+        // Create Polaroid element
+        function createPolaroid(x, y, rotation, caption) {
+            const polaroid = document.createElement('div');
+            polaroid.className = 'polaroid';
+            polaroid.style.left = x + 'px';
+            polaroid.style.top = y + 'px';
+            polaroid.style.transform = `rotate(${rotation}deg)`;
+            polaroid.dataset.rotation = rotation;
+
+            polaroid.innerHTML = `
+                <div class="polaroid-image">Click to add image</div>
+                <div class="polaroid-caption" contenteditable="true">${caption}</div>
+            `;
+
+            addDragListeners(polaroid);
+            return polaroid;
+        }
+
+        // Create Arrow element
+        function createArrow(x, y, rotation) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow-element';
+            arrow.style.left = x + 'px';
+            arrow.style.top = y + 'px';
+            arrow.style.transform = `rotate(${rotation}deg)`;
+            arrow.dataset.rotation = rotation;
+
+            arrow.innerHTML = `
+                <svg class="arrow-svg" viewBox="0 0 100 100">
+                    <defs>
+                        <marker id="arrowhead-${Date.now()}" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="${getComputedStyle(document.documentElement).getPropertyValue('--coral')}" />
+                        </marker>
+                    </defs>
+                    <path d="M 10 50 Q 50 10, 90 50" stroke="${getComputedStyle(document.documentElement).getPropertyValue('--coral')}" stroke-width="2" fill="none" marker-end="url(#arrowhead-${Date.now()})" />
+                </svg>
+            `;
+
+            addDragListeners(arrow);
+            return arrow;
+        }
+
+        // Create Text element
+        function createText(x, y, rotation, content) {
+            const text = document.createElement('div');
+            text.className = 'text-element';
+            text.style.left = x + 'px';
+            text.style.top = y + 'px';
+            text.style.transform = `rotate(${rotation}deg)`;
+            text.dataset.rotation = rotation;
+            text.contentEditable = 'true';
+            text.textContent = content;
+
+            addDragListeners(text);
+            return text;
+        }
+
+        // Add drag listeners to element
+        function addDragListeners(element) {
+            element.addEventListener('mousedown', (e) => {
+                if (!editMode) return;
+                if (e.target.classList.contains('rotate-handle')) return;
+                if (e.target.classList.contains('delete-handle')) return;
+                if (e.target.contentEditable === 'true' && e.detail === 2) return; // Double-click to edit
+
+                e.preventDefault();
+                selectElement(element);
+
+                dragElement = element;
+                const rect = element.getBoundingClientRect();
+                const parentRect = projectsSection.getBoundingClientRect();
+                dragOffset.x = e.clientX - rect.left;
+                dragOffset.y = e.clientY - rect.top;
+            });
+        }
+
+        // Select element
+        function selectElement(element) {
+            if (!editMode) return;
+
+            // Deselect previous
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+                const oldHandles = selectedElement.querySelectorAll('.rotate-handle, .delete-handle');
+                oldHandles.forEach(h => h.remove());
+            }
+
+            selectedElement = element;
+            element.classList.add('selected');
+
+            // Add rotate handle
+            const rotateHandle = document.createElement('div');
+            rotateHandle.className = 'rotate-handle';
+            rotateHandle.addEventListener('mousedown', startRotate);
+            element.appendChild(rotateHandle);
+
+            // Add delete handle
+            const deleteHandle = document.createElement('div');
+            deleteHandle.className = 'delete-handle';
+            deleteHandle.textContent = '×';
+            deleteHandle.addEventListener('click', () => {
+                element.remove();
+                selectedElement = null;
+            });
+            element.appendChild(deleteHandle);
+        }
+
+        // Mouse move for dragging
+        document.addEventListener('mousemove', (e) => {
+            if (dragElement && editMode) {
+                const parentRect = projectsSection.getBoundingClientRect();
+                const x = e.clientX - parentRect.left - dragOffset.x;
+                const y = e.clientY - parentRect.top - dragOffset.y;
+
+                dragElement.style.left = x + 'px';
+                dragElement.style.top = y + 'px';
+            }
+
+            if (rotateElement && editMode) {
+                const rect = rotateElement.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI) + 90;
+                rotateElement.style.transform = `rotate(${angle}deg)`;
+                rotateElement.dataset.rotation = angle;
+            }
+        });
+
+        // Mouse up to stop dragging/rotating
+        document.addEventListener('mouseup', () => {
+            dragElement = null;
+            rotateElement = null;
+        });
+
+        // Start rotation
+        function startRotate(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            rotateElement = selectedElement;
+        }
+
+        // Save elements to localStorage
+        function saveElements() {
+            const elements = [];
+
+            projectsSection.querySelectorAll('.polaroid, .arrow-element, .text-element').forEach(el => {
+                const data = {
+                    type: el.classList.contains('polaroid') ? 'polaroid' :
+                          el.classList.contains('arrow-element') ? 'arrow' : 'text',
+                    x: parseInt(el.style.left),
+                    y: parseInt(el.style.top),
+                    rotation: parseFloat(el.dataset.rotation || 0),
+                };
+
+                if (data.type === 'polaroid') {
+                    data.caption = el.querySelector('.polaroid-caption').textContent;
+                } else if (data.type === 'text') {
+                    data.content = el.textContent;
+                }
+
+                elements.push(data);
+            });
+
+            localStorage.setItem('portfolioElements', JSON.stringify(elements));
+        }
+
+        // Load elements from localStorage
+        function loadElements() {
+            const saved = localStorage.getItem('portfolioElements');
+            if (!saved) return;
+
+            // Clear existing elements
+            projectsSection.querySelectorAll('.polaroid, .arrow-element, .text-element').forEach(el => el.remove());
+
+            const elements = JSON.parse(saved);
+            elements.forEach(data => {
+                let element;
+                if (data.type === 'polaroid') {
+                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || 'Project Title');
+                } else if (data.type === 'arrow') {
+                    element = createArrow(data.x, data.y, data.rotation);
+                } else if (data.type === 'text') {
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text');
+                }
+                if (element) {
+                    projectsSection.appendChild(element);
+                }
+            });
+        }
+
+        // Load elements on page load (for normal viewing)
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('portfolioElements');
+            if (!saved) return;
+
+            const elements = JSON.parse(saved);
+            elements.forEach(data => {
+                let element;
+                if (data.type === 'polaroid') {
+                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || 'Project Title');
+                } else if (data.type === 'arrow') {
+                    element = createArrow(data.x, data.y, data.rotation);
+                } else if (data.type === 'text') {
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text');
+                }
+                if (element) {
+                    projectsSection.appendChild(element);
+                    // Remove interactivity for normal viewing
+                    element.style.cursor = 'default';
+                    const editableElements = element.querySelectorAll('[contenteditable]');
+                    editableElements.forEach(el => el.contentEditable = 'false');
                 }
             });
         });
