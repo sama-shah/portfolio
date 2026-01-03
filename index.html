@@ -383,8 +383,55 @@
         }
 
         .arrow-svg {
-            width: 100px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .arrow-element {
+            width: 150px;
             height: 100px;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--coral);
+            border: 2px solid var(--cream);
+            border-radius: 50%;
+            cursor: ew-resize;
+            bottom: -10px;
+            right: -10px;
+        }
+
+        .control-panel {
+            position: absolute;
+            background: var(--navy-light);
+            border: 2px solid var(--coral);
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .control-panel button,
+        .control-panel select {
+            padding: 0.5rem;
+            background: var(--coral);
+            color: var(--navy);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .control-panel button:hover,
+        .control-panel select:hover {
+            opacity: 0.8;
         }
 
         .text-element {
@@ -701,6 +748,16 @@
         let rotateElement = null;
         let rotateStartAngle = 0;
         let currentRotation = 0;
+        let resizeElement = null;
+        let resizeStartWidth = 0;
+        let resizeStartX = 0;
+
+        // Arrow path definitions
+        const arrowPaths = {
+            curved: 'M 10 50 Q 50 10, 90 50',
+            straight: 'M 10 50 L 90 50',
+            loopy: 'M 10 50 Q 30 10, 50 50 T 90 50'
+        };
 
         const projectsSection = document.getElementById('projects');
         const editToolbar = document.getElementById('editToolbar');
@@ -771,14 +828,14 @@
 
         // Add Arrow
         document.getElementById('addArrow').addEventListener('click', () => {
-            const arrow = createArrow(200, 200, 45);
+            const arrow = createArrow(200, 200, 45, 'curved', 'coral', false, false, 150);
             projectsSection.appendChild(arrow);
             selectElement(arrow);
         });
 
         // Add Text
         document.getElementById('addText').addEventListener('click', () => {
-            const text = createText(300, 150, 0, 'Double-click to edit');
+            const text = createText(300, 150, 0, 'Double-click to edit', 'coral');
             projectsSection.appendChild(text);
             selectElement(text);
         });
@@ -849,39 +906,66 @@
         }
 
         // Create Arrow element
-        function createArrow(x, y, rotation) {
+        function createArrow(x, y, rotation, style = 'curved', color = 'coral', flipH = false, flipV = false, width = 150) {
             const arrow = document.createElement('div');
             arrow.className = 'arrow-element';
             arrow.style.left = x + 'px';
             arrow.style.top = y + 'px';
+            arrow.style.width = width + 'px';
             arrow.style.transform = `rotate(${rotation}deg)`;
             arrow.dataset.rotation = rotation;
+            arrow.dataset.style = style;
+            arrow.dataset.color = color;
+            arrow.dataset.flipH = flipH;
+            arrow.dataset.flipV = flipV;
 
-            arrow.innerHTML = `
-                <svg class="arrow-svg" viewBox="0 0 100 100">
-                    <defs>
-                        <marker id="arrowhead-${Date.now()}" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                            <polygon points="0 0, 10 3, 0 6" fill="${getComputedStyle(document.documentElement).getPropertyValue('--coral')}" />
-                        </marker>
-                    </defs>
-                    <path d="M 10 50 Q 50 10, 90 50" stroke="${getComputedStyle(document.documentElement).getPropertyValue('--coral')}" stroke-width="2" fill="none" marker-end="url(#arrowhead-${Date.now()})" />
-                </svg>
-            `;
-
+            updateArrowSVG(arrow);
             addDragListeners(arrow);
             return arrow;
         }
 
+        // Update arrow SVG based on settings
+        function updateArrowSVG(arrow) {
+            const style = arrow.dataset.style || 'curved';
+            const color = arrow.dataset.color || 'coral';
+            const flipH = arrow.dataset.flipH === 'true';
+            const flipV = arrow.dataset.flipV === 'true';
+            const colorValue = color === 'coral' ?
+                getComputedStyle(document.documentElement).getPropertyValue('--coral') :
+                getComputedStyle(document.documentElement).getPropertyValue('--cream');
+
+            const uniqueId = Date.now() + Math.random();
+            let scaleX = flipH ? -1 : 1;
+            let scaleY = flipV ? -1 : 1;
+
+            arrow.innerHTML = `
+                <svg class="arrow-svg" viewBox="0 0 100 100" style="transform: scale(${scaleX}, ${scaleY})">
+                    <defs>
+                        <marker id="arrowhead-${uniqueId}" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="${colorValue}" />
+                        </marker>
+                    </defs>
+                    <path d="${arrowPaths[style]}" stroke="${colorValue}" stroke-width="2" fill="none" marker-end="url(#arrowhead-${uniqueId})" />
+                </svg>
+            `;
+        }
+
         // Create Text element
-        function createText(x, y, rotation, content) {
+        function createText(x, y, rotation, content, color = 'coral') {
             const text = document.createElement('div');
             text.className = 'text-element';
             text.style.left = x + 'px';
             text.style.top = y + 'px';
             text.style.transform = `rotate(${rotation}deg)`;
             text.dataset.rotation = rotation;
+            text.dataset.color = color;
             text.contentEditable = 'true';
             text.textContent = content;
+
+            const colorValue = color === 'coral' ?
+                getComputedStyle(document.documentElement).getPropertyValue('--coral') :
+                getComputedStyle(document.documentElement).getPropertyValue('--cream');
+            text.style.color = colorValue;
 
             addDragListeners(text);
             return text;
@@ -913,7 +997,7 @@
             // Deselect previous
             if (selectedElement) {
                 selectedElement.classList.remove('selected');
-                const oldHandles = selectedElement.querySelectorAll('.rotate-handle, .delete-handle');
+                const oldHandles = selectedElement.querySelectorAll('.rotate-handle, .delete-handle, .resize-handle, .control-panel');
                 oldHandles.forEach(h => h.remove());
             }
 
@@ -935,6 +1019,111 @@
                 selectedElement = null;
             });
             element.appendChild(deleteHandle);
+
+            // Add resize handle for arrows
+            if (element.classList.contains('arrow-element')) {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                resizeHandle.addEventListener('mousedown', startResize);
+                element.appendChild(resizeHandle);
+
+                // Add control panel for arrows
+                const controlPanel = createArrowControlPanel(element);
+                element.appendChild(controlPanel);
+            }
+
+            // Add control panel for text
+            if (element.classList.contains('text-element')) {
+                const controlPanel = createTextControlPanel(element);
+                element.appendChild(controlPanel);
+            }
+        }
+
+        // Create arrow control panel
+        function createArrowControlPanel(arrow) {
+            const panel = document.createElement('div');
+            panel.className = 'control-panel';
+            panel.style.top = '-120px';
+            panel.style.left = '0';
+
+            const styleSelect = document.createElement('select');
+            styleSelect.innerHTML = `
+                <option value="curved" ${arrow.dataset.style === 'curved' ? 'selected' : ''}>Curved</option>
+                <option value="straight" ${arrow.dataset.style === 'straight' ? 'selected' : ''}>Straight</option>
+                <option value="loopy" ${arrow.dataset.style === 'loopy' ? 'selected' : ''}>Loopy</option>
+            `;
+            styleSelect.addEventListener('change', (e) => {
+                e.stopPropagation();
+                arrow.dataset.style = styleSelect.value;
+                updateArrowSVG(arrow);
+            });
+
+            const colorSelect = document.createElement('select');
+            colorSelect.innerHTML = `
+                <option value="coral" ${arrow.dataset.color === 'coral' ? 'selected' : ''}>Orange</option>
+                <option value="cream" ${arrow.dataset.color === 'cream' ? 'selected' : ''}>White</option>
+            `;
+            colorSelect.addEventListener('change', (e) => {
+                e.stopPropagation();
+                arrow.dataset.color = colorSelect.value;
+                updateArrowSVG(arrow);
+            });
+
+            const flipHBtn = document.createElement('button');
+            flipHBtn.textContent = 'Flip Horizontal';
+            flipHBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                arrow.dataset.flipH = arrow.dataset.flipH === 'true' ? 'false' : 'true';
+                updateArrowSVG(arrow);
+            });
+
+            const flipVBtn = document.createElement('button');
+            flipVBtn.textContent = 'Flip Vertical';
+            flipVBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                arrow.dataset.flipV = arrow.dataset.flipV === 'true' ? 'false' : 'true';
+                updateArrowSVG(arrow);
+            });
+
+            panel.appendChild(styleSelect);
+            panel.appendChild(colorSelect);
+            panel.appendChild(flipHBtn);
+            panel.appendChild(flipVBtn);
+            return panel;
+        }
+
+        // Create text control panel
+        function createTextControlPanel(text) {
+            const panel = document.createElement('div');
+            panel.className = 'control-panel';
+            panel.style.top = '-60px';
+            panel.style.left = '0';
+
+            const colorSelect = document.createElement('select');
+            colorSelect.innerHTML = `
+                <option value="coral" ${text.dataset.color === 'coral' ? 'selected' : ''}>Orange</option>
+                <option value="cream" ${text.dataset.color === 'cream' ? 'selected' : ''}>White</option>
+            `;
+            colorSelect.addEventListener('change', (e) => {
+                e.stopPropagation();
+                text.dataset.color = colorSelect.value;
+                const colorValue = colorSelect.value === 'coral' ?
+                    getComputedStyle(document.documentElement).getPropertyValue('--coral') :
+                    getComputedStyle(document.documentElement).getPropertyValue('--cream');
+                text.style.color = colorValue;
+            });
+
+            panel.appendChild(colorSelect);
+            return panel;
+        }
+
+        // Start resize
+        function startResize(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            resizeElement = selectedElement;
+            resizeStartWidth = parseInt(resizeElement.style.width);
+            resizeStartX = e.clientX;
         }
 
         // Mouse move for dragging
@@ -957,12 +1146,19 @@
                 rotateElement.style.transform = `rotate(${angle}deg)`;
                 rotateElement.dataset.rotation = angle;
             }
+
+            if (resizeElement && editMode) {
+                const deltaX = e.clientX - resizeStartX;
+                const newWidth = Math.max(50, resizeStartWidth + deltaX);
+                resizeElement.style.width = newWidth + 'px';
+            }
         });
 
-        // Mouse up to stop dragging/rotating
+        // Mouse up to stop dragging/rotating/resizing
         document.addEventListener('mouseup', () => {
             dragElement = null;
             rotateElement = null;
+            resizeElement = null;
         });
 
         // Start rotation
@@ -988,8 +1184,15 @@
                 if (data.type === 'polaroid') {
                     data.caption = el.querySelector('.polaroid-caption').textContent;
                     data.imageData = el.dataset.imageData || null;
+                } else if (data.type === 'arrow') {
+                    data.style = el.dataset.style || 'curved';
+                    data.color = el.dataset.color || 'coral';
+                    data.flipH = el.dataset.flipH === 'true';
+                    data.flipV = el.dataset.flipV === 'true';
+                    data.width = parseInt(el.style.width) || 150;
                 } else if (data.type === 'text') {
                     data.content = el.textContent;
+                    data.color = el.dataset.color || 'coral';
                 }
 
                 elements.push(data);
@@ -1012,9 +1215,18 @@
                 if (data.type === 'polaroid') {
                     element = createPolaroid(data.x, data.y, data.rotation, data.caption || '', data.imageData);
                 } else if (data.type === 'arrow') {
-                    element = createArrow(data.x, data.y, data.rotation);
+                    element = createArrow(
+                        data.x,
+                        data.y,
+                        data.rotation,
+                        data.style || 'curved',
+                        data.color || 'coral',
+                        data.flipH || false,
+                        data.flipV || false,
+                        data.width || 150
+                    );
                 } else if (data.type === 'text') {
-                    element = createText(data.x, data.y, data.rotation, data.content || 'Text');
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral');
                 }
                 if (element) {
                     projectsSection.appendChild(element);
@@ -1033,9 +1245,18 @@
                 if (data.type === 'polaroid') {
                     element = createPolaroid(data.x, data.y, data.rotation, data.caption || '', data.imageData);
                 } else if (data.type === 'arrow') {
-                    element = createArrow(data.x, data.y, data.rotation);
+                    element = createArrow(
+                        data.x,
+                        data.y,
+                        data.rotation,
+                        data.style || 'curved',
+                        data.color || 'coral',
+                        data.flipH || false,
+                        data.flipV || false,
+                        data.width || 150
+                    );
                 } else if (data.type === 'text') {
-                    element = createText(data.x, data.y, data.rotation, data.content || 'Text');
+                    element = createText(data.x, data.y, data.rotation, data.content || 'Text', data.color || 'coral');
                 }
                 if (element) {
                     projectsSection.appendChild(element);
