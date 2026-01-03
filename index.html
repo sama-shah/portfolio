@@ -134,17 +134,22 @@
             animation: fadeSlideUp 0.8s ease forwards;
         }
 
-        .hero-title span:nth-child(1) { animation-delay: 0.4s; }
+        .hero-title span:nth-child(1) {
+            animation-delay: 0.4s;
+            z-index: 2;
+        }
         .hero-title span:nth-child(2) {
             animation-delay: 0.55s;
             margin-top: -0.05em;
+            z-index: 0;
+            position: relative;
         }
 
         .hero-image-container {
             position: absolute;
             right: 5%;
             top: 55%;
-            transform: translateY(-30%);
+            transform: translateY(-25%);
             width: 35%;
             max-width: 500px;
             height: 85vh;
