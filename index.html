@@ -405,7 +405,7 @@
         }
 
         .control-panel {
-            position: absolute;
+            position: fixed;
             background: var(--navy-light);
             border: 2px solid var(--coral);
             padding: 0.5rem;
@@ -413,7 +413,8 @@
             display: flex;
             gap: 0.5rem;
             flex-direction: column;
-            z-index: 1000;
+            z-index: 10002;
+            pointer-events: auto;
         }
 
         .control-panel button,
@@ -811,7 +812,9 @@
             saveElements();
             // Remove all selection and handles
             document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.rotate-handle, .delete-handle').forEach(el => el.remove());
+            document.querySelectorAll('.rotate-handle, .delete-handle, .resize-handle').forEach(el => el.remove());
+            // Remove all control panels from body
+            document.querySelectorAll('.control-panel').forEach(panel => panel.remove());
         }
 
         // Save & Exit button
@@ -997,8 +1000,14 @@
             // Deselect previous
             if (selectedElement) {
                 selectedElement.classList.remove('selected');
-                const oldHandles = selectedElement.querySelectorAll('.rotate-handle, .delete-handle, .resize-handle, .control-panel');
+                const oldHandles = selectedElement.querySelectorAll('.rotate-handle, .delete-handle, .resize-handle');
                 oldHandles.forEach(h => h.remove());
+
+                // Remove control panel from body if it exists
+                if (selectedElement.dataset.controlPanelId) {
+                    const panel = document.querySelector(`[data-element-id="${selectedElement.dataset.controlPanelId}"]`);
+                    if (panel) panel.remove();
+                }
             }
 
             selectedElement = element;
@@ -1029,13 +1038,17 @@
 
                 // Add control panel for arrows
                 const controlPanel = createArrowControlPanel(element);
-                element.appendChild(controlPanel);
+                controlPanel.dataset.elementId = 'control-' + Date.now();
+                element.dataset.controlPanelId = controlPanel.dataset.elementId;
+                document.body.appendChild(controlPanel);
             }
 
             // Add control panel for text
             if (element.classList.contains('text-element')) {
                 const controlPanel = createTextControlPanel(element);
-                element.appendChild(controlPanel);
+                controlPanel.dataset.elementId = 'control-' + Date.now();
+                element.dataset.controlPanelId = controlPanel.dataset.elementId;
+                document.body.appendChild(controlPanel);
             }
         }
 
@@ -1043,8 +1056,11 @@
         function createArrowControlPanel(arrow) {
             const panel = document.createElement('div');
             panel.className = 'control-panel';
-            panel.style.top = '-120px';
-            panel.style.left = '0';
+
+            // Position panel above the arrow using fixed positioning
+            const rect = arrow.getBoundingClientRect();
+            panel.style.top = (rect.top - 135) + 'px';
+            panel.style.left = rect.left + 'px';
 
             const styleSelect = document.createElement('select');
             styleSelect.innerHTML = `
@@ -1096,8 +1112,11 @@
         function createTextControlPanel(text) {
             const panel = document.createElement('div');
             panel.className = 'control-panel';
-            panel.style.top = '-60px';
-            panel.style.left = '0';
+
+            // Position panel above the text using fixed positioning
+            const rect = text.getBoundingClientRect();
+            panel.style.top = (rect.top - 65) + 'px';
+            panel.style.left = rect.left + 'px';
 
             const colorSelect = document.createElement('select');
             colorSelect.innerHTML = `
