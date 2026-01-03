@@ -3,1923 +3,669 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound Soup - Music Synthesizer</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sama Shah | Digital Diary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { margin: 0; font-family: 'Courier New', Monaco, monospace; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        :root {
+            --navy: #1a1a5e;
+            --coral: #e8967a;
+            --cream: #faf8f5;
+            --white: #ffffff;
+            --navy-light: #2a2a7e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Instrument Sans', sans-serif;
+            background: var(--navy);
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            z-index: 1000;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(26, 26, 94, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--coral);
+            letter-spacing: 0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--coral);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--coral);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6rem 3rem 3rem 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--coral);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 0.2s forwards;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(6rem, 15vw, 14rem);
+            font-weight: 300;
+            line-height: 0.85;
+            color: var(--coral);
+            letter-spacing: -0.02em;
+            position: relative;
+        }
+
+        .hero-title span {
+            display: block;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+        }
+
+        .hero-title span:nth-child(1) { animation-delay: 0.4s; }
+        .hero-title span:nth-child(2) { animation-delay: 0.55s; }
+
+        .hero-image-container {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-image-bg {
+            position: absolute;
+            top: 25%;
+            right: 0;
+            width: 100%;
+            height: 75%;
+            background: var(--white);
+            opacity: 0;
+            animation: slideIn 1s ease 0.6s forwards;
+        }
+
+        .hero-image {
+            position: relative;
+            z-index: 2;
+            width: 85%;
+            max-width: 550px;
+            height: auto;
+            object-fit: cover;
+            object-position: top;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 10vw, 10rem);
+            font-weight: 300;
+            color: var(--coral);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .floating-text.left {
+            bottom: 5%;
+            left: -5%;
+            transform: rotate(-90deg);
+            transform-origin: left bottom;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--cream);
+            color: var(--navy);
+            padding: 8rem 3rem;
+            position: relative;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 6rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-label {
+            font-family: 'Instrument Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--coral);
+            margin-bottom: 2rem;
+        }
+
+        .about-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(26, 26, 94, 0.8);
+            max-width: 600px;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .skill-tag {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--navy);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: var(--navy);
+            color: var(--cream);
+        }
+
+        /* Projects Section */
+        .projects {
+            background: var(--navy);
+            padding: 8rem 3rem;
+        }
+
+        .projects-header {
+            max-width: 1400px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 300;
+            color: var(--coral);
+            line-height: 1;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            position: relative;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--navy-light);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(26, 26, 94, 0.9), transparent 60%);
+            z-index: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 0.7;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            z-index: 2;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover .project-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .project-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--coral);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--cream);
+        }
+
+        .project-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--coral);
+            opacity: 0.3;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--coral);
+            color: var(--navy);
+            padding: 8rem 3rem;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .contact-text {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        .contact-email {
+            display: inline-block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            text-decoration: none;
+            border-bottom: 2px solid var(--navy);
+            padding-bottom: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-email:hover {
+            border-color: transparent;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .social-links a {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--navy);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .social-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--navy);
+            transition: width 0.3s ease;
+        }
+
+        .social-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--coral);
+            padding: 2rem 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .hero-content {
+                padding: 8rem 2rem 4rem;
+            }
+
+            .hero-image-container {
+                height: 60vh;
+            }
+
+            .hero-image-bg {
+                top: 0;
+                height: 100%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+
+            .section-title {
+                font-size: 3rem;
+            }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect, useRef, useCallback } = React;
-        
+    <nav id="navbar">
+        <div class="logo">Digital Diary</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">All Projects</a></li>
+        </ul>
+    </nav>
 
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2 class="hero-name">Sama Shah</h2>
+            <h1 class="hero-title">
+                <span>PORT</span>
+                <span>FOLIO</span>
+            </h1>
+        </div>
+        <div class="hero-image-container">
+            <div class="hero-image-bg"></div>
+            <img src="headshot.jpg" alt="Sama Shah" class="hero-image">
+        </div>
+    </section>
 
+    <section class="about" id="about">
+        <div class="about-grid">
+            <div>
+                <p class="about-label">About Me</p>
+                <h2 class="about-title">Creative mind with a passion for design</h2>
+            </div>
+            <div>
+                <div class="about-text">
+                    <p>I'm a multidisciplinary designer and creative director based in New York. With over 8 years of experience, I specialize in crafting meaningful brand experiences that connect with audiences.</p>
+                    <p>My work spans brand identity, digital design, art direction, and creative strategy. I believe in the power of thoughtful design to tell stories and create lasting impressions.</p>
+                </div>
+                <div class="skills-list">
+                    <span class="skill-tag">Brand Identity</span>
+                    <span class="skill-tag">Art Direction</span>
+                    <span class="skill-tag">Digital Design</span>
+                    <span class="skill-tag">Typography</span>
+                    <span class="skill-tag">Creative Strategy</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-// Chord definitions based on omnichord layout: Eb, Bb, F, C, G, D, A, E, B
-const CHORD_ROOTS = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B'];
+    <section class="projects" id="projects">
+        <div class="projects-header">
+            <h2 class="section-title">Selected Work</h2>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card reveal">
+                <div class="project-placeholder">01</div>
+                <div class="project-info">
+                    <p class="project-category">Brand Identity</p>
+                    <h3 class="project-title">Lumina Cosmetics</h3>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-placeholder">02</div>
+                <div class="project-info">
+                    <p class="project-category">Digital Design</p>
+                    <h3 class="project-title">Archi Studio</h3>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-placeholder">03</div>
+                <div class="project-info">
+                    <p class="project-category">Art Direction</p>
+                    <h3 class="project-title">Vogue Editorial</h3>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-placeholder">04</div>
+                <div class="project-info">
+                    <p class="project-category">Creative Strategy</p>
+                    <h3 class="project-title">Bloom & Wild</h3>
+                </div>
+            </div>
+        </div>
+    </section>
 
-// Note frequencies for building chords
-const NOTE_FREQS = {
-  'C': 130.81, 'C#': 138.59, 'Db': 138.59, 'D': 146.83, 'D#': 155.56, 'Eb': 155.56,
-  'E': 164.81, 'F': 174.61, 'F#': 185.00, 'Gb': 185.00, 'G': 196.00, 'G#': 207.65,
-  'Ab': 207.65, 'A': 220.00, 'A#': 233.08, 'Bb': 233.08, 'B': 246.94
-};
+    <section class="contact" id="contact">
+        <h2 class="contact-title">Let's create together</h2>
+        <p class="contact-text">I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
+        <a href="mailto:hello@samashah.com" class="contact-email">hello@samashah.com</a>
+        <div class="social-links">
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Behance</a>
+            <a href="#">Dribbble</a>
+        </div>
+    </section>
 
-// Get chord notes based on root and type
-const getChordNotes = (root, type) => {
-  const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  let actualRoot = root;
-  if (root === 'Eb') actualRoot = 'D#';
-  if (root === 'Bb') actualRoot = 'A#';
-  
-  const idx = notes.indexOf(actualRoot);
-  
-  let intervals;
-  if (type === 'major') intervals = [0, 4, 7];
-  else if (type === 'minor') intervals = [0, 3, 7];
-  else intervals = [0, 4, 7, 10];
-  
-  return intervals.map(i => notes[(idx + i) % 12]);
-};
+    <footer>
+        <p>© 2026 Sama Shah. All rights reserved.</p>
+    </footer>
 
-// Key mappings
-const MAJOR_KEYS = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o'];
-const MINOR_KEYS = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
-const SEVENTH_KEYS = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'];
-const HARP_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
-
-// Piano keys - one octave (C to B)
-const PIANO_KEYS = [
-  { note: 'C', key: 'z', isBlack: false },
-  { note: 'C#', key: 's', isBlack: true },
-  { note: 'D', key: 'x', isBlack: false },
-  { note: 'D#', key: 'd', isBlack: true },
-  { note: 'E', key: 'c', isBlack: false },
-  { note: 'F', key: 'v', isBlack: false },
-  { note: 'F#', key: 'g', isBlack: true },
-  { note: 'G', key: 'b', isBlack: false },
-  { note: 'G#', key: 'h', isBlack: true },
-  { note: 'A', key: 'n', isBlack: false },
-  { note: 'A#', key: 'j', isBlack: true },
-  { note: 'B', key: 'm', isBlack: false }
-];
-
-// Effects
-const EFFECT_SOUNDS = [
-  { name: 'SWEEP', color: '#7fff00' },
-  { name: 'LASER', color: '#00f5ff' },
-  { name: 'DROP', color: '#ff0080' },
-  { name: 'KICK', color: '#7fff00' },
-  { name: 'SNARE', color: '#00f5ff' },
-  { name: 'HAT', color: '#ff0080' },
-  { name: 'CLAP', color: '#7fff00' }
-];
-
-function SoundSoup() {
-  const [isAudioReady, setIsAudioReady] = useState(false);
-  const [currentChord, setCurrentChord] = useState({ root: 'C', type: 'major', notes: ['C', 'E', 'G'] });
-  const [activeKeys, setActiveKeys] = useState(new Set());
-  const [volume, setVolume] = useState(-10);
-  const [chordMode, setChordMode] = useState('omnichord');
-  const [pianoMode, setPianoMode] = useState('piano');
-  const [pianoOctave, setPianoOctave] = useState(0);
-  const [metronomeOn, setMetronomeOn] = useState(false);
-  const [bpm, setBpm] = useState(120);
-  const [activeDrums, setActiveDrums] = useState(new Set());
-  const [fxPowered, setFxPowered] = useState(false);
-  const [pianoPowered, setPianoPowered] = useState(false);
-  const [audioLevels, setAudioLevels] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
-  const [chordVolume, setChordVolume] = useState(0); // Chord matrix volume in dB
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [notes, setNotes] = useState('');
-
-// FX key mappings when powered on
-const FX_KEYS = ['q', 'w', 'e', 'r', 't', 'a', 's'];
-  
-  // Recording state
-  const [isRecording, setIsRecording] = useState(false);
-  const [tracks, setTracks] = useState([]);
-  const [playingTracks, setPlayingTracks] = useState(new Set());
-  const [trackPositions, setTrackPositions] = useState({});
-  const [trackVolumes, setTrackVolumes] = useState({});
-  const [allPlaying, setAllPlaying] = useState(false);
-
-  // Voice recording state
-  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
-  const [micPermission, setMicPermission] = useState(null);
-
-  const omnichordSynthRef = useRef(null);
-  const harpSynthRef = useRef(null);
-  const pianoSynthRef = useRef(null);
-  const houseSynthRef = useRef(null);
-  const trapSynthRef = useRef(null);
-  const dropSynthRef = useRef(null);
-  const metronomeRef = useRef(null);
-  const volumeRef = useRef(null);
-  const drumSynthsRef = useRef({});
-  const recordingRef = useRef({ startTime: 0, events: [] });
-  const playbackIntervalsRef = useRef({});
-
-  // Voice recording refs
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const voiceRecordingRef = useRef({ startTime: 0 });
-  const voicePlayerRef = useRef(null);
-
-  // Trigger visualizer animation - smoother by adding to existing levels
-  const triggerVisualizer = useCallback(() => {
-    // Add random energy to each bar instead of resetting
-    setAudioLevels(prev => prev.map(l => Math.min(1, l + Math.random() * 0.4 + 0.2)));
-  }, []);
-
-  // Continuous decay effect for smooth animation
-  useEffect(() => {
-    const decayInterval = setInterval(() => {
-      setAudioLevels(prev => {
-        const hasActivity = prev.some(l => l > 0.05);
-        if (!hasActivity) return prev;
-        return prev.map(l => Math.max(0, l * 0.92));
-      });
-    }, 50);
-    return () => clearInterval(decayInterval);
-  }, []);
-
-  const initAudio = async () => {
-    if (isAudioReady) return;
-    await Tone.start();
-    
-    volumeRef.current = new Tone.Volume(volume).toDestination();
-    
-    // Omnichord synth chain: Synth -> Filter -> Compressor -> Volume (no chorus to avoid wavering)
-    const omnichordVolume = new Tone.Volume(-6).connect(volumeRef.current);
-    const omnichordCompressor = new Tone.Compressor({ threshold: -20, ratio: 4, attack: 0.1, release: 0.2 }).connect(omnichordVolume);
-    const omnichordFilter = new Tone.Filter({ frequency: 1400, type: 'lowpass', rolloff: -12 }).connect(omnichordCompressor);
-    const omnichordReverb = new Tone.Reverb({ decay: 1.2, wet: 0.15 }).connect(omnichordFilter);
-
-    omnichordSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.15, decay: 0.3, sustain: 0.7, release: 0.8 }
-    }).connect(omnichordReverb);
-    
-    // Create reverb for strumplate sounds with reduced volume
-    const strumplateVolume = new Tone.Volume(-4).connect(volumeRef.current);
-    const strumplateReverb = new Tone.Reverb({ decay: 2.5, wet: 0.3 }).connect(strumplateVolume);
-    
-    harpSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.0001, decay: 0.8, sustain: 0.5, release: 3.5 }
-    }).connect(strumplateReverb);
-
-    // Piano mode - Classic piano sound with harmonics
-    const pianoReverb = new Tone.Reverb({ decay: 2.5, wet: 0.15 }).connect(strumplateVolume);
-    pianoSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: {
-        type: 'fatsawtooth',
-        count: 3,
-        spread: 30
-      },
-      envelope: {
-        attack: 0.005,
-        decay: 0.3,
-        sustain: 0.1,
-        release: 2.5
-      }
-    }).connect(pianoReverb);
-
-    // House mode - DJ scratch/vinyl effect (short, punchy with pitch bend)
-    const houseFilter = new Tone.Filter(3000, 'lowpass').connect(strumplateReverb);
-    const housePitchShift = new Tone.PitchShift(0).connect(houseFilter);
-    houseSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'sawtooth' },
-      envelope: { attack: 0.0001, decay: 0.15, sustain: 0.15, release: 0.2 }
-    }).connect(housePitchShift);
-
-    // Trap mode - Deep bass sound
-    const trapFilter = new Tone.Filter(200, 'lowpass').connect(strumplateReverb);
-    trapSynthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'sine' },
-      envelope: { attack: 0.0001, decay: 0.3, sustain: 0.8, release: 1.5 }
-    }).connect(trapFilter);
-
-    // Drop mode - Heavy bass drop sound
-    dropSynthRef.current = new Tone.PolySynth(Tone.MembraneSynth, {
-      pitchDecay: 0.5,
-      octaves: 8,
-      envelope: { attack: 0.001, decay: 0.8, sustain: 0, release: 0.5 }
-    }).connect(strumplateReverb);
-
-    metronomeRef.current = new Tone.MembraneSynth({
-      pitchDecay: 0.01,
-      envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
-    }).connect(new Tone.Volume(-15).connect(volumeRef.current));
-    
-    // Effect Sound synths
-    const noiseFilter = new Tone.Filter(100, 'lowpass').connect(volumeRef.current);
-    const noiseEnv = new Tone.AmplitudeEnvelope({ attack: 2, decay: 0.1, sustain: 1, release: 0.5 }).connect(noiseFilter);
-    const noiseSynth = new Tone.Noise('white').connect(noiseEnv);
-    noiseSynth.start();
-
-    drumSynthsRef.current = {
-      RISER: { type: 'riser', filter: noiseFilter, env: noiseEnv },
-      SWEEP: { type: 'sweep', filter: new Tone.Filter(200, 'lowpass').connect(volumeRef.current), noise: new Tone.Noise('pink'), env: new Tone.AmplitudeEnvelope({ attack: 0.5, decay: 0.5, sustain: 0, release: 0.3 }) },
-      LASER: new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 } }).connect(volumeRef.current),
-      DROP: new Tone.MembraneSynth({ pitchDecay: 0.5, octaves: 8, envelope: { attack: 0.001, decay: 0.8, sustain: 0, release: 0.5 } }).connect(volumeRef.current),
-      KICK: new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 6 }).connect(volumeRef.current),
-      SNARE: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 } }).connect(volumeRef.current),
-      HAT: new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.01 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).connect(new Tone.Volume(-10).connect(volumeRef.current)),
-      CLAP: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).connect(volumeRef.current)
-    };
-    
-    // Setup sweep synth
-    drumSynthsRef.current.SWEEP.noise.connect(drumSynthsRef.current.SWEEP.env);
-    drumSynthsRef.current.SWEEP.env.connect(drumSynthsRef.current.SWEEP.filter);
-    drumSynthsRef.current.SWEEP.noise.start();
-    
-    setIsAudioReady(true);
-  };
-
-  const recordEvent = (type, data) => {
-    if (isRecording) {
-      const time = Date.now() - recordingRef.current.startTime;
-      recordingRef.current.events.push({ time, type, data });
-    }
-  };
-
-  const playChord = useCallback(async (root, type) => {
-    if (!isAudioReady) await initAudio();
-
-    const notes = getChordNotes(root, type);
-    // Use lower octave multiplier for cleaner sound
-    const freqs = notes.map((note) => {
-      const baseFreq = NOTE_FREQS[note] || NOTE_FREQS[note.replace('#', 'b')];
-      return baseFreq; // Keep at base octave for cleaner sound
-    });
-
-    // Select synth based on chord mode
-    let synth;
-    if (chordMode === 'omnichord') synth = omnichordSynthRef.current;
-    else if (chordMode === 'harp') synth = harpSynthRef.current;
-    else if (chordMode === 'house') synth = houseSynthRef.current;
-    else if (chordMode === 'trap') synth = trapSynthRef.current;
-    else synth = dropSynthRef.current;
-
-    if (!synth) return;
-
-    // Apply chord volume
-    const volumeMultiplier = Math.pow(10, chordVolume / 20);
-    synth.triggerAttack(freqs, Tone.now(), volumeMultiplier);
-    setCurrentChord({ root, type, notes });
-    recordEvent('chord', { root, type, freqs, chordMode });
-    triggerVisualizer();
-  }, [isAudioReady, isRecording, triggerVisualizer, chordMode, chordVolume]);
-
-  const releaseChord = useCallback(() => {
-    if (omnichordSynthRef.current) omnichordSynthRef.current.releaseAll();
-    if (harpSynthRef.current) harpSynthRef.current.releaseAll();
-    if (houseSynthRef.current) houseSynthRef.current.releaseAll();
-    if (trapSynthRef.current) trapSynthRef.current.releaseAll();
-    if (dropSynthRef.current) dropSynthRef.current.releaseAll();
-    recordEvent('chordRelease', {});
-  }, [isRecording]);
-
-  const playHarpNote = useCallback(async (index) => {
-    if (!isAudioReady) await initAudio();
-    if (!currentChord.notes.length) return;
-
-    const reorderedNotes = currentChord.notes.length === 4
-      ? [currentChord.notes[1], currentChord.notes[2], currentChord.notes[3], currentChord.notes[0]] // 7th chord: 3rd, 5th, 7th, root
-      : [currentChord.notes[1], currentChord.notes[2], currentChord.notes[0]]; // Major/minor: 3rd, 5th, root
-
-    const noteIndex = index % reorderedNotes.length;
-    const octaveShift = Math.floor(index / reorderedNotes.length);
-    const note = reorderedNotes[noteIndex];
-    const baseFreq = NOTE_FREQS[note] || NOTE_FREQS[note.replace('#', 'b')] || 220;
-
-    // Harp mode - start at octave 3 and go up
-    const freq = baseFreq * Math.pow(2, octaveShift + 1);
-
-    // Attack only - will release when key is released
-    if (harpSynthRef.current) harpSynthRef.current.triggerAttack(freq);
-    recordEvent('harp', { freq });
-    triggerVisualizer();
-  }, [currentChord, isAudioReady, isRecording, triggerVisualizer]);
-
-  const releaseHarpNote = useCallback(() => {
-    if (harpSynthRef.current) harpSynthRef.current.releaseAll();
-    recordEvent('harpRelease', {});
-  }, [isRecording]);
-
-  const playPianoNote = useCallback(async (note) => {
-    if (!isAudioReady) await initAudio();
-
-    const baseFreq = NOTE_FREQS[note] || NOTE_FREQS[note.replace('#', 'b')] || 220;
-    const freq = baseFreq * Math.pow(2, pianoOctave);
-
-    let synth;
-    if (pianoMode === 'piano') synth = pianoSynthRef.current;
-    else if (pianoMode === 'omnichord') synth = omnichordSynthRef.current;
-    else if (pianoMode === 'house') synth = houseSynthRef.current;
-    else if (pianoMode === 'trap') synth = trapSynthRef.current;
-    else synth = dropSynthRef.current;
-
-    // Drop mode uses one-shot trigger like the effect, but with piano pitch
-    if (pianoMode === 'drop') {
-      if (synth) synth.triggerAttackRelease(freq, '2n');
-    } else {
-      if (synth) synth.triggerAttack(freq);
-    }
-    recordEvent('piano', { note, freq, pianoMode, pianoOctave });
-    triggerVisualizer();
-  }, [pianoMode, pianoOctave, isAudioReady, isRecording, triggerVisualizer]);
-
-  const releasePianoNote = useCallback(() => {
-    if (pianoSynthRef.current) pianoSynthRef.current.releaseAll();
-    recordEvent('pianoRelease', {});
-    if (omnichordSynthRef.current) omnichordSynthRef.current.releaseAll();
-    if (houseSynthRef.current) houseSynthRef.current.releaseAll();
-    if (trapSynthRef.current) trapSynthRef.current.releaseAll();
-    if (dropSynthRef.current) dropSynthRef.current.releaseAll();
-  }, [isRecording]);
-
-  const playDrum = async (drumName) => {
-    if (!isAudioReady) await initAudio();
-    const synth = drumSynthsRef.current[drumName];
-    if (!synth) return;
-
-    setActiveDrums(prev => new Set([...prev, drumName]));
-    setTimeout(() => setActiveDrums(prev => {
-      const next = new Set(prev);
-      next.delete(drumName);
-      return next;
-    }), drumName === 'RISER' ? 2000 : 150);
-
-    if (drumName === 'RISER') {
-      // White noise riser with filter sweep
-      synth.filter.frequency.cancelScheduledValues(Tone.now());
-      synth.filter.frequency.setValueAtTime(100, Tone.now());
-      synth.filter.frequency.exponentialRampToValueAtTime(8000, Tone.now() + 2);
-      synth.env.triggerAttackRelease(2);
-    } else if (drumName === 'SWEEP') {
-      synth.filter.frequency.cancelScheduledValues(Tone.now());
-      synth.filter.frequency.setValueAtTime(5000, Tone.now());
-      synth.filter.frequency.exponentialRampToValueAtTime(100, Tone.now() + 0.8);
-      synth.env.triggerAttackRelease(0.8);
-    } else if (drumName === 'LASER') {
-      synth.frequency.cancelScheduledValues(Tone.now());
-      synth.frequency.setValueAtTime(2000, Tone.now());
-      synth.frequency.exponentialRampToValueAtTime(100, Tone.now() + 0.3);
-      synth.triggerAttackRelease(Tone.Frequency('C6').toFrequency(), '8n');
-    } else if (drumName === 'DROP') {
-      const baseNote = Tone.Frequency('C1').toFrequency();
-      synth.triggerAttackRelease(baseNote, '2n');
-    } else if (drumName === 'KICK') {
-      synth.triggerAttackRelease(Tone.Frequency('C1').toFrequency(), '8n');
-    } else if (drumName === 'SNARE' || drumName === 'CLAP') {
-      synth.triggerAttackRelease('8n');
-    } else if (drumName === 'HAT') {
-      synth.triggerAttackRelease('32n');
-    }
-    recordEvent('drum', { drumName });
-    triggerVisualizer();
-  };
-
-  // Recording functions
-  const startRecording = async () => {
-    if (!isAudioReady) await initAudio();
-    recordingRef.current = { startTime: Date.now(), events: [] };
-    setIsRecording(true);
-  };
-
-  const stopRecording = () => {
-    setIsRecording(false);
-    if (recordingRef.current.events.length > 0) {
-      const duration = Date.now() - recordingRef.current.startTime;
-      const newTrack = {
-        id: Date.now(),
-        events: [...recordingRef.current.events],
-        duration,
-        name: `Track ${tracks.length + 1}`
-      };
-      setTracks(prev => [...prev, newTrack]);
-      setTrackPositions(prev => ({ ...prev, [newTrack.id]: 0 }));
-      setTrackVolumes(prev => ({ ...prev, [newTrack.id]: 0 })); // 0dB = 100% volume
-    }
-  };
-
-  // Play all tracks simultaneously
-  const playAllTracks = () => {
-    if (tracks.length === 0) return;
-    setAllPlaying(true);
-
-    // Reset all track positions to 0
-    const resetPositions = {};
-    tracks.forEach(track => {
-      resetPositions[track.id] = 0;
-    });
-    setTrackPositions(resetPositions);
-
-    // Start all tracks (both beat and voice)
-    tracks.forEach(track => {
-      if (!playingTracks.has(track.id)) {
-        if (track.type === 'voice') {
-          playVoiceTrack(track, true);
-        } else {
-          playTrack(track, true);
-        }
-      }
-    });
-  };
-
-  // Stop all tracks
-  const stopAllTracks = () => {
-    setAllPlaying(false);
-    setIsRecording(false);
-    tracks.forEach(track => {
-      if (track.type === 'voice') {
-        pauseVoiceTrack(track.id);
-      } else {
-        pauseTrack(track.id);
-      }
-    });
-  };
-
-  const playTrack = (track, fromPlayAll = false) => {
-    if (playingTracks.has(track.id)) return;
-
-    const newPlayingTracks = new Set(playingTracks);
-    newPlayingTracks.add(track.id);
-    setPlayingTracks(newPlayingTracks);
-
-    const playEvents = (startPosition = 0) => {
-      const startTime = Date.now();
-      let currentEventIndex = track.events.findIndex(e => e.time >= startPosition);
-      if (currentEventIndex === -1) currentEventIndex = 0;
-      let lastLoopTime = 0;
-
-      const interval = setInterval(() => {
-        const elapsed = (Date.now() - startTime) + startPosition;
-        const loopedElapsed = elapsed % track.duration;
-        setTrackPositions(prev => ({ ...prev, [track.id]: loopedElapsed }));
-
-        // Get track volume (0dB default) - updated in real-time
-        const trackVol = trackVolumes[track.id] ?? 0;
-        const volumeMultiplier = Math.pow(10, trackVol / 20); // Convert dB to linear multiplier
-
-        // Detect loop restart - reset immediately and play events at start of loop
-        if (loopedElapsed < lastLoopTime) {
-          currentEventIndex = 0;
-          // Release all notes when looping to prevent hanging notes
-          omnichordSynthRef.current?.releaseAll();
-          harpSynthRef.current?.releaseAll();
-          houseSynthRef.current?.releaseAll();
-          trapSynthRef.current?.releaseAll();
-          dropSynthRef.current?.releaseAll();
-          pianoSynthRef.current?.releaseAll();
-        }
-        lastLoopTime = loopedElapsed;
-
-        while (currentEventIndex < track.events.length && track.events[currentEventIndex].time <= loopedElapsed) {
-          const event = track.events[currentEventIndex];
-
-          if (event.type === 'chord') {
-            const chordSynth = event.data.chordMode === 'omnichord' ? omnichordSynthRef.current :
-                               event.data.chordMode === 'harp' ? harpSynthRef.current :
-                               event.data.chordMode === 'house' ? houseSynthRef.current :
-                               event.data.chordMode === 'trap' ? trapSynthRef.current :
-                               event.data.chordMode === 'drop' ? dropSynthRef.current : omnichordSynthRef.current;
-            chordSynth?.triggerAttack(event.data.freqs, Tone.now(), volumeMultiplier);
-          } else if (event.type === 'chordRelease') {
-            omnichordSynthRef.current?.releaseAll();
-            harpSynthRef.current?.releaseAll();
-            houseSynthRef.current?.releaseAll();
-            trapSynthRef.current?.releaseAll();
-            dropSynthRef.current?.releaseAll();
-          } else if (event.type === 'harp') {
-            const synth = event.data.strumplateMode === 'omnichord' ? omnichordSynthRef.current :
-                         event.data.strumplateMode === 'harp' ? harpSynthRef.current :
-                         event.data.strumplateMode === 'house' ? houseSynthRef.current :
-                         event.data.strumplateMode === 'trap' ? trapSynthRef.current :
-                         event.data.strumplateMode === 'drop' ? dropSynthRef.current : harpSynthRef.current;
-            synth?.triggerAttack(event.data.freq, Tone.now(), volumeMultiplier);
-          } else if (event.type === 'harpRelease') {
-            harpSynthRef.current?.releaseAll();
-          } else if (event.type === 'piano') {
-            const pianoSynth = event.data.pianoMode === 'piano' ? pianoSynthRef.current :
-                              event.data.pianoMode === 'omnichord' ? omnichordSynthRef.current :
-                              event.data.pianoMode === 'house' ? houseSynthRef.current :
-                              event.data.pianoMode === 'trap' ? trapSynthRef.current :
-                              event.data.pianoMode === 'drop' ? dropSynthRef.current : pianoSynthRef.current;
-            if (event.data.pianoMode === 'drop') {
-              pianoSynth?.triggerAttackRelease(event.data.freq, '2n', Tone.now(), volumeMultiplier);
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
             } else {
-              pianoSynth?.triggerAttack(event.data.freq, Tone.now(), volumeMultiplier);
+                navbar.classList.remove('scrolled');
             }
-          } else if (event.type === 'pianoRelease') {
-            pianoSynthRef.current?.releaseAll();
-            omnichordSynthRef.current?.releaseAll();
-            houseSynthRef.current?.releaseAll();
-            trapSynthRef.current?.releaseAll();
-            dropSynthRef.current?.releaseAll();
-          } else if (event.type === 'drum') {
-            const drumSynth = drumSynthsRef.current[event.data.drumName];
-            if (drumSynth) {
-              const drumName = event.data.drumName;
-              if (drumName === 'RISER') {
-                drumSynth.filter.frequency.cancelScheduledValues(Tone.now());
-                drumSynth.filter.frequency.setValueAtTime(100, Tone.now());
-                drumSynth.filter.frequency.exponentialRampToValueAtTime(8000, Tone.now() + 2);
-                drumSynth.env.triggerAttackRelease(2);
-              } else if (drumName === 'SWEEP') {
-                drumSynth.filter.frequency.cancelScheduledValues(Tone.now());
-                drumSynth.filter.frequency.setValueAtTime(5000, Tone.now());
-                drumSynth.filter.frequency.exponentialRampToValueAtTime(100, Tone.now() + 0.8);
-                drumSynth.env.triggerAttackRelease(0.8);
-              } else if (drumName === 'LASER') {
-                drumSynth.frequency.cancelScheduledValues(Tone.now());
-                drumSynth.frequency.setValueAtTime(2000, Tone.now());
-                drumSynth.frequency.exponentialRampToValueAtTime(100, Tone.now() + 0.3);
-                drumSynth.triggerAttackRelease('C6', '8n', Tone.now(), volumeMultiplier);
-              } else if (drumName === 'DROP') {
-                const baseNote = Tone.Frequency('C1').toFrequency() * (event.data.pitchMultiplier || 1);
-                drumSynth.triggerAttackRelease(baseNote, '2n', Tone.now(), volumeMultiplier);
-              } else if (drumName === 'KICK') {
-                drumSynth.triggerAttackRelease('C1', '8n', Tone.now(), volumeMultiplier);
-              } else if (drumName === 'SNARE' || drumName === 'CLAP') {
-                drumSynth.triggerAttackRelease('8n', Tone.now(), volumeMultiplier);
-              } else if (drumName === 'HAT') {
-                drumSynth.triggerAttackRelease('32n', Tone.now(), volumeMultiplier);
-              }
-            }
-          }
-          currentEventIndex++;
-        }
-      }, 5); // 5ms interval for precise timing and immediate loop restart
+        });
 
-      playbackIntervalsRef.current[track.id] = interval;
-      return interval;
-    };
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                const revealPoint = 150;
 
-    playEvents(fromPlayAll ? 0 : (trackPositions[track.id] || 0));
-  };
-
-  const pauseTrack = (trackId) => {
-    clearInterval(playbackIntervalsRef.current[trackId]);
-    setPlayingTracks(prev => {
-      const next = new Set(prev);
-      next.delete(trackId);
-      return next;
-    });
-  };
-
-  const seekTrack = (trackId, direction) => {
-    const track = tracks.find(t => t.id === trackId);
-    if (!track) return;
-    
-    setTrackPositions(prev => {
-      const current = prev[trackId] || 0;
-      const seekAmount = track.duration * 0.1;
-      let newPos = direction === 'forward' ? current + seekAmount : current - seekAmount;
-      newPos = Math.max(0, Math.min(track.duration, newPos));
-      return { ...prev, [trackId]: newPos };
-    });
-  };
-
-  const deleteTrack = (trackId) => {
-    pauseTrack(trackId);
-    setTracks(prev => prev.filter(t => t.id !== trackId));
-    setTrackPositions(prev => {
-      const next = { ...prev };
-      delete next[trackId];
-      return next;
-    });
-  };
-
-  // Voice recording functions
-  const startVoiceRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setMicPermission('granted');
-
-      audioChunksRef.current = [];
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const duration = Date.now() - voiceRecordingRef.current.startTime;
-
-        const newTrack = {
-          id: Date.now(),
-          type: 'voice',
-          audioUrl,
-          audioBlob,
-          duration,
-          name: `Voice ${tracks.filter(t => t.type === 'voice').length + 1}`
+                if (elementTop < windowHeight - revealPoint) {
+                    el.classList.add('visible');
+                }
+            });
         };
 
-        setTracks(prev => [...prev, newTrack]);
-        setTrackPositions(prev => ({ ...prev, [newTrack.id]: 0 }));
-        setTrackVolumes(prev => ({ ...prev, [newTrack.id]: 0 })); // 0dB = 100% volume
-
-        // Stop all tracks from the stream
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      voiceRecordingRef.current = { startTime: Date.now() };
-      mediaRecorder.start();
-      setIsVoiceRecording(true);
-    } catch (err) {
-      console.error('Error accessing microphone:', err);
-      setMicPermission('denied');
-    }
-  };
-
-  const stopVoiceRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop();
-      setIsVoiceRecording(false);
-    }
-  };
-
-  // Play voice track
-  const playVoiceTrack = (track, fromPlayAll = false) => {
-    if (playingTracks.has(track.id)) return;
-
-    const newPlayingTracks = new Set(playingTracks);
-    newPlayingTracks.add(track.id);
-    setPlayingTracks(newPlayingTracks);
-
-    const audio = new Audio(track.audioUrl);
-    const trackVol = trackVolumes[track.id] ?? 0; // Default to 0dB if not set
-    audio.volume = Math.pow(10, (volume + trackVol) / 20); // Combine master + track volume
-    voicePlayerRef.current = { [track.id]: audio };
-
-    const startPosition = fromPlayAll ? 0 : (trackPositions[track.id] || 0);
-    audio.currentTime = startPosition / 1000;
-
-    // Update position
-    const interval = setInterval(() => {
-      const currentPos = audio.currentTime * 1000;
-      setTrackPositions(prev => ({ ...prev, [track.id]: currentPos }));
-
-      // Loop when finished
-      if (audio.ended) {
-        audio.currentTime = 0;
-        audio.play();
-      }
-    }, 10);
-
-    playbackIntervalsRef.current[track.id] = interval;
-    audio.play();
-  };
-
-  const pauseVoiceTrack = (trackId) => {
-    if (voicePlayerRef.current && voicePlayerRef.current[trackId]) {
-      voicePlayerRef.current[trackId].pause();
-      delete voicePlayerRef.current[trackId];
-    }
-    clearInterval(playbackIntervalsRef.current[trackId]);
-    setPlayingTracks(prev => {
-      const next = new Set(prev);
-      next.delete(trackId);
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      const key = e.key.toLowerCase();
-
-      // Close tutorial with ESC
-      if (e.key === 'Escape' && showTutorial) {
-        setShowTutorial(false);
-        return;
-      }
-
-      // Handle octave control with arrow keys (allow repeat)
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setPianoOctave(prev => Math.min(3, prev + 1));
-        return;
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setPianoOctave(prev => Math.max(-3, prev - 1));
-        return;
-      }
-
-      // Handle FX keys when powered on
-      if (fxPowered) {
-        const fxIdx = FX_KEYS.indexOf(key);
-        if (fxIdx !== -1 && !e.repeat) {
-          playDrum(EFFECT_SOUNDS[fxIdx].name);
-          return;
-        }
-      }
-
-      // Handle harp strumplate keys (allow repeats for fast playing)
-      const harpIdx = HARP_KEYS.indexOf(key);
-      if (harpIdx !== -1) {
-        setActiveKeys(prev => new Set([...prev, key]));
-        playHarpNote(harpIdx);
-        return;
-      }
-
-      if (e.repeat) return;
-
-      // When piano is powered, check for piano keys and play them
-      if (pianoPowered && !fxPowered) {
-        const pianoKey = PIANO_KEYS.find(pk => pk.key === key);
-        if (pianoKey) {
-          setActiveKeys(prev => new Set([...prev, key]));
-          playPianoNote(pianoKey.note);
-          return;
-        }
-      }
-
-      // Process chord keys when piano is OFF (regardless of FX state)
-      // When piano is ON, chord matrix doesn't work at all
-      if (!pianoPowered) {
-        const majorIdx = MAJOR_KEYS.indexOf(key);
-        if (majorIdx !== -1) {
-          setActiveKeys(prev => new Set([...prev, key]));
-          playChord(CHORD_ROOTS[majorIdx], 'major');
-          return;
-        }
-
-        const minorIdx = MINOR_KEYS.indexOf(key);
-        if (minorIdx !== -1) {
-          setActiveKeys(prev => new Set([...prev, key]));
-          playChord(CHORD_ROOTS[minorIdx], 'minor');
-          return;
-        }
-
-        const seventhIdx = SEVENTH_KEYS.indexOf(key);
-        if (seventhIdx !== -1) {
-          setActiveKeys(prev => new Set([...prev, key]));
-          playChord(CHORD_ROOTS[seventhIdx], '7th');
-          return;
-        }
-      }
-    };
-    
-    const handleKeyUp = (e) => {
-      const key = e.key.toLowerCase();
-
-      // Check if this was a piano key
-      const isPianoKey = PIANO_KEYS.some(pk => pk.key === key);
-      if (isPianoKey) {
-        releasePianoNote();
-      }
-
-      // Check if this was a chord key
-      const isMajorKey = MAJOR_KEYS.includes(key);
-      const isMinorKey = MINOR_KEYS.includes(key);
-      const isSeventhKey = SEVENTH_KEYS.includes(key);
-
-      if (isMajorKey || isMinorKey || isSeventhKey) {
-        releaseChord();
-      }
-
-      // Check if this was a harp key and release
-      const isHarpKey = HARP_KEYS.includes(key);
-      if (isHarpKey) {
-        releaseHarpNote();
-      }
-
-      setActiveKeys(prev => {
-        const next = new Set(prev);
-        next.delete(key);
-        return next;
-      });
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [playChord, playHarpNote, releaseChord, releaseHarpNote, playPianoNote, releasePianoNote, fxPowered, pianoPowered, playDrum, showTutorial]);
-
-  useEffect(() => {
-    if (volumeRef.current) {
-      volumeRef.current.volume.value = volume;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (!isAudioReady) return;
-    
-    Tone.Transport.bpm.value = bpm;
-    
-    if (metronomeOn) {
-      const loop = new Tone.Loop((time) => {
-        metronomeRef.current?.triggerAttackRelease('C2', '16n', time);
-      }, '4n').start(0);
-      Tone.Transport.start();
-      return () => {
-        loop.dispose();
-        Tone.Transport.stop();
-      };
-    } else {
-      Tone.Transport.stop();
-    }
-  }, [metronomeOn, bpm, isAudioReady]);
-
-  const isKeyActive = (key) => activeKeys.has(key.toLowerCase());
-
-  const colors = {
-    bg: '#0a0e14',
-    panel: '#0d1117',
-    border: '#1a2332',
-    cyan: '#00f5ff',
-    magenta: '#ff0080',
-    lime: '#7fff00',
-    text: '#8892a0',
-    textBright: '#c5d1de'
-  };
-
-  const formatTime = (ms) => {
-    const seconds = Math.floor(ms / 1000);
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  return (
-    <div className="min-h-screen p-6" style={{
-      background: `linear-gradient(180deg, ${colors.bg} 0%, #060a0f 100%)`,
-      fontFamily: "'Courier New', 'Monaco', monospace"
-    }}>
-      {/* Scanline overlay */}
-      <div className="fixed inset-0 pointer-events-none opacity-5" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,255,0.03) 2px, rgba(0,245,255,0.03) 4px)'
-      }} />
-      
-      {/* Top Navigation Bar */}
-      <div className="flex items-center gap-2 mb-4 pb-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
-        <div className="px-3 py-1 text-xs" style={{ border: `1px solid ${colors.cyan}`, color: colors.cyan }}>
-          S.01
-        </div>
-        <div className="px-3 py-1 text-xs" style={{ border: `1px solid ${colors.border}`, color: colors.text }}>
-          AUDIO.SYS
-        </div>
-        <button
-          onClick={() => setShowTutorial(true)}
-          className="px-3 py-1 text-xs transition-all"
-          style={{
-            border: `1px solid ${colors.lime}`,
-            color: colors.lime,
-            background: 'transparent'
-          }}
-        >
-          TUTORIAL
-        </button>
-        <div className="flex-1" />
-        <div className="px-3 py-1 text-xs" style={{ border: `1px solid ${colors.border}`, color: colors.text }}>
-          {new Date().toLocaleTimeString()}
-        </div>
-        <div className="w-8 h-8 flex items-center justify-center" style={{ border: `1px solid ${colors.magenta}`, color: colors.magenta }}>
-          !
-        </div>
-      </div>
-
-      {/* Panel Headers */}
-      <div className="flex gap-4 mb-4">
-        <div className="w-80 py-2 px-4 text-xs tracking-widest" style={{
-          background: colors.panel,
-          borderLeft: `2px solid ${colors.cyan}`,
-          color: colors.cyan
-        }}>
-          HARP STRUMPLATE CONTROL
-        </div>
-        <div className="flex-1 py-2 px-4 text-xs tracking-widest" style={{
-          background: colors.panel,
-          borderLeft: `2px solid ${colors.magenta}`,
-          color: colors.magenta
-        }}>
-          CHORD MATRIX & TRACKS
-        </div>
-        <div className="w-48 py-2 px-4 text-xs tracking-widest" style={{
-          background: colors.panel,
-          borderLeft: `2px solid ${colors.cyan}`,
-          color: colors.cyan
-        }}>
-          SYSTEM
-        </div>
-      </div>
-
-      <div className="flex gap-4">
-        {/* Left Panel - Harp Strumplate & Mode */}
-        <div className="w-80" style={{ background: colors.panel, border: `1px solid ${colors.border}` }}>
-          <div className="p-4">
-            {/* Title */}
-            <style>
-              {`@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');`}
-            </style>
-            <div className="flex items-center gap-4 mb-6">
-              <h1 className="text-xl leading-relaxed" style={{
-                fontFamily: "'Press Start 2P', cursive",
-                color: colors.cyan,
-                textShadow: `0 0 20px ${colors.cyan}40, 0 0 40px ${colors.cyan}20, 2px 2px 0 ${colors.magenta}`,
-              }}>
-                SOUND<br/>SOUP
-              </h1>
-              {/* Pixelated soup bowl with music note steam */}
-              <svg width="64" height="64" viewBox="0 0 24 24" style={{ imageRendering: 'pixelated' }}>
-                {/* Music note 1 - left (eighth note) */}
-                <rect x="5" y="4" width="1" height="4" fill={colors.lime} opacity="0.7" />
-                <rect x="5" y="3" width="2" height="1" fill={colors.lime} opacity="0.7" />
-                <rect x="6" y="4" width="1" height="1" fill={colors.lime} opacity="0.7" />
-                <rect x="4" y="7" width="2" height="2" fill={colors.lime} opacity="0.7" />
-                
-                {/* Music note 2 - center (quarter note) */}
-                <rect x="11" y="1" width="1" height="5" fill={colors.cyan} opacity="0.8" />
-                <rect x="10" y="5" width="2" height="2" fill={colors.cyan} opacity="0.8" />
-                
-                {/* Music note 3 - right (eighth note) */}
-                <rect x="17" y="2" width="1" height="4" fill={colors.magenta} opacity="0.9" />
-                <rect x="17" y="1" width="2" height="1" fill={colors.magenta} opacity="0.9" />
-                <rect x="18" y="2" width="1" height="1" fill={colors.magenta} opacity="0.9" />
-                <rect x="16" y="5" width="2" height="2" fill={colors.magenta} opacity="0.9" />
-                
-                {/* Soup surface */}
-                <rect x="3" y="11" width="18" height="2" fill={colors.magenta} />
-                
-                {/* Bowl */}
-                <rect x="2" y="13" width="20" height="2" fill={colors.cyan} />
-                <rect x="3" y="15" width="18" height="2" fill={colors.cyan} />
-                <rect x="4" y="17" width="16" height="2" fill={colors.cyan} />
-                <rect x="6" y="19" width="12" height="2" fill={colors.cyan} />
-                <rect x="8" y="21" width="8" height="2" fill={colors.cyan} />
-                
-                {/* Bowl highlight */}
-                <rect x="2" y="13" width="20" height="1" fill="#4fffff" />
-              </svg>
-            </div>
-
-            {/* Current Chord Display */}
-            <div className="mb-4 p-3" style={{ background: '#000', border: `1px solid ${colors.cyan}` }}>
-              <div className="flex items-center justify-between">
-                <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  ACTIVE.CHORD
-                </div>
-                <div className="text-xl font-bold" style={{
-                  color: colors.cyan,
-                  textShadow: `0 0 10px ${colors.cyan}`
-                }}>
-                  {currentChord.root} <span style={{ color: colors.lime }}>{currentChord.type.toUpperCase()}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Harp Strumplate Keys */}
-            <div className="mb-4">
-              <div className="text-xs mb-2 tracking-widest" style={{ color: colors.text }}>
-                HARP STRUMPLATE
-              </div>
-              <div className="grid grid-cols-6 gap-1">
-                {HARP_KEYS.map((key, i) => (
-                  <button
-                    key={key}
-                    onMouseDown={() => playHarpNote(i)}
-                    onMouseUp={() => releaseHarpNote()}
-                    onMouseLeave={() => releaseHarpNote()}
-                    className="relative h-16 transition-all"
-                    style={{
-                      background: isKeyActive(key) 
-                        ? `linear-gradient(180deg, ${colors.cyan}40 0%, ${colors.cyan}10 100%)`
-                        : `linear-gradient(180deg, #1a2332 0%, #0d1117 100%)`,
-                      border: `1px solid ${isKeyActive(key) ? colors.cyan : colors.border}`,
-                      boxShadow: isKeyActive(key) ? `0 0 15px ${colors.cyan}50, inset 0 0 10px ${colors.cyan}20` : 'none'
-                    }}
-                  >
-                    <span className="absolute top-1 left-1/2 -translate-x-1/2 text-xs" style={{ 
-                      color: isKeyActive(key) ? colors.cyan : colors.text 
-                    }}>
-                      {key}
-                    </span>
-                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-6" style={{
-                      background: isKeyActive(key) 
-                        ? `linear-gradient(180deg, ${colors.cyan}, transparent)`
-                        : `linear-gradient(180deg, ${colors.border}, transparent)`
-                    }} />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Piano Keyboard */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  PIANO
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Power button for Piano section */}
-                  <button
-                    onClick={() => setPianoPowered(!pianoPowered)}
-                    className="flex items-center gap-1 px-2 py-1 transition-all"
-                    style={{
-                      background: pianoPowered ? `${colors.magenta}20` : 'transparent',
-                      border: `1px solid ${pianoPowered ? colors.magenta : colors.border}`,
-                      boxShadow: pianoPowered ? `0 0 10px ${colors.magenta}40` : 'none'
-                    }}
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full transition-all"
-                      style={{
-                        background: pianoPowered ? colors.magenta : colors.text,
-                        boxShadow: pianoPowered ? `0 0 8px ${colors.magenta}` : 'none'
-                      }}
-                    />
-                    <span className="text-xs" style={{ color: pianoPowered ? colors.magenta : colors.text }}>
-                      {pianoPowered ? 'ON' : 'OFF'}
-                    </span>
-                  </button>
-                  {/* Octave controls */}
-                  <button
-                    onClick={() => setPianoOctave(prev => Math.max(-3, prev - 1))}
-                    className="px-2 py-1 text-xs transition-all"
-                    style={{
-                      border: `1px solid ${colors.border}`,
-                      color: colors.text
-                    }}
-                  >
-                    ↓
-                  </button>
-                  <div className="text-xs px-2" style={{ color: colors.magenta }}>
-                    OCT: {pianoOctave > 0 ? '+' : ''}{pianoOctave}
-                  </div>
-                  <button
-                    onClick={() => setPianoOctave(prev => Math.min(3, prev + 1))}
-                    className="px-2 py-1 text-xs transition-all"
-                    style={{
-                      border: `1px solid ${colors.border}`,
-                      color: colors.text
-                    }}
-                  >
-                    ↑
-                  </button>
-                </div>
-              </div>
-
-              {/* Piano mode selector */}
-              {pianoPowered && (
-                <div className="text-xs mb-2 px-2 py-1" style={{ color: colors.magenta, opacity: 0.7, background: `${colors.magenta}10` }}>
-                  Keys: Z X C V B N M ,
-                </div>
-              )}
-              <div className="grid grid-cols-5 gap-1 mb-2">
-                {['piano', 'omnichord', 'house', 'trap', 'drop'].map(mode => (
-                  <button
-                    key={mode}
-                    onClick={() => setPianoMode(mode)}
-                    className="py-2 text-xs tracking-wider transition-all"
-                    style={{
-                      background: pianoMode === mode ? `${colors.magenta}20` : 'transparent',
-                      border: `1px solid ${pianoMode === mode ? colors.magenta : colors.border}`,
-                      color: pianoMode === mode ? colors.magenta : colors.text,
-                      boxShadow: pianoMode === mode ? `0 0 8px ${colors.magenta}30` : 'none'
-                    }}
-                  >
-                    {mode === 'omnichord' ? 'OMNI' : mode.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-
-              {/* Piano keys */}
-              <div className="relative h-24">
-                {/* White keys */}
-                <div className="flex gap-0.5 h-full">
-                  {PIANO_KEYS.filter(pk => !pk.isBlack).map(({ note, key }) => (
-                    <button
-                      key={key}
-                      onMouseDown={() => playPianoNote(note)}
-                      onMouseUp={() => releasePianoNote()}
-                      onMouseLeave={() => releasePianoNote()}
-                      className="flex-1 relative transition-all"
-                      style={{
-                        background: (isKeyActive(key) && pianoPowered)
-                          ? `linear-gradient(180deg, ${colors.magenta}40 0%, ${colors.magenta}10 100%)`
-                          : `linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%)`,
-                        border: `1px solid ${(isKeyActive(key) && pianoPowered) ? colors.magenta : pianoPowered ? `${colors.magenta}50` : '#888'}`,
-                        boxShadow: (isKeyActive(key) && pianoPowered) ? `0 0 10px ${colors.magenta}50, inset 0 0 8px ${colors.magenta}20` : 'inset 0 -2px 4px rgba(0,0,0,0.1)'
-                      }}
-                    >
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs" style={{ color: '#333' }}>
-                        {key.toUpperCase()}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Black keys */}
-                <div className="absolute top-0 left-0 right-0 h-14 flex">
-                  {PIANO_KEYS.map((pk, i) => {
-                    if (pk.isBlack) {
-                      // Map each black key to its position between white keys
-                      const blackKeyPositions = {
-                        'C#': 0.65,  // Between C (0) and D (1)
-                        'D#': 1.7,   // Between D (1) and E (2)
-                        'F#': 3.68,  // Between F (3) and G (4)
-                        'G#': 4.7,   // Between G (4) and A (5)
-                        'A#': 5.7    // Between A (5) and B (6)
-                      };
-                      const whiteKeyWidth = 100 / 7; // 7 white keys total
-                      const leftPercent = blackKeyPositions[pk.note] * whiteKeyWidth;
-                      return (
-                        <button
-                          key={pk.key}
-                          onMouseDown={() => playPianoNote(pk.note)}
-                          onMouseUp={() => releasePianoNote()}
-                          onMouseLeave={() => releasePianoNote()}
-                          className="absolute transition-all"
-                          style={{
-                            left: `${leftPercent}%`,
-                            width: `${whiteKeyWidth * 0.6}%`,
-                            height: '100%',
-                            background: (isKeyActive(pk.key) && pianoPowered)
-                              ? `linear-gradient(180deg, ${colors.cyan} 0%, ${colors.cyan}80 100%)`
-                              : `linear-gradient(180deg, #1a1a1a 0%, #000000 100%)`,
-                            border: `1px solid ${(isKeyActive(pk.key) && pianoPowered) ? colors.cyan : pianoPowered ? `${colors.magenta}50` : '#000'}`,
-                            boxShadow: (isKeyActive(pk.key) && pianoPowered) ? `0 0 10px ${colors.cyan}50` : 'inset 0 -2px 3px rgba(255,255,255,0.1)',
-                            zIndex: 10
-                          }}
-                        >
-                          <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs" style={{ color: '#fff', fontSize: '8px' }}>
-                            {pk.key.toUpperCase()}
-                          </span>
-                        </button>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Volume */}
-            <div className="mb-4">
-              <div className="flex justify-between text-xs mb-2" style={{ color: colors.text }}>
-                <span>VOLUME</span>
-                <span style={{ color: colors.lime }}>{volume} dB</span>
-              </div>
-              <div className="relative h-2" style={{ background: colors.border }}>
-                <div 
-                  className="absolute h-full transition-all"
-                  style={{ 
-                    width: `${((volume + 40) / 40) * 100}%`,
-                    background: `linear-gradient(90deg, ${colors.cyan}, ${colors.lime})`
-                  }}
-                />
-                <input
-                  type="range"
-                  min="-40"
-                  max="0"
-                  value={volume}
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                  className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            {/* Metronome */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setMetronomeOn(!metronomeOn)}
-                className="flex-1 py-2 text-xs tracking-wider transition-all"
-                style={{
-                  background: metronomeOn ? `${colors.lime}20` : 'transparent',
-                  border: `1px solid ${metronomeOn ? colors.lime : colors.border}`,
-                  color: metronomeOn ? colors.lime : colors.text,
-                  boxShadow: metronomeOn ? `0 0 10px ${colors.lime}30` : 'none'
-                }}
-              >
-                {metronomeOn ? '■ STOP' : '▶ METRO'}
-              </button>
-              <div className="flex items-center gap-2 px-3" style={{ border: `1px solid ${colors.border}` }}>
-                <span className="text-xs" style={{ color: colors.text }}>BPM</span>
-                <input
-                  type="number"
-                  min="40"
-                  max="240"
-                  value={bpm}
-                  onChange={(e) => setBpm(Number(e.target.value))}
-                  className="w-12 bg-transparent text-center text-sm outline-none"
-                  style={{ color: colors.lime }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Panel - Chord Matrix, Effects & Tracks */}
-        <div className="flex-1" style={{ background: colors.panel, border: `1px solid ${colors.border}` }}>
-          <div className="p-4">
-            {/* Chord Matrix - Horizontal Layout */}
-            <div className="mb-4">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  CHORD.MATRIX
-                </div>
-                <div className="flex gap-2">
-                  {['omnichord', 'house', 'trap'].map(mode => (
-                    <button
-                      key={mode}
-                      onClick={() => setChordMode(mode)}
-                      className="px-3 py-1 text-xs tracking-wider transition-all"
-                      style={{
-                        background: chordMode === mode ? `${colors.lime}20` : 'transparent',
-                        border: `1px solid ${chordMode === mode ? colors.lime : colors.border}`,
-                        color: chordMode === mode ? colors.lime : colors.text,
-                        boxShadow: chordMode === mode ? `0 0 10px ${colors.lime}30` : 'none'
-                      }}
-                    >
-                      {mode.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  <span className="text-xs tracking-widest" style={{ color: colors.text, fontSize: '9px' }}>
-                    VOL
-                  </span>
-                  <div className="relative w-20 h-2" style={{ background: colors.border }}>
-                    <div
-                      className="absolute h-full transition-all"
-                      style={{
-                        width: `${((chordVolume + 20) / 20) * 100}%`,
-                        background: `linear-gradient(90deg, ${colors.cyan}, ${colors.lime})`
-                      }}
-                    />
-                    <input
-                      type="range"
-                      min="-20"
-                      max="0"
-                      step="1"
-                      value={chordVolume}
-                      onChange={(e) => setChordVolume(Number(e.target.value))}
-                      className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                  <span className="text-xs" style={{ color: colors.lime, fontSize: '9px' }}>
-                    {chordVolume}dB
-                  </span>
-                </div>
-              </div>
-
-              {/* Horizontal Chord Grid with Row Headers */}
-              <div>
-                <div className="grid gap-1" style={{ gridTemplateColumns: '40px repeat(27, 1fr)' }}>
-                  {/* Header Row */}
-                  <div></div>
-                  {CHORD_ROOTS.map(root => (
-                    <React.Fragment key={root}>
-                      <div className="text-center text-xs font-bold" style={{ color: colors.cyan, fontSize: '8px' }}>{root}</div>
-                      <div className="text-center text-xs font-bold" style={{ color: colors.lime, fontSize: '8px' }}></div>
-                      <div className="text-center text-xs font-bold" style={{ color: colors.magenta, fontSize: '8px' }}></div>
-                    </React.Fragment>
-                  ))}
-
-                  {/* MAJ Row */}
-                  <div className="flex items-center text-xs font-bold" style={{ color: colors.cyan, fontSize: '9px' }}>MAJ</div>
-                  {CHORD_ROOTS.map((root, rootIdx) => {
-                    const key = MAJOR_KEYS[rootIdx];
-                    return (
-                      <React.Fragment key={root}>
-                        <button
-                          onMouseDown={() => playChord(root, 'major')}
-                          onMouseUp={() => releaseChord()}
-                          onMouseLeave={() => releaseChord()}
-                          className="h-10 relative transition-all"
-                          style={{
-                            background: isKeyActive(key)
-                              ? `${colors.cyan}25`
-                              : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
-                            border: `1px solid ${isKeyActive(key) ? colors.cyan : colors.border}`,
-                            boxShadow: isKeyActive(key) ? `0 0 15px ${colors.cyan}40` : 'none'
-                          }}
-                        >
-                          <span className="relative z-10 text-xs font-bold" style={{
-                            color: isKeyActive(key) ? colors.cyan : colors.text,
-                            fontSize: '10px'
-                          }}>
-                            {key.toUpperCase()}
-                          </span>
-                          {isKeyActive(key) && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: colors.cyan }} />
-                          )}
-                        </button>
-                        <div></div>
-                        <div></div>
-                      </React.Fragment>
-                    );
-                  })}
-
-                  {/* MIN Row */}
-                  <div className="flex items-center text-xs font-bold" style={{ color: colors.lime, fontSize: '9px' }}>MIN</div>
-                  {CHORD_ROOTS.map((root, rootIdx) => {
-                    const key = MINOR_KEYS[rootIdx];
-                    return (
-                      <React.Fragment key={root}>
-                        <div></div>
-                        <button
-                          onMouseDown={() => playChord(root, 'minor')}
-                          onMouseUp={() => releaseChord()}
-                          onMouseLeave={() => releaseChord()}
-                          className="h-10 relative transition-all"
-                          style={{
-                            background: isKeyActive(key)
-                              ? `${colors.lime}25`
-                              : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
-                            border: `1px solid ${isKeyActive(key) ? colors.lime : colors.border}`,
-                            boxShadow: isKeyActive(key) ? `0 0 15px ${colors.lime}40` : 'none'
-                          }}
-                        >
-                          <span className="relative z-10 text-xs font-bold" style={{
-                            color: isKeyActive(key) ? colors.lime : colors.text,
-                            fontSize: '10px'
-                          }}>
-                            {key.toUpperCase()}
-                          </span>
-                          {isKeyActive(key) && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: colors.lime }} />
-                          )}
-                        </button>
-                        <div></div>
-                      </React.Fragment>
-                    );
-                  })}
-
-                  {/* 7TH Row */}
-                  <div className="flex items-center text-xs font-bold" style={{ color: colors.magenta, fontSize: '9px' }}>7TH</div>
-                  {CHORD_ROOTS.map((root, rootIdx) => {
-                    const key = SEVENTH_KEYS[rootIdx];
-                    return (
-                      <React.Fragment key={root}>
-                        <div></div>
-                        <div></div>
-                        <button
-                          onMouseDown={() => playChord(root, '7th')}
-                          onMouseUp={() => releaseChord()}
-                          onMouseLeave={() => releaseChord()}
-                          className="h-10 relative transition-all"
-                          style={{
-                            background: isKeyActive(key)
-                              ? `${colors.magenta}25`
-                              : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
-                            border: `1px solid ${isKeyActive(key) ? colors.magenta : colors.border}`,
-                            boxShadow: isKeyActive(key) ? `0 0 15px ${colors.magenta}40` : 'none'
-                          }}
-                        >
-                          <span className="relative z-10 text-xs font-bold" style={{
-                            color: isKeyActive(key) ? colors.magenta : colors.text,
-                            fontSize: '10px'
-                          }}>
-                            {key === ',' ? ',' : key === '.' ? '.' : key.toUpperCase()}
-                          </span>
-                          {isKeyActive(key) && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: colors.magenta }} />
-                          )}
-                        </button>
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Effects Row */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  EFFECTS.FX
-                </div>
-                {/* Power button for FX section */}
-                <button
-                  onClick={() => setFxPowered(!fxPowered)}
-                  className="flex items-center gap-2 px-2 py-1 transition-all"
-                  style={{
-                    background: fxPowered ? `${colors.lime}20` : 'transparent',
-                    border: `1px solid ${fxPowered ? colors.lime : colors.border}`,
-                    boxShadow: fxPowered ? `0 0 10px ${colors.lime}40` : 'none'
-                  }}
-                >
-                  <div 
-                    className="w-3 h-3 rounded-full transition-all"
-                    style={{
-                      background: fxPowered ? colors.lime : colors.text,
-                      boxShadow: fxPowered ? `0 0 8px ${colors.lime}` : 'none'
-                    }}
-                  />
-                  <span className="text-xs" style={{ color: fxPowered ? colors.lime : colors.text }}>
-                    {fxPowered ? 'ON' : 'OFF'}
-                  </span>
-                </button>
-              </div>
-              
-              {fxPowered && (
-                <div className="text-xs mb-2 px-2 py-1" style={{ color: colors.lime, opacity: 0.7, background: `${colors.lime}10` }}>
-                  Keys: Q W E R T A S
-                </div>
-              )}
-
-              <div className="grid grid-cols-7 gap-2">
-                {EFFECT_SOUNDS.map(({ name, color }, idx) => (
-                  <button
-                    key={name}
-                    onClick={() => playDrum(name)}
-                    className="h-12 relative transition-all"
-                    style={{
-                      background: activeDrums.has(name)
-                        ? `${color}30`
-                        : 'linear-gradient(180deg, #1a2332 0%, #0d1117 100%)',
-                      border: `1px solid ${activeDrums.has(name) ? color : fxPowered ? `${color}50` : colors.border}`,
-                      boxShadow: activeDrums.has(name) ? `0 0 15px ${color}50, inset 0 0 10px ${color}20` : 'none'
-                    }}
-                  >
-                    <span className="text-xs font-bold" style={{ color: activeDrums.has(name) ? color : colors.text }}>
-                      {name}
-                    </span>
-                    {fxPowered && (
-                      <span className="absolute top-1 right-1 text-xs font-bold" style={{ color: color, opacity: 0.7, fontSize: '9px' }}>
-                        {FX_KEYS[idx].toUpperCase()}
-                      </span>
-                    )}
-                    {activeDrums.has(name) && (
-                      <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: color }} />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Recording Section */}
-            <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${colors.border}` }}>
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-                  RECORDED.TRACKS
-                </div>
-                <div className="flex gap-2">
-                  {/* Play All / Stop All button */}
-                  <button
-                    onClick={allPlaying ? stopAllTracks : playAllTracks}
-                    className="px-3 py-2 text-xs tracking-wider transition-all flex items-center gap-2"
-                    style={{
-                      background: allPlaying ? `${colors.lime}30` : 'transparent',
-                      border: `1px solid ${allPlaying ? colors.lime : colors.border}`,
-                      color: allPlaying ? colors.lime : colors.text,
-                      boxShadow: allPlaying ? `0 0 15px ${colors.lime}40` : 'none',
-                      opacity: tracks.length === 0 ? 0.5 : 1
-                    }}
-                    disabled={tracks.length === 0}
-                  >
-                    {allPlaying ? (
-                      <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
-                        <rect x="1" y="1" width="10" height="10" />
-                      </svg>
-                    ) : (
-                      <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
-                        <polygon points="2,1 2,11 11,6" />
-                      </svg>
-                    )}
-                    {allPlaying ? 'STOP ALL' : 'PLAY ALL'}
-                  </button>
-
-                  {/* Beat Record button */}
-                  <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className="px-3 py-2 text-xs tracking-wider transition-all flex items-center gap-2"
-                    style={{
-                      background: isRecording ? `${colors.magenta}30` : 'transparent',
-                      border: `1px solid ${isRecording ? colors.magenta : colors.border}`,
-                      color: isRecording ? colors.magenta : colors.text,
-                      boxShadow: isRecording ? `0 0 15px ${colors.magenta}40` : 'none'
-                    }}
-                  >
-                    <div className="w-3 h-3 rounded-full" style={{
-                      background: isRecording ? colors.magenta : colors.text,
-                      animation: isRecording ? 'pulse 1s infinite' : 'none'
-                    }} />
-                    {isRecording ? 'STOP' : 'BEAT'}
-                  </button>
-
-                  {/* Voice Record button */}
-                  <button
-                    onClick={isVoiceRecording ? stopVoiceRecording : startVoiceRecording}
-                    className="px-3 py-2 text-xs tracking-wider transition-all flex items-center gap-2"
-                    style={{
-                      background: isVoiceRecording ? `${colors.cyan}30` : 'transparent',
-                      border: `1px solid ${isVoiceRecording ? colors.cyan : colors.border}`,
-                      color: isVoiceRecording ? colors.cyan : colors.text,
-                      boxShadow: isVoiceRecording ? `0 0 15px ${colors.cyan}40` : 'none'
-                    }}
-                  >
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
-                      <rect x="5" y="1" width="2" height="5" rx="1" />
-                      <path d="M3 5 Q3 8 6 8 Q9 8 9 5" stroke="currentColor" fill="none" strokeWidth="1" />
-                      <line x1="6" y1="8" x2="6" y2="10" stroke="currentColor" strokeWidth="1" />
-                      <line x1="4" y1="10" x2="8" y2="10" stroke="currentColor" strokeWidth="1" />
-                    </svg>
-                    {isVoiceRecording ? 'STOP' : 'VOICE'}
-                  </button>
-                </div>
-              </div>
-
-              <style>
-                {`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}
-              </style>
-
-              {/* Track List */}
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {tracks.length === 0 ? (
-                  <div className="text-xs text-center py-4" style={{ color: colors.text, opacity: 0.5 }}>
-                    No tracks recorded yet
-                  </div>
-                ) : (
-                  tracks.map(track => (
-                    <div key={track.id} className="p-3" style={{
-                      background: '#000',
-                      border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}`
-                    }}>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold" style={{ color: colors.cyan }}>{track.name}</span>
-                          {track.type === 'voice' && (
-                            <span className="text-xs px-1 py-0.5" style={{
-                              color: colors.cyan,
-                              background: `${colors.cyan}20`,
-                              border: `1px solid ${colors.cyan}`,
-                              fontSize: '8px'
-                            }}>
-                              MIC
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-xs" style={{ color: colors.text }}>
-                          {formatTime(trackPositions[track.id] || 0)} / {formatTime(track.duration)}
-                        </span>
-                      </div>
-
-                      {/* Volume slider - horizontal */}
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs" style={{ color: colors.text, fontSize: '9px', width: '28px' }}>
-                          VOL
-                        </span>
-                        <div className="relative flex-1 h-2" style={{ background: colors.border }}>
-                          <div
-                            className="absolute h-full transition-all"
-                            style={{
-                              width: `${((trackVolumes[track.id] ?? 0) + 20) / 20 * 100}%`,
-                              background: `linear-gradient(90deg, ${colors.cyan}, ${colors.lime})`
-                            }}
-                          />
-                          <input
-                            type="range"
-                            min="-20"
-                            max="0"
-                            step="1"
-                            value={trackVolumes[track.id] ?? 0}
-                            onChange={(e) => {
-                              const newVol = Number(e.target.value);
-                              setTrackVolumes(prev => ({ ...prev, [track.id]: newVol }));
-                              // Update voice track volume in real-time if playing
-                              if (track.type === 'voice' && voicePlayerRef.current?.[track.id]) {
-                                voicePlayerRef.current[track.id].volume = Math.pow(10, (volume + newVol) / 20);
-                              }
-                            }}
-                            className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                          />
-                        </div>
-                        <span className="text-xs" style={{ color: colors.lime, fontSize: '9px', width: '32px', textAlign: 'right' }}>
-                          {trackVolumes[track.id] ?? 0}dB
-                        </span>
-                      </div>
-
-                      {/* Progress bar */}
-                      <div className="relative h-1 mb-2" style={{ background: colors.border }}>
-                        <div
-                          className="absolute h-full transition-all"
-                          style={{
-                            width: `${((trackPositions[track.id] || 0) / track.duration) * 100}%`,
-                            background: playingTracks.has(track.id) ? colors.lime : colors.cyan
-                          }}
-                        />
-                      </div>
-
-                      {/* Controls */}
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => seekTrack(track.id, 'backward')}
-                          className="flex-1 py-1 flex items-center justify-center transition-all hover:opacity-80"
-                          style={{ border: `1px solid ${colors.border}`, color: colors.text }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                            <rect x="0" y="2" width="2" height="8" />
-                            <polygon points="11,2 11,10 4,6" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (playingTracks.has(track.id)) {
-                              track.type === 'voice' ? pauseVoiceTrack(track.id) : pauseTrack(track.id);
-                            } else {
-                              track.type === 'voice' ? playVoiceTrack(track) : playTrack(track);
-                            }
-                          }}
-                          className="flex-1 py-1 flex items-center justify-center transition-all hover:opacity-80"
-                          style={{
-                            border: `1px solid ${playingTracks.has(track.id) ? colors.lime : colors.border}`,
-                            color: playingTracks.has(track.id) ? colors.lime : colors.text,
-                            background: playingTracks.has(track.id) ? `${colors.lime}20` : 'transparent'
-                          }}
-                        >
-                          {playingTracks.has(track.id) ? (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                              <rect x="2" y="2" width="3" height="8" />
-                              <rect x="7" y="2" width="3" height="8" />
-                            </svg>
-                          ) : (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                              <polygon points="2,1 2,11 11,6" />
-                            </svg>
-                          )}
-                        </button>
-                        <button
-                          onClick={() => seekTrack(track.id, 'forward')}
-                          className="flex-1 py-1 flex items-center justify-center transition-all hover:opacity-80"
-                          style={{ border: `1px solid ${colors.border}`, color: colors.text }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                            <polygon points="1,2 1,10 8,6" />
-                            <rect x="10" y="2" width="2" height="8" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => deleteTrack(track.id)}
-                          className="flex-1 py-1 flex items-center justify-center transition-all hover:opacity-80"
-                          style={{ border: `1px solid ${colors.magenta}`, color: colors.magenta }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                            <rect x="1" y="5" width="10" height="2" transform="rotate(45 6 6)" />
-                            <rect x="1" y="5" width="10" height="2" transform="rotate(-45 6 6)" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Panel - System */}
-        <div className="w-48" style={{ background: colors.panel, border: `1px solid ${colors.border}` }}>
-          <div className="p-4">
-            <div className="text-xs tracking-widest mb-4" style={{ color: colors.text }}>
-              POWER.STATS
-            </div>
-
-            {/* Status indicators */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between">
-                <span className="text-xs" style={{ color: colors.text }}>AUDIO</span>
-                <div className="w-3 h-3 rounded-full" style={{
-                  background: isAudioReady ? colors.lime : colors.text,
-                  boxShadow: isAudioReady ? `0 0 10px ${colors.lime}` : 'none'
-                }} />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs" style={{ color: colors.text }}>SYNTH</span>
-                <div className="w-3 h-3 rounded-full" style={{
-                  background: omnichordSynthRef.current ? colors.lime : colors.text,
-                  boxShadow: omnichordSynthRef.current ? `0 0 10px ${colors.lime}` : 'none'
-                }} />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs" style={{ color: colors.text }}>REC</span>
-                <div className="w-3 h-3 rounded-full" style={{
-                  background: isRecording ? colors.magenta : colors.text,
-                  boxShadow: isRecording ? `0 0 10px ${colors.magenta}` : 'none'
-                }} />
-              </div>
-            </div>
-
-            {/* Visual meters - animated audio visualizer */}
-            <div className="text-xs tracking-widest mb-2" style={{ color: colors.text }}>
-              OUTPUT.LEVEL
-            </div>
-            <div className="flex gap-1 mb-6 items-end" style={{ height: '80px' }}>
-              {audioLevels.map((level, i) => (
-                <div
-                  key={i}
-                  className="flex-1 transition-all duration-100"
-                  style={{
-                    height: `${Math.max(10, level * 100)}%`,
-                    background: level > 0.1
-                      ? `linear-gradient(180deg, ${colors.magenta}, ${colors.cyan})`
-                      : colors.border,
-                    boxShadow: level > 0.3 ? `0 0 ${level * 15}px ${colors.cyan}40` : 'none',
-                    borderRadius: '2px 2px 0 0'
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Mode display */}
-            <div className="p-3" style={{
-              background: `${colors.magenta}15`,
-              border: `1px solid ${colors.magenta}`
-            }}>
-              <div className="text-xs mb-2" style={{ color: colors.text }}>ACTIVE.MODES</div>
-              <div className="text-sm mb-1" style={{ color: colors.magenta }}>
-                PIANO: <span className="font-bold" style={{ textShadow: `0 0 8px ${colors.magenta}` }}>{pianoMode.toUpperCase()}</span>
-              </div>
-              <div className="text-sm" style={{ color: colors.lime }}>
-                CHORD: <span className="font-bold" style={{ textShadow: `0 0 8px ${colors.lime}` }}>{chordMode.toUpperCase()}</span>
-              </div>
-            </div>
-
-            {/* Track count */}
-            <div className="mt-4 p-3 text-center" style={{
-              background: `${colors.cyan}15`,
-              border: `1px solid ${colors.cyan}`
-            }}>
-              <div className="text-xs mb-1" style={{ color: colors.text }}>TRACKS</div>
-              <div className="text-xl font-bold" style={{
-                color: colors.cyan,
-                textShadow: `0 0 10px ${colors.cyan}`
-              }}>
-                {tracks.length}
-              </div>
-            </div>
-
-            {/* Notes section */}
-            <div className="mt-4">
-              <div className="text-xs tracking-widest mb-2" style={{ color: colors.text }}>
-                NOTES
-              </div>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Write notes here..."
-                className="w-full p-2 text-xs resize-none outline-none"
-                style={{
-                  background: colors.bg,
-                  border: `1px solid ${colors.border}`,
-                  color: colors.text,
-                  minHeight: '120px',
-                  fontFamily: 'monospace'
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom status bar */}
-      <div className="mt-4 pt-3 flex items-center gap-4" style={{ borderTop: `1px solid ${colors.border}` }}>
-        <div className="h-1 flex-1" style={{ background: colors.lime }} />
-        <div className="text-xs tracking-widest" style={{ color: colors.text }}>
-          command.bt.lvl.44
-        </div>
-        <div className="h-1 w-20" style={{ background: colors.cyan }} />
-      </div>
-
-      {/* Instructions */}
-      <div className="mt-4 text-center text-xs" style={{ color: colors.text, opacity: 0.6 }}>
-        CHORDS: Q-O = MAJOR | A-L = MINOR | Z-. = 7TH &nbsp;&nbsp;•&nbsp;&nbsp; HARP STRUMPLATE: 1-= PLAYS CHORD NOTES
-      </div>
-
-      {/* Tutorial Modal */}
-      {showTutorial && (
-        <div
-          className="fixed inset-0 flex items-center justify-center p-6 z-50"
-          style={{ background: 'rgba(0, 0, 0, 0.9)' }}
-          onClick={() => setShowTutorial(false)}
-        >
-          <div
-            className="max-w-4xl max-h-[90vh] overflow-y-auto p-6"
-            style={{
-              background: colors.panel,
-              border: `2px solid ${colors.lime}`,
-              boxShadow: `0 0 30px ${colors.lime}40`
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6 pb-3" style={{ borderBottom: `1px solid ${colors.border}` }}>
-              <h2 className="text-xl tracking-widest" style={{ color: colors.lime }}>
-                SOUND SOUP // TUTORIAL
-              </h2>
-              <button
-                onClick={() => setShowTutorial(false)}
-                className="px-3 py-1 text-xs transition-all"
-                style={{
-                  border: `1px solid ${colors.magenta}`,
-                  color: colors.magenta
-                }}
-              >
-                CLOSE [ESC]
-              </button>
-            </div>
-
-            {/* Tutorial Content */}
-            <div className="space-y-6">
-              {/* Left Panel - Harp Strumplate Control */}
-              <div>
-                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.cyan }}>
-                  LEFT PANEL: HARP STRUMPLATE CONTROL
-                </h3>
-                <div className="text-xs space-y-2" style={{ color: colors.text }}>
-                  <div><span style={{ color: colors.cyan }}>• ACTIVE CHORD:</span> Shows the currently selected chord</div>
-                  <div><span style={{ color: colors.cyan }}>• HARP STRUMPLATE [1-=]:</span> 12 keys that play notes in the active chord. Click or drag across keys for a strum effect</div>
-                  <div><span style={{ color: colors.cyan }}>• PIANO [Z-M]:</span> One octave piano keyboard. Use ↑/↓ arrows to shift octaves. Toggle power ON/OFF</div>
-                  <div><span style={{ color: colors.cyan }}>• VOLUME:</span> Master volume control (-40dB to 0dB)</div>
-                  <div><span style={{ color: colors.cyan }}>• METRONOME:</span> Click tempo guide. Adjust BPM (40-240)</div>
-                </div>
-              </div>
-
-              {/* Center Panel - Chord Matrix */}
-              <div>
-                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.lime }}>
-                  CENTER PANEL: CHORD MATRIX
-                </h3>
-                <div className="text-xs space-y-2" style={{ color: colors.text }}>
-                  <div><span style={{ color: colors.lime }}>• MODE SELECT:</span> Choose sound mode (Omnichord, Harp, House, Trap)</div>
-                  <div><span style={{ color: colors.lime }}>• VOL:</span> Volume control for chord matrix playback (-20dB to 0dB)</div>
-                  <div><span style={{ color: colors.lime }}>• CHORD GRID:</span> 27 chords (9 roots × 3 types)</div>
-                  <div className="ml-4">- MAJOR [Q-O]: Bright, happy chords</div>
-                  <div className="ml-4">- MINOR [A-L]: Darker, moody chords</div>
-                  <div className="ml-4">- 7TH [Z-.]: Jazz/blues flavor chords</div>
-                </div>
-              </div>
-
-              {/* Right Panel - System */}
-              <div>
-                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.magenta }}>
-                  RIGHT PANEL: SYSTEM & RECORDING
-                </h3>
-                <div className="text-xs space-y-2" style={{ color: colors.text }}>
-                  <div><span style={{ color: colors.magenta }}>• AUDIO VISUALIZER:</span> Shows audio activity levels</div>
-                  <div><span style={{ color: colors.magenta }}>• FX PANEL:</span> Sound effects and percussion</div>
-                  <div className="ml-4">- SWEEP/LASER/DROP: Transition effects</div>
-                  <div className="ml-4">- KICK/SNARE/HAT/CLAP: Drum sounds</div>
-                  <div className="ml-4">- Power toggle to enable/disable FX section</div>
-                  <div><span style={{ color: colors.magenta }}>• RECORDING CONTROLS:</span></div>
-                  <div className="ml-4">- PLAY ALL: Play all recorded tracks in sync</div>
-                  <div className="ml-4">- BEAT: Record instrument/chord performance</div>
-                  <div className="ml-4">- VOICE: Record microphone input</div>
-                  <div><span style={{ color: colors.magenta }}>• TRACK LIST:</span> Manage recorded tracks</div>
-                  <div className="ml-4">- VOL: Individual track volume (-20dB to 0dB)</div>
-                  <div className="ml-4">- Progress bar shows playback position</div>
-                  <div className="ml-4">- Play/Pause, Seek forward/backward, Delete controls</div>
-                  <div className="ml-4">- CLEAR ALL: Delete all tracks</div>
-                </div>
-              </div>
-
-              {/* Quick Start */}
-              <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1rem' }}>
-                <h3 className="text-sm mb-2 tracking-widest" style={{ color: colors.cyan }}>
-                  QUICK START GUIDE
-                </h3>
-                <div className="text-xs space-y-1" style={{ color: colors.text }}>
-                  <div>1. Click a chord button (try C Major - press Q)</div>
-                  <div>2. Play the strumplate by clicking keys 1-= or dragging across them</div>
-                  <div>3. Try different MODE.SELECT options (Omnichord, Harp, House, Trap)</div>
-                  <div>4. Click BEAT to start recording, play chords/notes, then STOP to save</div>
-                  <div>5. Layer more tracks by clicking PLAY ALL, then BEAT again</div>
-                  <div>6. Adjust individual track volumes with the VOL sliders</div>
-                  <div>7. Add voice with the VOICE button (microphone permission required)</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<SoundSoup />);
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
     </script>
 </body>
 </html>
