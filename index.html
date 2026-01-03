@@ -124,7 +124,6 @@
             color: var(--coral);
             letter-spacing: -0.02em;
             position: relative;
-            z-index: 2;
             margin-bottom: 0;
         }
 
@@ -134,15 +133,21 @@
             animation: fadeSlideUp 0.8s ease forwards;
         }
 
-        .hero-title span:nth-child(1) {
-            animation-delay: 0.4s;
+        .hero-title-top {
             z-index: 2;
         }
-        .hero-title span:nth-child(2) {
-            animation-delay: 0.55s;
+
+        .hero-title-top span {
+            animation-delay: 0.4s;
+        }
+
+        .hero-title-bottom {
             margin-top: -0.05em;
             z-index: 0;
-            position: relative;
+        }
+
+        .hero-title-bottom span {
+            animation-delay: 0.55s;
         }
 
         .hero-image-container {
@@ -532,12 +537,14 @@
 
     <section class="hero" id="home">
         <h2 class="hero-name">Sama Shah</h2>
-        <h1 class="hero-title">
-            <span>PORTFOLIO</span>
+        <h1 class="hero-title hero-title-top">
             <span>PORTFOLIO</span>
         </h1>
         <div class="hero-image-container">
             <img src="headshot.jpg" alt="Sama Shah" class="hero-image">
+        </div>
+        <div class="hero-title hero-title-bottom" aria-hidden="true">
+            <span>PORTFOLIO</span>
         </div>
     </section>
 
