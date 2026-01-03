@@ -693,7 +693,7 @@
         });
 
         // Edit Mode Functionality
-        const EDIT_PASSWORD = 'portfolio2025'; // Change this to your desired password
+        const EDIT_PASSWORD = 'portfolio2026'; // Change this to your desired password
         let editMode = false;
         let selectedElement = null;
         let dragElement = null;
@@ -764,7 +764,7 @@
 
         // Add Polaroid
         document.getElementById('addPolaroid').addEventListener('click', () => {
-            const polaroid = createPolaroid(100, 100, 0, 'Project Title');
+            const polaroid = createPolaroid(100, 100, 0, '');
             projectsSection.appendChild(polaroid);
             selectElement(polaroid);
         });
@@ -784,7 +784,7 @@
         });
 
         // Create Polaroid element
-        function createPolaroid(x, y, rotation, caption) {
+        function createPolaroid(x, y, rotation, caption, imageData) {
             const polaroid = document.createElement('div');
             polaroid.className = 'polaroid';
             polaroid.style.left = x + 'px';
@@ -792,10 +792,57 @@
             polaroid.style.transform = `rotate(${rotation}deg)`;
             polaroid.dataset.rotation = rotation;
 
-            polaroid.innerHTML = `
-                <div class="polaroid-image">Click to add image</div>
-                <div class="polaroid-caption" contenteditable="true">${caption}</div>
-            `;
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'polaroid-image';
+
+            if (imageData) {
+                const img = document.createElement('img');
+                img.src = imageData;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                imageDiv.appendChild(img);
+            } else {
+                imageDiv.textContent = 'Click to add image';
+                imageDiv.style.cursor = 'pointer';
+            }
+
+            const captionDiv = document.createElement('div');
+            captionDiv.className = 'polaroid-caption';
+            captionDiv.contentEditable = 'true';
+            captionDiv.textContent = caption;
+
+            polaroid.appendChild(imageDiv);
+            polaroid.appendChild(captionDiv);
+
+            // Add click handler for image upload
+            imageDiv.addEventListener('click', (e) => {
+                if (!editMode) return;
+                e.stopPropagation();
+
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.style.width = '100%';
+                            img.style.height = '100%';
+                            img.style.objectFit = 'cover';
+                            imageDiv.innerHTML = '';
+                            imageDiv.appendChild(img);
+                            imageDiv.style.cursor = 'default';
+                            polaroid.dataset.imageData = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
 
             addDragListeners(polaroid);
             return polaroid;
@@ -940,6 +987,7 @@
 
                 if (data.type === 'polaroid') {
                     data.caption = el.querySelector('.polaroid-caption').textContent;
+                    data.imageData = el.dataset.imageData || null;
                 } else if (data.type === 'text') {
                     data.content = el.textContent;
                 }
@@ -962,7 +1010,7 @@
             elements.forEach(data => {
                 let element;
                 if (data.type === 'polaroid') {
-                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || 'Project Title');
+                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || '', data.imageData);
                 } else if (data.type === 'arrow') {
                     element = createArrow(data.x, data.y, data.rotation);
                 } else if (data.type === 'text') {
@@ -983,7 +1031,7 @@
             elements.forEach(data => {
                 let element;
                 if (data.type === 'polaroid') {
-                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || 'Project Title');
+                    element = createPolaroid(data.x, data.y, data.rotation, data.caption || '', data.imageData);
                 } else if (data.type === 'arrow') {
                     element = createArrow(data.x, data.y, data.rotation);
                 } else if (data.type === 'text') {
