@@ -808,70 +808,39 @@ function loadElements() {
 // Venn Section
 // ============================================
 (function () {
-    // ---- Carousel logic ----
-    const carousels = {};
-
-    document.querySelectorAll('.vp-track').forEach(track => {
-        const id = track.id;
-        const slides = track.querySelectorAll('.vp-slide');
-        carousels[id] = { idx: 0, total: slides.length };
-
-        document.querySelectorAll(`.vp-btn[data-tr="${id}"]`).forEach(btn => {
-            btn.addEventListener('click', () => {
-                const c = carousels[id];
-                c.idx = (c.idx + parseInt(btn.dataset.dir) + c.total) % c.total;
-                const w = track.parentElement.offsetWidth;
-                track.style.transform = `translateX(-${c.idx * w}px)`;
-                const dotsId = 'dt-' + id.replace('tr-', '');
-                document.querySelectorAll(`#${dotsId} .vp-dot`).forEach((d, i) => {
-                    d.classList.toggle('active', i === c.idx);
-                });
-            });
-        });
-    });
-
-    window.addEventListener('resize', () => {
-        Object.keys(carousels).forEach(id => {
-            const track = document.getElementById(id);
-            if (!track) return;
-            const w = track.parentElement.offsetWidth;
-            track.style.transform = `translateX(-${carousels[id].idx * w}px)`;
-        });
-    });
-
-    // ---- Project data (exclusive per Venn region — true Venn logic) ----
+    // ---- Project data — exclusive per region (true Venn logic) ----
     const REGION_PROJECTS = {
         design: [
-            { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design", href: "projects/potion-bottle.html" },
+            { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design", href: "projects/potion-bottle.html", bg: "#8B5A35", fg: "#faf8f5" },
         ],
         tech:     [],
         business: [],
         dt: [
-            { title: "How can we recreate and gift a memory?", cat: "Experience", href: "projects/recreate-memory.html" },
-            { title: "I developed a VR game", cat: "Game Design", href: "projects/vr-game.html" },
-            { title: "I designed a lamp", cat: "Industrial Design", href: "projects/lamp-designed.html" },
-            { title: "I welded cutlery into a sponge holder", cat: "Fabrication", href: "projects/cutlery-sponge.html" },
-            { title: "I made a lamp", cat: "Fabrication", href: "projects/lamp-made.html" },
-            { title: "A functional candy dispenser", cat: "Engineering", href: "projects/candy-dispenser.html" },
+            { title: "How can we recreate and gift a memory?",     cat: "Experience",       href: "projects/recreate-memory.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "I developed a VR game",                      cat: "Game Design",       href: "projects/vr-game.html",          bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "I designed a lamp",                          cat: "Industrial Design", href: "projects/lamp-designed.html",    bg: "#8B5A35", fg: "#faf8f5" },
+            { title: "I welded cutlery into a sponge holder",      cat: "Fabrication",       href: "projects/cutlery-sponge.html",   bg: "#8B5A35", fg: "#faf8f5" },
+            { title: "I made a lamp",                              cat: "Fabrication",       href: "projects/lamp-made.html",        bg: "#8B5A35", fg: "#faf8f5" },
+            { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
         ],
         db: [
-            { title: "Designed the Howmet Material Science Lab", cat: "Lab Design", href: "projects/howmet-lab.html" },
-            { title: "A tea house retirement home", cat: "Architecture", href: "projects/teahouse.html" },
-            { title: "Designing a home away from home", cat: "Interior", href: "projects/home-away.html" },
-            { title: "Design an amusement park — 42-person effort", cat: "Large-Scale", href: "projects/amusement-park.html" },
-            { title: "If hair could be recycled into soap bottles", cat: "Sustainability", href: "projects/hair-soap.html" },
+            { title: "Designed the Howmet Material Science Lab",    cat: "Lab Design",     href: "projects/howmet-lab.html",      bg: "#C96832", fg: "#1a1a1a" },
+            { title: "A tea house retirement home",                 cat: "Architecture",   href: "projects/teahouse.html",        bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "Designing a home away from home",             cat: "Interior",       href: "projects/home-away.html",       bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "Design an amusement park — 42-person effort", cat: "Large-Scale",    href: "projects/amusement-park.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "If hair could be recycled into soap bottles",  cat: "Sustainability", href: "projects/hair-soap.html",       bg: "#DDD0B0", fg: "#1a1a1a" },
         ],
-        tb:  [],
+        tb: [],
         dtb: [
-            { title: "The first smart jewelry for women going through menopause", cat: "Femtech", href: "projects/romi.html" },
-            { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech", href: "projects/oura-ring.html" },
-            { title: "Wound assessment tool for Johnson & Johnson", cat: "Medtech", href: "projects/jj-wound.html" },
-            { title: "Designed in-flight entertainment for commercial airlines", cat: "UX Design", href: "projects/thales-ife.html" },
-            { title: "Redesigned signage in downtown LA", cat: "Urban Design", href: "projects/arup-signage.html" },
-            { title: "A convention planning software tool", cat: "Software", href: "projects/convention-software.html" },
-            { title: "Foodie: A fridge that tracks your food expiration dates", cat: "Product", href: "projects/foodie.html" },
-            { title: "I designed a shoe", cat: "Industrial Design", href: "projects/shoe.html" },
-            { title: "I designed a speaker", cat: "Industrial Design", href: "projects/speaker.html" },
+            { title: "The first smart jewelry for women going through menopause",  cat: "Femtech",          href: "projects/romi.html",               bg: "#C96832", fg: "#1a1a1a" },
+            { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech",      href: "projects/oura-ring.html",          bg: "#C96832", fg: "#1a1a1a" },
+            { title: "Wound assessment tool for Johnson & Johnson",                cat: "Medtech",          href: "projects/jj-wound.html",            bg: "#C96832", fg: "#1a1a1a" },
+            { title: "Designed in-flight entertainment for commercial airlines",   cat: "UX Design",        href: "projects/thales-ife.html",          bg: "#C96832", fg: "#1a1a1a" },
+            { title: "Redesigned signage in downtown LA",                          cat: "Urban Design",     href: "projects/arup-signage.html",        bg: "#C96832", fg: "#1a1a1a" },
+            { title: "A convention planning software tool",                        cat: "Software",         href: "projects/convention-software.html", bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "Foodie: A fridge that tracks your food expiration dates",    cat: "Product",          href: "projects/foodie.html",              bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "I designed a shoe",                                          cat: "Industrial Design", href: "projects/shoe.html",               bg: "#8B5A35", fg: "#faf8f5" },
+            { title: "I designed a speaker",                                       cat: "Industrial Design", href: "projects/speaker.html",            bg: "#8B5A35", fg: "#faf8f5" },
         ],
     };
 
@@ -908,53 +877,32 @@ function loadElements() {
         return inside ? (REGION_KEY_MAP[inside] || null) : null;
     }
 
-    // ---- Tooltip ----
-    const tooltip = document.createElement('div');
-    tooltip.className = 'venn-tooltip';
-    tooltip.innerHTML = '<div class="venn-tooltip-inner"><span class="venn-tooltip-label"></span><div class="venn-tooltip-cards"></div></div>';
-    document.body.appendChild(tooltip);
-    const ttLabel = tooltip.querySelector('.venn-tooltip-label');
-    const ttCards = tooltip.querySelector('.venn-tooltip-cards');
-    const MAX_CARDS = 5;
+    // ---- Panel update ----
+    const vennPanel = document.getElementById('vennPanel');
+    const EMPTY_HTML = '<p class="venn-panel-hint">Hover over the diagram<br>to explore projects</p>';
 
-    function updateTooltip(region, clientX, clientY) {
+    function updatePanel(region) {
+        if (!vennPanel) return;
+        if (!region) { vennPanel.innerHTML = EMPTY_HTML; return; }
+
         const projects = REGION_PROJECTS[region] || [];
-        ttLabel.textContent = REGION_LABELS[region] || '';
+        let html = `<span class="venn-panel-label">${REGION_LABELS[region]}</span><div class="venn-panel-grid">`;
 
-        const shown = projects.slice(0, MAX_CARDS);
-        const extra = projects.length - shown.length;
-        let html = shown.map(p =>
-            `<div class="vpc" style="min-height:0;cursor:default;">
-                <span class="vpc-cat">${p.cat}</span>
-                <p class="vpc-title">${p.title}</p>
-            </div>`
-        ).join('');
-        if (extra > 0) html += `<div class="venn-tooltip-more">+${extra} more</div>`;
-        if (projects.length === 0) html = `<div class="venn-tooltip-more" style="padding:0.1rem 0;">No exclusive projects here</div>`;
-        ttCards.innerHTML = html;
-
-        // Position: prefer above cursor, fall back to right
-        const tw = tooltip.offsetWidth || 240;
-        const th = tooltip.offsetHeight || 160;
-        const vw = window.innerWidth;
-        const offset = 14;
-        let left = clientX - tw / 2;
-        let top  = clientY - th - offset;
-
-        if (top < 8) {
-            left = clientX + offset;
-            top  = clientY - th / 2;
-            if (left + tw > vw - 8) left = clientX - tw - offset;
+        if (projects.length === 0) {
+            html += `<p class="venn-panel-hint" style="margin:1.5rem 0;font-size:0.9rem;">No exclusive projects in this region</p>`;
+        } else {
+            projects.forEach(p => {
+                html += `<a href="${p.href}" class="venn-panel-card" style="--card-bg:${p.bg};--card-text:${p.fg};">
+                    <span class="venn-panel-card-cat">${p.cat}</span>
+                    <span class="venn-panel-card-title">${p.title}</span>
+                </a>`;
+            });
         }
-        left = Math.max(8, Math.min(left, vw - tw - 8));
-        top  = Math.max(8, top);
-
-        tooltip.style.left = left + 'px';
-        tooltip.style.top  = top  + 'px';
-        tooltip.classList.add('visible');
+        html += '</div>';
+        vennPanel.innerHTML = html;
     }
 
-    // ---- SVG highlight logic ----
+    // ---- SVG highlight ----
     const vennSvg = document.getElementById('vennSvg');
     const vcMap = {
         design:   document.querySelector('.vc-design'),
@@ -968,21 +916,13 @@ function loadElements() {
 
     let activeRegion = null;
 
-    function setRegion(region, clientX, clientY) {
-        if (region === activeRegion && region !== null) return;
+    function setRegion(region) {
         activeRegion = region;
-
         Object.values(hlMap).forEach(el => el && el.setAttribute('display', 'none'));
-        Object.values(vcMap).forEach(el => el && el.classList.remove('dimmed', 'highlighted'));
-
-        if (!region) {
-            tooltip.classList.remove('visible');
-            return;
-        }
-
+        Object.values(vcMap).forEach(el => el && el.classList.remove('dimmed'));
+        if (!region) return;
         if (hlMap[region]) hlMap[region].setAttribute('display', '');
         Object.values(vcMap).forEach(el => el && el.classList.add('dimmed'));
-        updateTooltip(region, clientX, clientY);
     }
 
     if (vennSvg) {
@@ -993,26 +933,18 @@ function loadElements() {
             const region = getRegionAtPoint(svgX, svgY);
             vennSvg.style.cursor = region ? 'pointer' : 'default';
             if (region !== activeRegion) {
-                setRegion(region, e.clientX, e.clientY);
-            } else if (region) {
-                // Update tooltip position as cursor moves
-                const tw = tooltip.offsetWidth || 240;
-                const th = tooltip.offsetHeight || 160;
-                const vw = window.innerWidth;
-                const offset = 14;
-                let left = e.clientX - tw / 2;
-                let top  = e.clientY - th - offset;
-                if (top < 8) { left = e.clientX + offset; top = e.clientY - th / 2; if (left + tw > vw - 8) left = e.clientX - tw - offset; }
-                left = Math.max(8, Math.min(left, vw - tw - 8));
-                top  = Math.max(8, top);
-                tooltip.style.left = left + 'px';
-                tooltip.style.top  = top  + 'px';
+                setRegion(region);
+                updatePanel(region);
             }
         });
 
-        vennSvg.addEventListener('mouseleave', () => setRegion(null, 0, 0));
+        vennSvg.addEventListener('mouseleave', () => {
+            setRegion(null);
+            updatePanel(null);
+        });
     }
 })();
+
 
 // Load elements on page load (for normal viewing)
 window.addEventListener('load', () => {
