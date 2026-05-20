@@ -839,13 +839,13 @@ function loadElements() {
         });
     });
 
-    // ---- Project region data ----
-    const PROJECTS = {
-        d_only: [
+    // ---- Project data (exclusive per Venn region — true Venn logic) ----
+    const REGION_PROJECTS = {
+        design: [
             { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design", href: "projects/potion-bottle.html" },
         ],
-        t_only: [],
-        b_only: [],
+        tech:     [],
+        business: [],
         dt: [
             { title: "How can we recreate and gift a memory?", cat: "Experience", href: "projects/recreate-memory.html" },
             { title: "I developed a VR game", cat: "Game Design", href: "projects/vr-game.html" },
@@ -861,7 +861,7 @@ function loadElements() {
             { title: "Design an amusement park — 42-person effort", cat: "Large-Scale", href: "projects/amusement-park.html" },
             { title: "If hair could be recycled into soap bottles", cat: "Sustainability", href: "projects/hair-soap.html" },
         ],
-        tb: [],
+        tb:  [],
         dtb: [
             { title: "The first smart jewelry for women going through menopause", cat: "Femtech", href: "projects/romi.html" },
             { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech", href: "projects/oura-ring.html" },
@@ -874,14 +874,11 @@ function loadElements() {
             { title: "I designed a speaker", cat: "Industrial Design", href: "projects/speaker.html" },
         ],
     };
-    PROJECTS.design   = [...PROJECTS.dtb, ...PROJECTS.dt, ...PROJECTS.db, ...PROJECTS.d_only];
-    PROJECTS.tech     = [...PROJECTS.dtb, ...PROJECTS.dt, ...PROJECTS.tb, ...PROJECTS.t_only];
-    PROJECTS.business = [...PROJECTS.dtb, ...PROJECTS.db, ...PROJECTS.tb, ...PROJECTS.b_only];
 
     const REGION_LABELS = {
-        design:   'Design',
-        tech:     'Technology',
-        business: 'Business',
+        design:   'Design only',
+        tech:     'Technology only',
+        business: 'Business only',
         dt:       'Design × Technology',
         db:       'Design × Business',
         tb:       'Technology × Business',
@@ -894,110 +891,98 @@ function loadElements() {
         { id: 'business', cx: 210, cy: 260, r: 110 },
     ];
 
-    const REGION_CIRCLES = {
-        design:   ['design'],
-        tech:     ['tech'],
-        business: ['business'],
-        dt:       ['design', 'tech'],
-        db:       ['design', 'business'],
-        tb:       ['tech', 'business'],
-        dtb:      ['design', 'tech', 'business'],
-    };
-
     const REGION_KEY_MAP = {
-        'design':              'design',
-        'tech':                'tech',
-        'business':            'business',
-        'design,tech':         'dt',
-        'business,design':     'db',
-        'business,tech':       'tb',
-        'business,design,tech':'dtb',
+        'design':               'design',
+        'tech':                 'tech',
+        'business':             'business',
+        'design,tech':          'dt',
+        'business,design':      'db',
+        'business,tech':        'tb',
+        'business,design,tech': 'dtb',
     };
 
     function getRegionAtPoint(svgX, svgY) {
         const inside = CIRCLE_DEFS
             .filter(c => (svgX - c.cx) ** 2 + (svgY - c.cy) ** 2 <= c.r ** 2)
-            .map(c => c.id)
-            .sort()
-            .join(',');
+            .map(c => c.id).sort().join(',');
         return inside ? (REGION_KEY_MAP[inside] || null) : null;
     }
 
-    // ---- State ----
-    let hoveredRegion = null;
-    const selectedRegions = new Set();
+    // ---- Tooltip ----
+    const tooltip = document.createElement('div');
+    tooltip.className = 'venn-tooltip';
+    tooltip.innerHTML = '<div class="venn-tooltip-inner"><span class="venn-tooltip-label"></span><div class="venn-tooltip-cards"></div></div>';
+    document.body.appendChild(tooltip);
+    const ttLabel = tooltip.querySelector('.venn-tooltip-label');
+    const ttCards = tooltip.querySelector('.venn-tooltip-cards');
+    const MAX_CARDS = 5;
 
-    const vennSvg      = document.getElementById('vennSvg');
-    const vennProjects = document.getElementById('vennProjects');
+    function updateTooltip(region, clientX, clientY) {
+        const projects = REGION_PROJECTS[region] || [];
+        ttLabel.textContent = REGION_LABELS[region] || '';
+
+        const shown = projects.slice(0, MAX_CARDS);
+        const extra = projects.length - shown.length;
+        let html = shown.map(p =>
+            `<div class="vpc" style="min-height:0;cursor:default;">
+                <span class="vpc-cat">${p.cat}</span>
+                <p class="vpc-title">${p.title}</p>
+            </div>`
+        ).join('');
+        if (extra > 0) html += `<div class="venn-tooltip-more">+${extra} more</div>`;
+        if (projects.length === 0) html = `<div class="venn-tooltip-more" style="padding:0.1rem 0;">No exclusive projects here</div>`;
+        ttCards.innerHTML = html;
+
+        // Position: prefer above cursor, fall back to right
+        const tw = tooltip.offsetWidth || 240;
+        const th = tooltip.offsetHeight || 160;
+        const vw = window.innerWidth;
+        const offset = 14;
+        let left = clientX - tw / 2;
+        let top  = clientY - th - offset;
+
+        if (top < 8) {
+            left = clientX + offset;
+            top  = clientY - th / 2;
+            if (left + tw > vw - 8) left = clientX - tw - offset;
+        }
+        left = Math.max(8, Math.min(left, vw - tw - 8));
+        top  = Math.max(8, top);
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top  = top  + 'px';
+        tooltip.classList.add('visible');
+    }
+
+    // ---- SVG highlight logic ----
+    const vennSvg = document.getElementById('vennSvg');
     const vcMap = {
         design:   document.querySelector('.vc-design'),
         tech:     document.querySelector('.vc-tech'),
         business: document.querySelector('.vc-business'),
     };
+    const hlMap = {};
+    ['design', 'tech', 'business', 'dt', 'db', 'tb', 'dtb'].forEach(k => {
+        hlMap[k] = document.getElementById('hl-' + k);
+    });
 
-    function updateCircleVisuals() {
-        const activeCircles = new Set();
-        const allActive = new Set(selectedRegions);
-        if (hoveredRegion) allActive.add(hoveredRegion);
-        allActive.forEach(r => (REGION_CIRCLES[r] || []).forEach(c => activeCircles.add(c)));
+    let activeRegion = null;
 
-        Object.entries(vcMap).forEach(([name, el]) => {
-            if (!el) return;
-            if (activeCircles.size === 0) {
-                el.classList.remove('highlighted', 'dimmed');
-            } else if (activeCircles.has(name)) {
-                el.classList.add('highlighted');
-                el.classList.remove('dimmed');
-            } else {
-                el.classList.add('dimmed');
-                el.classList.remove('highlighted');
-            }
-        });
-    }
+    function setRegion(region, clientX, clientY) {
+        if (region === activeRegion && region !== null) return;
+        activeRegion = region;
 
-    function renderProjects() {
-        updateCircleVisuals();
+        Object.values(hlMap).forEach(el => el && el.setAttribute('display', 'none'));
+        Object.values(vcMap).forEach(el => el && el.classList.remove('dimmed', 'highlighted'));
 
-        const allActive = new Set(selectedRegions);
-        if (hoveredRegion) allActive.add(hoveredRegion);
-
-        if (allActive.size === 0) {
-            vennProjects.innerHTML = '<p class="venn-projects-hint">Hover over a region to explore projects</p>';
+        if (!region) {
+            tooltip.classList.remove('visible');
             return;
         }
 
-        const seen = new Set();
-        const projects = [];
-        allActive.forEach(r => {
-            (PROJECTS[r] || []).forEach(p => {
-                if (!seen.has(p.href)) { seen.add(p.href); projects.push(p); }
-            });
-        });
-
-        const regionLabel = [...allActive].map(r => REGION_LABELS[r]).join(' + ');
-        const hasSelected = selectedRegions.size > 0;
-
-        let html = `<div class="venn-projects-header">
-            <span class="venn-projects-region-label">${regionLabel}</span>
-            ${hasSelected ? '<button class="venn-projects-clear" id="vpClearBtn">Clear selection</button>' : ''}
-        </div><div class="venn-projects-grid">`;
-
-        projects.forEach(p => {
-            html += `<a href="${p.href}" class="vp-card">
-                <span class="vp-card-cat">${p.cat}</span>
-                <span class="vp-card-title">${p.title}</span>
-            </a>`;
-        });
-        html += '</div>';
-        vennProjects.innerHTML = html;
-
-        const clearBtn = document.getElementById('vpClearBtn');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                selectedRegions.clear();
-                renderProjects();
-            });
-        }
+        if (hlMap[region]) hlMap[region].setAttribute('display', '');
+        Object.values(vcMap).forEach(el => el && el.classList.add('dimmed'));
+        updateTooltip(region, clientX, clientY);
     }
 
     if (vennSvg) {
@@ -1006,31 +991,26 @@ function loadElements() {
             const svgX = (e.clientX - rect.left) * (420 / rect.width);
             const svgY = (e.clientY - rect.top)  * (390 / rect.height);
             const region = getRegionAtPoint(svgX, svgY);
-            if (region !== hoveredRegion) {
-                hoveredRegion = region;
-                vennSvg.style.cursor = region ? 'pointer' : 'default';
-                renderProjects();
+            vennSvg.style.cursor = region ? 'pointer' : 'default';
+            if (region !== activeRegion) {
+                setRegion(region, e.clientX, e.clientY);
+            } else if (region) {
+                // Update tooltip position as cursor moves
+                const tw = tooltip.offsetWidth || 240;
+                const th = tooltip.offsetHeight || 160;
+                const vw = window.innerWidth;
+                const offset = 14;
+                let left = e.clientX - tw / 2;
+                let top  = e.clientY - th - offset;
+                if (top < 8) { left = e.clientX + offset; top = e.clientY - th / 2; if (left + tw > vw - 8) left = e.clientX - tw - offset; }
+                left = Math.max(8, Math.min(left, vw - tw - 8));
+                top  = Math.max(8, top);
+                tooltip.style.left = left + 'px';
+                tooltip.style.top  = top  + 'px';
             }
         });
 
-        vennSvg.addEventListener('mouseleave', () => {
-            hoveredRegion = null;
-            renderProjects();
-        });
-
-        vennSvg.addEventListener('click', e => {
-            const rect = vennSvg.getBoundingClientRect();
-            const svgX = (e.clientX - rect.left) * (420 / rect.width);
-            const svgY = (e.clientY - rect.top)  * (390 / rect.height);
-            const region = getRegionAtPoint(svgX, svgY);
-            if (!region) return;
-            if (selectedRegions.has(region)) {
-                selectedRegions.delete(region);
-            } else {
-                selectedRegions.add(region);
-            }
-            renderProjects();
-        });
+        vennSvg.addEventListener('mouseleave', () => setRegion(null, 0, 0));
     }
 })();
 

@@ -95,6 +95,57 @@
                         <span class="vc-name">BUSINESS</span>
                     </div>
                     <svg class="venn-overlay" id="vennSvg" viewBox="0 0 420 390" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <clipPath id="cpD"><circle cx="130" cy="110" r="110"/></clipPath>
+                            <clipPath id="cpT"><circle cx="290" cy="110" r="110"/></clipPath>
+                            <clipPath id="cpB"><circle cx="210" cy="260" r="110"/></clipPath>
+                            <!-- D only: D minus T minus B -->
+                            <mask id="mDonly">
+                                <circle cx="130" cy="110" r="110" fill="white"/>
+                                <circle cx="290" cy="110" r="110" fill="black"/>
+                                <circle cx="210" cy="260" r="110" fill="black"/>
+                            </mask>
+                            <!-- T only: T minus D minus B -->
+                            <mask id="mTonly">
+                                <circle cx="290" cy="110" r="110" fill="white"/>
+                                <circle cx="130" cy="110" r="110" fill="black"/>
+                                <circle cx="210" cy="260" r="110" fill="black"/>
+                            </mask>
+                            <!-- B only: B minus D minus T -->
+                            <mask id="mBonly">
+                                <circle cx="210" cy="260" r="110" fill="white"/>
+                                <circle cx="130" cy="110" r="110" fill="black"/>
+                                <circle cx="290" cy="110" r="110" fill="black"/>
+                            </mask>
+                            <!-- DT exclusive: D∩T minus B -->
+                            <mask id="mDT">
+                                <circle cx="290" cy="110" r="110" clip-path="url(#cpD)" fill="white"/>
+                                <circle cx="210" cy="260" r="110" fill="black"/>
+                            </mask>
+                            <!-- DB exclusive: D∩B minus T -->
+                            <mask id="mDB">
+                                <circle cx="210" cy="260" r="110" clip-path="url(#cpD)" fill="white"/>
+                                <circle cx="290" cy="110" r="110" fill="black"/>
+                            </mask>
+                            <!-- TB exclusive: T∩B minus D -->
+                            <mask id="mTB">
+                                <circle cx="210" cy="260" r="110" clip-path="url(#cpT)" fill="white"/>
+                                <circle cx="130" cy="110" r="110" fill="black"/>
+                            </mask>
+                            <!-- DTB: D∩T used as mask, then applied to B circle → D∩T∩B -->
+                            <mask id="mDTbase">
+                                <circle cx="290" cy="110" r="110" clip-path="url(#cpD)" fill="white"/>
+                            </mask>
+                        </defs>
+                        <!-- Highlight shapes — one per region, hidden by default -->
+                        <rect   id="hl-design"   pointer-events="none" width="420" height="390" mask="url(#mDonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-tech"     pointer-events="none" width="420" height="390" mask="url(#mTonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-business" pointer-events="none" width="420" height="390" mask="url(#mBonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-dt"       pointer-events="none" width="420" height="390" mask="url(#mDT)"      fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-db"       pointer-events="none" width="420" height="390" mask="url(#mDB)"      fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-tb"       pointer-events="none" width="420" height="390" mask="url(#mTB)"      fill="rgba(250,248,245,0.35)" display="none"/>
+                        <circle id="hl-dtb"      pointer-events="none" cx="210" cy="260" r="110" mask="url(#mDTbase)" fill="rgba(250,248,245,0.35)" display="none"/>
+                        <!-- Transparent hit area (last = topmost for events) -->
                         <rect width="420" height="390" fill="transparent"/>
                     </svg>
                 </div>
@@ -156,10 +207,6 @@
             </div>
         </div>
 
-        <!-- Projects Display -->
-        <div class="venn-projects" id="vennProjects">
-            <p class="venn-projects-hint">Hover over a region to explore projects</p>
-        </div>
     </section>
 
     <!-- DIY Panel — hidden, keeping code for future use -->

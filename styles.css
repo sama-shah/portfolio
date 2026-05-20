@@ -574,100 +574,53 @@ nav.scrolled {
     cursor: default;
 }
 
-/* Venn Projects Display */
-.venn-projects {
-    margin-top: 2.5rem;
-    min-height: 60px;
-    transition: opacity 0.2s ease;
+/* Venn Tooltip */
+.venn-tooltip {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease;
 }
 
-.venn-projects-hint {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--cream);
-    opacity: 0.3;
-    text-align: center;
-    padding: 1.5rem 0;
+.venn-tooltip.visible {
+    opacity: 1;
 }
 
-.venn-projects-header {
+.venn-tooltip-inner {
+    background: rgba(20, 20, 20, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 0.75rem;
+    min-width: 180px;
+    max-width: 260px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.venn-tooltip-label {
+    display: block;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 0.6rem;
+}
+
+.venn-tooltip-cards {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.25rem;
+    flex-direction: column;
+    gap: 0.45rem;
 }
 
-.venn-projects-region-label {
+.venn-tooltip-more {
     font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--cream);
-    opacity: 0.5;
-}
-
-.venn-projects-clear {
-    background: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.4);
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.venn-projects-clear:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.venn-projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
-}
-
-.vp-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
-    padding: 0.85rem;
-    display: block;
-    text-decoration: none;
-    color: var(--cream);
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.vp-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.13);
-    transform: translateY(-2px);
-}
-
-.vp-card-cat {
-    display: block;
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.54rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.38;
-    margin-bottom: 0.4rem;
-}
-
-.vp-card-title {
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.76rem;
-    font-weight: 500;
-    line-height: 1.45;
-    opacity: 0.72;
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.28);
+    text-align: center;
+    padding-top: 0.25rem;
 }
 
 /* Responsive */
