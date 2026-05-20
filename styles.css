@@ -344,6 +344,22 @@ nav.scrolled {
     margin-bottom: 3rem;
 }
 
+/* Projects sub-sections */
+.projects-section {
+    margin-bottom: 5rem;
+}
+
+.projects-section-label {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--coral);
+    opacity: 0.55;
+    margin-bottom: 1.5rem;
+}
+
 /* Projects Grid */
 .projects-grid {
     display: grid;
