@@ -401,12 +401,33 @@ nav.scrolled {
     flex: 1;
 }
 
-.project-challenge {
+.project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 1.25rem;
+}
+
+.project-role {
     font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.65;
-    opacity: 0.65;
-    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+
+.project-company {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+.project-dates {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.8rem;
+    opacity: 0.5;
 }
 
 .project-card-cta {
