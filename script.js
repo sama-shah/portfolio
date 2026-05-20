@@ -808,6 +808,7 @@ function loadElements() {
 // Venn Section
 // ============================================
 (function () {
+    // ---- Carousel logic ----
     const carousels = {};
 
     document.querySelectorAll('.vp-track').forEach(track => {
@@ -829,7 +830,6 @@ function loadElements() {
         });
     });
 
-    // Recalculate positions on resize
     window.addEventListener('resize', () => {
         Object.keys(carousels).forEach(id => {
             const track = document.getElementById(id);
@@ -839,27 +839,199 @@ function loadElements() {
         });
     });
 
-    // Circle hover — highlight matching panel, dim others
-    const circles = document.querySelectorAll('.vc');
-    const panels  = document.querySelectorAll('.vp');
+    // ---- Project region data ----
+    const PROJECTS = {
+        d_only: [
+            { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design", href: "projects/potion-bottle.html" },
+        ],
+        t_only: [],
+        b_only: [],
+        dt: [
+            { title: "How can we recreate and gift a memory?", cat: "Experience", href: "projects/recreate-memory.html" },
+            { title: "I developed a VR game", cat: "Game Design", href: "projects/vr-game.html" },
+            { title: "I designed a lamp", cat: "Industrial Design", href: "projects/lamp-designed.html" },
+            { title: "I welded cutlery into a sponge holder", cat: "Fabrication", href: "projects/cutlery-sponge.html" },
+            { title: "I made a lamp", cat: "Fabrication", href: "projects/lamp-made.html" },
+            { title: "A functional candy dispenser", cat: "Engineering", href: "projects/candy-dispenser.html" },
+        ],
+        db: [
+            { title: "Designed the Howmet Material Science Lab", cat: "Lab Design", href: "projects/howmet-lab.html" },
+            { title: "A tea house retirement home", cat: "Architecture", href: "projects/teahouse.html" },
+            { title: "Designing a home away from home", cat: "Interior", href: "projects/home-away.html" },
+            { title: "Design an amusement park — 42-person effort", cat: "Large-Scale", href: "projects/amusement-park.html" },
+            { title: "If hair could be recycled into soap bottles", cat: "Sustainability", href: "projects/hair-soap.html" },
+        ],
+        tb: [],
+        dtb: [
+            { title: "The first smart jewelry for women going through menopause", cat: "Femtech", href: "projects/romi.html" },
+            { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech", href: "projects/oura-ring.html" },
+            { title: "Wound assessment tool for Johnson & Johnson", cat: "Medtech", href: "projects/jj-wound.html" },
+            { title: "Designed in-flight entertainment for commercial airlines", cat: "UX Design", href: "projects/thales-ife.html" },
+            { title: "Redesigned signage in downtown LA", cat: "Urban Design", href: "projects/arup-signage.html" },
+            { title: "A convention planning software tool", cat: "Software", href: "projects/convention-software.html" },
+            { title: "Foodie: A fridge that tracks your food expiration dates", cat: "Product", href: "projects/foodie.html" },
+            { title: "I designed a shoe", cat: "Industrial Design", href: "projects/shoe.html" },
+            { title: "I designed a speaker", cat: "Industrial Design", href: "projects/speaker.html" },
+        ],
+    };
+    PROJECTS.design   = [...PROJECTS.dtb, ...PROJECTS.dt, ...PROJECTS.db, ...PROJECTS.d_only];
+    PROJECTS.tech     = [...PROJECTS.dtb, ...PROJECTS.dt, ...PROJECTS.tb, ...PROJECTS.t_only];
+    PROJECTS.business = [...PROJECTS.dtb, ...PROJECTS.db, ...PROJECTS.tb, ...PROJECTS.b_only];
 
-    circles.forEach(circle => {
-        circle.addEventListener('mouseenter', () => {
-            const panelId = circle.dataset.panel;
-            circles.forEach(c => {
-                c.classList.toggle('highlighted', c === circle);
-                c.classList.toggle('dimmed', c !== circle);
-            });
-            panels.forEach(p => {
-                p.classList.toggle('highlighted', p.id === panelId);
-                p.classList.toggle('dimmed', p.id !== panelId);
+    const REGION_LABELS = {
+        design:   'Design',
+        tech:     'Technology',
+        business: 'Business',
+        dt:       'Design × Technology',
+        db:       'Design × Business',
+        tb:       'Technology × Business',
+        dtb:      'Design × Technology × Business',
+    };
+
+    const CIRCLE_DEFS = [
+        { id: 'design',   cx: 130, cy: 110, r: 110 },
+        { id: 'tech',     cx: 290, cy: 110, r: 110 },
+        { id: 'business', cx: 210, cy: 260, r: 110 },
+    ];
+
+    const REGION_CIRCLES = {
+        design:   ['design'],
+        tech:     ['tech'],
+        business: ['business'],
+        dt:       ['design', 'tech'],
+        db:       ['design', 'business'],
+        tb:       ['tech', 'business'],
+        dtb:      ['design', 'tech', 'business'],
+    };
+
+    const REGION_KEY_MAP = {
+        'design':              'design',
+        'tech':                'tech',
+        'business':            'business',
+        'design,tech':         'dt',
+        'business,design':     'db',
+        'business,tech':       'tb',
+        'business,design,tech':'dtb',
+    };
+
+    function getRegionAtPoint(svgX, svgY) {
+        const inside = CIRCLE_DEFS
+            .filter(c => (svgX - c.cx) ** 2 + (svgY - c.cy) ** 2 <= c.r ** 2)
+            .map(c => c.id)
+            .sort()
+            .join(',');
+        return inside ? (REGION_KEY_MAP[inside] || null) : null;
+    }
+
+    // ---- State ----
+    let hoveredRegion = null;
+    const selectedRegions = new Set();
+
+    const vennSvg      = document.getElementById('vennSvg');
+    const vennProjects = document.getElementById('vennProjects');
+    const vcMap = {
+        design:   document.querySelector('.vc-design'),
+        tech:     document.querySelector('.vc-tech'),
+        business: document.querySelector('.vc-business'),
+    };
+
+    function updateCircleVisuals() {
+        const activeCircles = new Set();
+        const allActive = new Set(selectedRegions);
+        if (hoveredRegion) allActive.add(hoveredRegion);
+        allActive.forEach(r => (REGION_CIRCLES[r] || []).forEach(c => activeCircles.add(c)));
+
+        Object.entries(vcMap).forEach(([name, el]) => {
+            if (!el) return;
+            if (activeCircles.size === 0) {
+                el.classList.remove('highlighted', 'dimmed');
+            } else if (activeCircles.has(name)) {
+                el.classList.add('highlighted');
+                el.classList.remove('dimmed');
+            } else {
+                el.classList.add('dimmed');
+                el.classList.remove('highlighted');
+            }
+        });
+    }
+
+    function renderProjects() {
+        updateCircleVisuals();
+
+        const allActive = new Set(selectedRegions);
+        if (hoveredRegion) allActive.add(hoveredRegion);
+
+        if (allActive.size === 0) {
+            vennProjects.innerHTML = '<p class="venn-projects-hint">Hover over a region to explore projects</p>';
+            return;
+        }
+
+        const seen = new Set();
+        const projects = [];
+        allActive.forEach(r => {
+            (PROJECTS[r] || []).forEach(p => {
+                if (!seen.has(p.href)) { seen.add(p.href); projects.push(p); }
             });
         });
-        circle.addEventListener('mouseleave', () => {
-            circles.forEach(c => c.classList.remove('highlighted', 'dimmed'));
-            panels.forEach(p => p.classList.remove('highlighted', 'dimmed'));
+
+        const regionLabel = [...allActive].map(r => REGION_LABELS[r]).join(' + ');
+        const hasSelected = selectedRegions.size > 0;
+
+        let html = `<div class="venn-projects-header">
+            <span class="venn-projects-region-label">${regionLabel}</span>
+            ${hasSelected ? '<button class="venn-projects-clear" id="vpClearBtn">Clear selection</button>' : ''}
+        </div><div class="venn-projects-grid">`;
+
+        projects.forEach(p => {
+            html += `<a href="${p.href}" class="vp-card">
+                <span class="vp-card-cat">${p.cat}</span>
+                <span class="vp-card-title">${p.title}</span>
+            </a>`;
         });
-    });
+        html += '</div>';
+        vennProjects.innerHTML = html;
+
+        const clearBtn = document.getElementById('vpClearBtn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                selectedRegions.clear();
+                renderProjects();
+            });
+        }
+    }
+
+    if (vennSvg) {
+        vennSvg.addEventListener('mousemove', e => {
+            const rect = vennSvg.getBoundingClientRect();
+            const svgX = (e.clientX - rect.left) * (420 / rect.width);
+            const svgY = (e.clientY - rect.top)  * (390 / rect.height);
+            const region = getRegionAtPoint(svgX, svgY);
+            if (region !== hoveredRegion) {
+                hoveredRegion = region;
+                vennSvg.style.cursor = region ? 'pointer' : 'default';
+                renderProjects();
+            }
+        });
+
+        vennSvg.addEventListener('mouseleave', () => {
+            hoveredRegion = null;
+            renderProjects();
+        });
+
+        vennSvg.addEventListener('click', e => {
+            const rect = vennSvg.getBoundingClientRect();
+            const svgX = (e.clientX - rect.left) * (420 / rect.width);
+            const svgY = (e.clientY - rect.top)  * (390 / rect.height);
+            const region = getRegionAtPoint(svgX, svgY);
+            if (!region) return;
+            if (selectedRegions.has(region)) {
+                selectedRegions.delete(region);
+            } else {
+                selectedRegions.add(region);
+            }
+            renderProjects();
+        });
+    }
 })();
 
 // Load elements on page load (for normal viewing)

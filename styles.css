@@ -528,23 +528,23 @@ nav.scrolled {
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.2);
     mix-blend-mode: screen;
-    cursor: pointer;
+    pointer-events: none;
     transition: filter 0.3s ease;
 }
 
 /* Positions: nice 3-way overlap */
-.vc-design   { top: 0;    left: 20px;  }
-.vc-strategy { top: 0;    left: 180px; }
-.vc-make     { top: 150px; left: 100px; }
+.vc-design   { top: 0;     left: 20px;  }
+.vc-tech     { top: 0;     left: 180px; }
+.vc-business { top: 150px; left: 100px; }
 
 /* Fills: muted base — overlapping regions are brighter via screen blend */
 .vc-design   { background: rgba(175, 60, 25, 0.52); }
-.vc-strategy { background: rgba(155, 120, 45, 0.52); }
-.vc-make     { background: rgba(80, 48, 18, 0.62); }
+.vc-tech     { background: rgba(155, 120, 45, 0.52); }
+.vc-business { background: rgba(80, 48, 18, 0.62); }
 
-/* Hover states */
-.vc.dimmed      { filter: brightness(0.4) saturate(0.4); }
-.vc.highlighted { filter: brightness(1.25); }
+/* Hover/click states */
+.vc.dimmed      { filter: brightness(0.35) saturate(0.3); }
+.vc.highlighted { filter: brightness(1.3); }
 
 /* Labels */
 .vc-name {
@@ -560,8 +560,115 @@ nav.scrolled {
 }
 
 .vc-design .vc-name   { top: 24px;    left: 50%; transform: translateX(-50%); }
-.vc-strategy .vc-name { top: 24px;    left: 50%; transform: translateX(-50%); }
-.vc-make .vc-name     { bottom: 24px; left: 50%; transform: translateX(-50%); }
+.vc-tech .vc-name     { top: 24px;    left: 50%; transform: translateX(-50%); }
+.vc-business .vc-name { bottom: 24px; left: 50%; transform: translateX(-50%); }
+
+/* SVG Overlay */
+.venn-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: default;
+}
+
+/* Venn Projects Display */
+.venn-projects {
+    margin-top: 2.5rem;
+    min-height: 60px;
+    transition: opacity 0.2s ease;
+}
+
+.venn-projects-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--cream);
+    opacity: 0.3;
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.venn-projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.venn-projects-region-label {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.5;
+}
+
+.venn-projects-clear {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.venn-projects-clear:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.venn-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.vp-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 0.85rem;
+    display: block;
+    text-decoration: none;
+    color: var(--cream);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.vp-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.13);
+    transform: translateY(-2px);
+}
+
+.vp-card-cat {
+    display: block;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.38;
+    margin-bottom: 0.4rem;
+}
+
+.vp-card-title {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1.45;
+    opacity: 0.72;
+}
 
 /* Responsive */
 @media (max-width: 1140px) {
