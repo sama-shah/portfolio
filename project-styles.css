@@ -77,10 +77,10 @@ body {
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    border: 1.5px solid rgba(26, 26, 26, 0.5);
+    border: 1.5px solid currentColor;
     padding: 0.35rem 0.9rem;
     border-radius: 999px;
-    color: rgba(26, 26, 26, 0.7);
+    opacity: 0.65;
     width: fit-content;
 }
 
@@ -89,7 +89,6 @@ body {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 600;
     line-height: 1.2;
-    color: #1a1a1a;
     max-width: 780px;
 }
 

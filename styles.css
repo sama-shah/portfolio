@@ -147,6 +147,7 @@ nav.scrolled {
     object-fit: cover;
     object-position: center 20%;
     margin-bottom: 1.5rem;
+    border-radius: 16px;
 }
 
 .hero-image-info {
