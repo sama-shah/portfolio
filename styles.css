@@ -344,20 +344,35 @@ nav.scrolled {
     margin-bottom: 3rem;
 }
 
-/* Projects sub-sections */
-.projects-section {
-    margin-bottom: 5rem;
+/* Projects legend */
+.projects-legend {
+    display: flex;
+    gap: 1.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
 }
 
-.projects-section-label {
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.legend-label {
     font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--coral);
-    opacity: 0.55;
-    margin-bottom: 1.5rem;
+    color: var(--cream);
+    opacity: 0.5;
 }
 
 /* Projects Grid */
@@ -370,9 +385,8 @@ nav.scrolled {
 .project-card {
     background: var(--card-bg, var(--coral));
     color: var(--card-text, #1a1a1a);
-    border-radius: 20px;
-    padding: 1.75rem;
-    min-height: 420px;
+    border-radius: 16px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -389,7 +403,7 @@ nav.scrolled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.1rem;
 }
 
 .project-category {
@@ -411,17 +425,17 @@ nav.scrolled {
 
 .project-solution {
     font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.35;
     flex: 1;
 }
 
 .project-meta {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    margin-top: 1.25rem;
+    gap: 0.25rem;
+    margin-top: 0.9rem;
 }
 
 .project-role {
@@ -450,8 +464,8 @@ nav.scrolled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
@@ -465,14 +479,14 @@ nav.scrolled {
 }
 
 .view-more-arrow {
-    width: 38px;
-    height: 38px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.85rem;
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
