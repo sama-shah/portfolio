@@ -140,6 +140,113 @@ body {
     color: rgba(250, 248, 245, 0.5);
 }
 
+/* Cover Image */
+.project-cover {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.cover-img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+}
+
+.cover-change-btn {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.9rem;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.project-cover:hover .cover-change-btn { opacity: 1; }
+
+.cover-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2.5rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.cover-add-label {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--coral);
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cover-add-label:hover { opacity: 1; }
+.cover-add-label input { display: none; }
+
+.cover-or {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.68rem;
+    opacity: 0.25;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.cover-url-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cover-url-input {
+    padding: 0.5rem 0.85rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--cream);
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.8rem;
+    width: 260px;
+}
+
+.cover-url-input:focus {
+    outline: none;
+    border-color: var(--coral);
+}
+
+.cover-url-input::placeholder { opacity: 0.35; }
+
+.cover-url-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: var(--cream);
+    cursor: pointer;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.cover-url-btn:hover { background: rgba(255, 255, 255, 0.14); }
+
 /* Pitch Deck */
 .deck-area {
     margin-top: 1rem;
