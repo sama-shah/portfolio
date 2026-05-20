@@ -804,6 +804,64 @@ function loadElements() {
     });
 }
 
+// ============================================
+// Venn Section
+// ============================================
+(function () {
+    const carousels = {};
+
+    document.querySelectorAll('.vp-track').forEach(track => {
+        const id = track.id;
+        const slides = track.querySelectorAll('.vp-slide');
+        carousels[id] = { idx: 0, total: slides.length };
+
+        document.querySelectorAll(`.vp-btn[data-tr="${id}"]`).forEach(btn => {
+            btn.addEventListener('click', () => {
+                const c = carousels[id];
+                c.idx = (c.idx + parseInt(btn.dataset.dir) + c.total) % c.total;
+                const w = track.parentElement.offsetWidth;
+                track.style.transform = `translateX(-${c.idx * w}px)`;
+                const dotsId = 'dt-' + id.replace('tr-', '');
+                document.querySelectorAll(`#${dotsId} .vp-dot`).forEach((d, i) => {
+                    d.classList.toggle('active', i === c.idx);
+                });
+            });
+        });
+    });
+
+    // Recalculate positions on resize
+    window.addEventListener('resize', () => {
+        Object.keys(carousels).forEach(id => {
+            const track = document.getElementById(id);
+            if (!track) return;
+            const w = track.parentElement.offsetWidth;
+            track.style.transform = `translateX(-${carousels[id].idx * w}px)`;
+        });
+    });
+
+    // Circle hover — highlight matching panel, dim others
+    const circles = document.querySelectorAll('.vc');
+    const panels  = document.querySelectorAll('.vp');
+
+    circles.forEach(circle => {
+        circle.addEventListener('mouseenter', () => {
+            const panelId = circle.dataset.panel;
+            circles.forEach(c => {
+                c.classList.toggle('highlighted', c === circle);
+                c.classList.toggle('dimmed', c !== circle);
+            });
+            panels.forEach(p => {
+                p.classList.toggle('highlighted', p.id === panelId);
+                p.classList.toggle('dimmed', p.id !== panelId);
+            });
+        });
+        circle.addEventListener('mouseleave', () => {
+            circles.forEach(c => c.classList.remove('highlighted', 'dimmed'));
+            panels.forEach(p => p.classList.remove('highlighted', 'dimmed'));
+        });
+    });
+})();
+
 // Load elements on page load (for normal viewing)
 window.addEventListener('load', () => {
     const saved = localStorage.getItem('portfolioElements');

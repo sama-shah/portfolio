@@ -328,6 +328,259 @@ nav.scrolled {
     opacity: 0.75;
 }
 
+/* ============================================
+   Venn Section
+   ============================================ */
+
+.venn-section {
+    background: var(--navy);
+    padding: 5rem 3rem 4rem;
+}
+
+.venn-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3.5rem;
+}
+
+.venn-hdr-label {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.35;
+}
+
+.venn-hdr-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--cream);
+    opacity: 0.3;
+    text-align: right;
+    max-width: 200px;
+    line-height: 1.55;
+}
+
+/* Three-column row */
+.venn-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
+
+/* Side panels */
+.vp {
+    width: 300px;
+    flex-shrink: 0;
+    transition: opacity 0.35s ease;
+}
+
+.vp-wrap {
+    overflow: hidden;
+    width: 300px;
+}
+
+.vp-track {
+    display: flex;
+    transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.vp-slide {
+    display: flex;
+    gap: 0.65rem;
+    min-width: 300px;
+}
+
+/* Bottom panel is wider (3 cards) */
+.vp-bottom .vp-wrap  { width: 490px; }
+.vp-bottom .vp-slide { min-width: 490px; }
+
+/* Project cards inside carousel */
+.vpc {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 0.85rem;
+    display: block;
+    text-decoration: none;
+    color: var(--cream);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    min-height: 115px;
+}
+
+.vpc:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.13);
+    transform: translateY(-2px);
+}
+
+.vpc-cat {
+    display: block;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.38;
+    margin-bottom: 0.5rem;
+}
+
+.vpc-title {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1.45;
+    opacity: 0.72;
+}
+
+/* Navigation row */
+.vp-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.8rem;
+    justify-content: center;
+}
+
+.vp-make-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.vp-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.4);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.vp-btn:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.vp-dots {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.vp-dot {
+    width: 16px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 1px;
+    transition: background 0.25s ease, width 0.25s ease;
+}
+
+.vp-dot.active {
+    background: rgba(255, 255, 255, 0.6);
+    width: 26px;
+}
+
+/* Bottom area */
+.venn-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.25rem;
+}
+
+/* Hover state */
+.vp.dimmed     { opacity: 0.2; }
+.vp.highlighted { opacity: 1; }
+
+/* ---- Venn Diagram ---- */
+
+.venn-col {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.venn-diagram {
+    position: relative;
+    width: 420px;
+    height: 390px;
+    isolation: isolate;
+}
+
+.vc {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    mix-blend-mode: screen;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+}
+
+/* Positions: nice 3-way overlap */
+.vc-design   { top: 0;    left: 20px;  }
+.vc-strategy { top: 0;    left: 180px; }
+.vc-make     { top: 150px; left: 100px; }
+
+/* Fills: muted base — overlapping regions are brighter via screen blend */
+.vc-design   { background: rgba(175, 60, 25, 0.52); }
+.vc-strategy { background: rgba(155, 120, 45, 0.52); }
+.vc-make     { background: rgba(80, 48, 18, 0.62); }
+
+/* Hover states */
+.vc.dimmed      { filter: brightness(0.4) saturate(0.4); }
+.vc.highlighted { filter: brightness(1.25); }
+
+/* Labels */
+.vc-name {
+    position: absolute;
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.vc-design .vc-name   { top: 24px;    left: 50%; transform: translateX(-50%); }
+.vc-strategy .vc-name { top: 24px;    left: 50%; transform: translateX(-50%); }
+.vc-make .vc-name     { bottom: 24px; left: 50%; transform: translateX(-50%); }
+
+/* Responsive */
+@media (max-width: 1140px) {
+    .venn-row { flex-wrap: wrap; gap: 2rem; }
+    .vp       { order: 2; }
+    .venn-col { order: 1; width: 100%; display: flex; justify-content: center; }
+    .venn-hdr { flex-direction: column; gap: 0.4rem; }
+    .venn-hdr-hint { text-align: left; max-width: 100%; }
+}
+
+@media (max-width: 640px) {
+    .venn-section { padding: 4rem 1.5rem 3rem; }
+    .vp { width: 100%; }
+    .vp-wrap { width: 100%; }
+    .vp-slide { min-width: 100%; }
+    .vp-bottom .vp-wrap  { width: 100%; }
+    .vp-bottom .vp-slide { min-width: 100%; flex-wrap: wrap; }
+}
+
 /* Projects Section */
 .projects {
     background: var(--navy);
