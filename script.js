@@ -819,7 +819,6 @@ function loadElements() {
             { title: "I developed a VR game",                      cat: "Game Design",       href: "projects/vr-game.html",         bg: "#DDD0B0", fg: "#1a1a1a", role: "Developer & Designer", company: "USC",      date: "2022" },
             { title: "I designed a lamp",                          cat: "Industrial Design", href: "projects/lamp-designed.html",   bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer",  company: "USC",      date: "2021" },
             { title: "I welded spoons and forks into a dishwasher man", cat: "Fabrication", href: "projects/cutlery-sponge.html", bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator", company: "USC", date: "2021" },
-            { title: "I made a wooden lamp",                       cat: "Fabrication",       href: "projects/lamp-made.html",       bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator",           company: "USC",      date: "2021" },
             { title: "I made an LED lamp",                         cat: "Fabrication",       href: "projects/led-lamp.html",        bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator",           company: "USC",      date: "2021" },
             { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html", bg: "#8B5A35", fg: "#faf8f5", role: "Engineer & Designer",  company: "USC",      date: "2020" },
         ],
