@@ -841,6 +841,7 @@ function loadElements() {
             { title: "This portfolio website",     cat: "Web",        href: "index.html",                       bg: "#C96832", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2024" },
         ],
         dtb: [
+            { title: "I built a rocking bench",                            cat: "Fabrication",       href: "projects/rocking-bench.html",       bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator",          company: "USC",   date: "2021" },
             { title: "Designed USC HackSC's login pages",                          cat: "Industry",          href: "projects/hacksc-login.html",        bg: "#C96832", fg: "#1a1a1a", role: "UI Designer",         company: "HackSC",            date: "2023" },
             { title: "The first smart jewelry for women going through menopause",  cat: "Femtech",           href: "projects/romi.html",               bg: "#C96832", fg: "#1a1a1a", role: "Founder & Designer",  company: "Romi",              date: "2023" },
             { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech",       href: "projects/oura-ring.html",          bg: "#C96832", fg: "#1a1a1a", role: "UX Designer",         company: "USC / Oura",        date: "2023" },
