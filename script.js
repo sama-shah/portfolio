@@ -834,7 +834,6 @@ function loadElements() {
             { title: "If hair could be recycled into soap bottles",  cat: "Sustainability", href: "projects/hair-soap.html",       bg: "#DDD0B0", fg: "#1a1a1a", role: "Concept Designer",  company: "USC",              date: "2022" },
         ],
         tb: [
-            { title: "Digital wardrobe",           cat: "Product",    href: "projects/digital-wardrobe.html",   bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",     company: "Personal", date: "2023" },
             { title: "Algorave digital sequencer", cat: "Music Tech", href: "projects/algorave-sequencer.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2026" },
             { title: "This portfolio website",     cat: "Web",        href: "index.html",                       bg: "#C96832", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2026" },
         ],
