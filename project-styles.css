@@ -84,6 +84,15 @@ body {
     width: fit-content;
 }
 
+.project-hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    opacity: 0.9;
+}
+
 .project-hero-title {
     font-family: 'Familjen Grotesk', sans-serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
