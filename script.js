@@ -821,6 +821,7 @@ function loadElements() {
             { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html", bg: "#8B5A35", fg: "#faf8f5", role: "Engineer & Designer",  company: "USC",      date: "2020" },
         ],
         db: [
+            { title: "I redesigned a ski resort",                         cat: "Creative Sprint", href: "projects/ski-resort.html",         bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer",           company: "USC", date: "2022" },
             { title: "I built a leash for your skateboard",               cat: "Creative Sprint", href: "projects/chindogu.html",          bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer & Builder", company: "USC", date: "2022" },
             { title: "Designed seating for individuals with herniated disk", cat: "Creative Sprint", href: "projects/inclusive-seating.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Inclusive Designer", company: "USC", date: "2022" },
             { title: "Reinventing what hearing aids are not solving",        cat: "Creative Sprint", href: "projects/mismatch-hearing.html",   bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer",          company: "USC", date: "2022" },
