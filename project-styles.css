@@ -102,6 +102,21 @@ body {
     gap: 5rem;
 }
 
+/* Full-width image slot — fill in src="" to activate */
+.project-img {
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+    object-fit: cover;
+}
+
+/* Placeholder appearance while src is empty */
+.project-img:not([src]), .project-img[src=""] {
+    aspect-ratio: 16 / 9;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
 .project-section h2 {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
@@ -248,114 +263,118 @@ body {
 .cover-url-btn:hover { background: rgba(255, 255, 255, 0.14); }
 
 /* Pitch Deck */
-.deck-area {
+/* ---- PDF viewer ---- */
+.pdf-viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
     margin-top: 1rem;
 }
 
-.deck-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    border: 2px dashed rgba(250, 248, 245, 0.15);
-    border-radius: 16px;
-    padding: 3rem 2rem;
+.pdf-page {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
+}
+
+.pdf-loading,
+.pdf-error {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(250, 248, 245, 0.3);
+    padding: 3rem 0;
     text-align: center;
 }
 
-.deck-upload-label {
-    display: inline-block;
-    padding: 0.75rem 2rem;
-    background: var(--coral);
-    color: #1a1a1a;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: opacity 0.2s;
-}
-
-.deck-upload-label:hover { opacity: 0.85; }
-.deck-upload-label input { display: none; }
-
-.deck-or {
-    font-size: 0.75rem;
-    opacity: 0.35;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-family: 'Familjen Grotesk', sans-serif;
-}
-
-.deck-url-row {
+/* ---- Doc link card ---- */
+.doc-cards {
     display: flex;
+    flex-direction: column;
     gap: 0.75rem;
-    width: 100%;
-    max-width: 500px;
+    margin-top: 1rem;
 }
 
-.deck-url-input {
-    flex: 1;
-    padding: 0.65rem 1rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+.doc-card {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
     color: var(--cream);
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.85rem;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.deck-url-input:focus {
-    outline: none;
-    border-color: var(--coral);
+.doc-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
-.deck-url-input::placeholder { opacity: 0.4; }
-
-.deck-url-btn {
-    padding: 0.65rem 1.25rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    color: var(--cream);
-    cursor: pointer;
-    font-family: 'Familjen Grotesk', sans-serif;
-    font-size: 0.85rem;
-    transition: background 0.2s;
-}
-
-.deck-url-btn:hover { background: rgba(255, 255, 255, 0.16); }
-
-.deck-viewer {
-    display: none;
-    height: 600px;
-    border-radius: 16px;
+.doc-card-thumb {
+    flex: 0 0 200px;
+    height: 120px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
     overflow: hidden;
 }
 
-.deck-viewer.active { display: block; }
-
-.deck-viewer iframe {
+.doc-card-thumb img {
     width: 100%;
     height: 100%;
-    border: none;
+    object-fit: cover;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
 }
 
-.deck-reset {
-    display: none;
-    margin-top: 0.75rem;
-    font-size: 0.75rem;
+.doc-card:hover .doc-card-thumb img { opacity: 1; }
+
+.doc-card-body {
+    flex: 1;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.doc-card-type {
     font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--coral);
-    cursor: pointer;
-    opacity: 0.6;
-    text-align: right;
-    background: none;
-    border: none;
-    padding: 0;
+    opacity: 0.8;
 }
 
-.deck-reset:hover { opacity: 1; }
+.doc-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.35;
+    opacity: 0.88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.doc-card-arrow {
+    flex: 0 0 auto;
+    padding: 0 1.5rem;
+    font-size: 1.1rem;
+    opacity: 0.35;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.doc-card:hover .doc-card-arrow {
+    opacity: 0.75;
+    transform: translate(2px, -2px);
+}
 
 /* Footer nav */
 .project-footer {

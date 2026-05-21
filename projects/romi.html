@@ -20,7 +20,6 @@
         <h1 class="project-hero-title">The first smart jewelry designed for women going through menopause</h1>
     </header>
 
-    <div class="project-cover" id="projectCover"></div>
 
     <main class="project-body">
         <div class="project-section">
@@ -28,6 +27,7 @@
             <p>Menopause affects over 1.3 billion women worldwide, yet the wearable category remains entirely undesigned for this phase of life. Existing health devices are clinical, generic, and built with a one-size-fits-all model that erases the nuance of menopause.</p>
             <p>The challenge wasn't just building a wearable — it was making something women actually want to wear. Something that fits their life, not a hospital waiting room.</p>
         </div>
+        <img class="project-img" src="" alt="">
         <div class="project-section">
             <h2>My Role</h2>
             <p>Co-founder and lead of product at Romi. Responsible for product vision, user research, hardware-software integration strategy, and interaction design.</p>
@@ -39,26 +39,16 @@
                 <span class="project-tag">Femtech</span>
             </div>
         </div>
+        <img class="project-img" src="" alt="">
         <div class="project-section">
             <h2>Pitch Deck</h2>
-            <div class="deck-area">
-                <div class="deck-placeholder" id="deckPlaceholder">
-                    <label class="deck-upload-label"><input type="file" accept=".pdf" id="deckFile">Upload PDF</label>
-                    <span class="deck-or">or</span>
-                    <div class="deck-url-row">
-                        <input type="text" class="deck-url-input" placeholder="Paste Google Slides or PDF link" id="deckUrl">
-                        <button class="deck-url-btn" id="deckUrlBtn">Embed</button>
-                    </div>
-                </div>
-                <div class="deck-viewer" id="deckViewer"></div>
-                <button class="deck-reset" id="deckReset">Remove deck</button>
-            </div>
+            <div class="pdf-viewer" data-src="../assets/pdfs/romi.pdf"></div>
         </div>
     </main>
 
     <footer class="project-footer">
         <a href="../index.html#projects" class="project-footer-back">← Back to Projects</a>
     </footer>
-    <script src="../project.js"></script>
+    <script src="../pdf-viewer.js"></script>
 </body>
 </html>

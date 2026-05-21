@@ -810,37 +810,40 @@ function loadElements() {
 (function () {
     // ---- Project data — exclusive per region (true Venn logic) ----
     const REGION_PROJECTS = {
-        design: [
-            { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design", href: "projects/potion-bottle.html", bg: "#8B5A35", fg: "#faf8f5" },
-        ],
+        design:   [],
         tech:     [],
         business: [],
         dt: [
-            { title: "How can we recreate and gift a memory?",     cat: "Experience",       href: "projects/recreate-memory.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "I developed a VR game",                      cat: "Game Design",       href: "projects/vr-game.html",          bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "I designed a lamp",                          cat: "Industrial Design", href: "projects/lamp-designed.html",    bg: "#8B5A35", fg: "#faf8f5" },
-            { title: "I welded cutlery into a sponge holder",      cat: "Fabrication",       href: "projects/cutlery-sponge.html",   bg: "#8B5A35", fg: "#faf8f5" },
-            { title: "I made a lamp",                              cat: "Fabrication",       href: "projects/lamp-made.html",        bg: "#8B5A35", fg: "#faf8f5" },
-            { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design",    href: "projects/potion-bottle.html",   bg: "#8B5A35", fg: "#faf8f5", role: "Solo Designer",        company: "Personal", date: "2021" },
+            { title: "How can we recreate and gift a memory?",     cat: "Experience",        href: "projects/recreate-memory.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Experience Designer",  company: "USC",      date: "2022" },
+            { title: "I developed a VR game",                      cat: "Game Design",       href: "projects/vr-game.html",         bg: "#DDD0B0", fg: "#1a1a1a", role: "Developer & Designer", company: "USC",      date: "2022" },
+            { title: "I designed a lamp",                          cat: "Industrial Design", href: "projects/lamp-designed.html",   bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer",  company: "USC",      date: "2021" },
+            { title: "I welded cutlery into a sponge holder",      cat: "Fabrication",       href: "projects/cutlery-sponge.html",  bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator",           company: "USC",      date: "2021" },
+            { title: "I made a lamp",                              cat: "Fabrication",       href: "projects/lamp-made.html",       bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator",           company: "USC",      date: "2021" },
+            { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html", bg: "#8B5A35", fg: "#faf8f5", role: "Engineer & Designer",  company: "USC",      date: "2020" },
         ],
         db: [
-            { title: "Designed the Howmet Material Science Lab",    cat: "Lab Design",     href: "projects/howmet-lab.html",      bg: "#C96832", fg: "#1a1a1a" },
-            { title: "A tea house retirement home",                 cat: "Architecture",   href: "projects/teahouse.html",        bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "Designing a home away from home",             cat: "Interior",       href: "projects/home-away.html",       bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "Design an amusement park — 42-person effort", cat: "Large-Scale",    href: "projects/amusement-park.html",  bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "If hair could be recycled into soap bottles",  cat: "Sustainability", href: "projects/hair-soap.html",       bg: "#DDD0B0", fg: "#1a1a1a" },
+            { title: "Designed the Howmet Material Science Lab",    cat: "Lab Design",     href: "projects/howmet-lab.html",      bg: "#C96832", fg: "#1a1a1a", role: "Design Lead",       company: "Howmet Aerospace", date: "2023" },
+            { title: "A tea house retirement home",                 cat: "Architecture",   href: "projects/teahouse.html",        bg: "#DDD0B0", fg: "#1a1a1a", role: "Architect",         company: "USC",              date: "2022" },
+            { title: "Designing a home away from home",             cat: "Interior",       href: "projects/home-away.html",       bg: "#DDD0B0", fg: "#1a1a1a", role: "Interior Designer", company: "USC",              date: "2022" },
+            { title: "Design an amusement park — 42-person effort", cat: "Large-Scale",    href: "projects/amusement-park.html",  bg: "#DDD0B0", fg: "#1a1a1a", role: "Team Lead",         company: "USC",              date: "2021" },
+            { title: "If hair could be recycled into soap bottles",  cat: "Sustainability", href: "projects/hair-soap.html",       bg: "#DDD0B0", fg: "#1a1a1a", role: "Concept Designer",  company: "USC",              date: "2022" },
         ],
-        tb: [],
+        tb: [
+            { title: "Digital wardrobe",           cat: "Product",    href: "projects/digital-wardrobe.html",   bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",     company: "Personal", date: "2023" },
+            { title: "Algorave digital sequencer", cat: "Music Tech", href: "projects/algorave-sequencer.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2023" },
+            { title: "This portfolio website",     cat: "Web",        href: "index.html",                       bg: "#C96832", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2024" },
+        ],
         dtb: [
-            { title: "The first smart jewelry for women going through menopause",  cat: "Femtech",          href: "projects/romi.html",               bg: "#C96832", fg: "#1a1a1a" },
-            { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech",      href: "projects/oura-ring.html",          bg: "#C96832", fg: "#1a1a1a" },
-            { title: "Wound assessment tool for Johnson & Johnson",                cat: "Medtech",          href: "projects/jj-wound.html",            bg: "#C96832", fg: "#1a1a1a" },
-            { title: "Designed in-flight entertainment for commercial airlines",   cat: "UX Design",        href: "projects/thales-ife.html",          bg: "#C96832", fg: "#1a1a1a" },
-            { title: "Redesigned signage in downtown LA",                          cat: "Urban Design",     href: "projects/arup-signage.html",        bg: "#C96832", fg: "#1a1a1a" },
-            { title: "A convention planning software tool",                        cat: "Software",         href: "projects/convention-software.html", bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "Foodie: A fridge that tracks your food expiration dates",    cat: "Product",          href: "projects/foodie.html",              bg: "#DDD0B0", fg: "#1a1a1a" },
-            { title: "I designed a shoe",                                          cat: "Industrial Design", href: "projects/shoe.html",               bg: "#8B5A35", fg: "#faf8f5" },
-            { title: "I designed a speaker",                                       cat: "Industrial Design", href: "projects/speaker.html",            bg: "#8B5A35", fg: "#faf8f5" },
+            { title: "The first smart jewelry for women going through menopause",  cat: "Femtech",           href: "projects/romi.html",               bg: "#C96832", fg: "#1a1a1a", role: "Founder & Designer",  company: "Romi",              date: "2023" },
+            { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech",       href: "projects/oura-ring.html",          bg: "#C96832", fg: "#1a1a1a", role: "UX Designer",         company: "USC / Oura",        date: "2023" },
+            { title: "Wound assessment tool for Johnson & Johnson",                cat: "Medtech",           href: "projects/jj-wound.html",            bg: "#C96832", fg: "#1a1a1a", role: "UX Researcher",       company: "Johnson & Johnson", date: "2023" },
+            { title: "Designed in-flight entertainment for commercial airlines",   cat: "UX Design",         href: "projects/thales-ife.html",          bg: "#C96832", fg: "#1a1a1a", role: "UX Designer",         company: "Thales",            date: "2022" },
+            { title: "Redesigned signage in downtown LA",                          cat: "Urban Design",      href: "projects/arup-signage.html",        bg: "#C96832", fg: "#1a1a1a", role: "Urban Designer",      company: "Arup",              date: "2023" },
+            { title: "A convention planning software tool",                        cat: "Software",          href: "projects/convention-software.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",    company: "Personal",          date: "2022" },
+            { title: "Foodie: A fridge that tracks your food expiration dates",    cat: "Product",           href: "projects/foodie.html",              bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",    company: "Personal",          date: "2021" },
+            { title: "I designed a shoe",                                          cat: "Industrial Design", href: "projects/shoe.html",               bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer", company: "USC",               date: "2022" },
+            { title: "I designed a speaker",                                       cat: "Industrial Design", href: "projects/speaker.html",            bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer", company: "USC",               date: "2022" },
         ],
     };
 
@@ -877,33 +880,16 @@ function loadElements() {
         return inside ? (REGION_KEY_MAP[inside] || null) : null;
     }
 
-    // ---- Panel update ----
-    const vennPanel = document.getElementById('vennPanel');
-    const EMPTY_HTML = '<p class="venn-panel-hint">Hover over the diagram<br>to explore projects</p>';
+    // ---- State ----
+    let activeRegion = null;
+    let locked       = false;
+    let lockedRegion = null;
 
-    function updatePanel(region) {
-        if (!vennPanel) return;
-        if (!region) { vennPanel.innerHTML = EMPTY_HTML; return; }
-
-        const projects = REGION_PROJECTS[region] || [];
-        let html = `<span class="venn-panel-label">${REGION_LABELS[region]}</span><div class="venn-panel-grid">`;
-
-        if (projects.length === 0) {
-            html += `<p class="venn-panel-hint" style="margin:1.5rem 0;font-size:0.9rem;">No exclusive projects in this region</p>`;
-        } else {
-            projects.forEach(p => {
-                html += `<a href="${p.href}" class="venn-panel-card" style="--card-bg:${p.bg};--card-text:${p.fg};">
-                    <span class="venn-panel-card-cat">${p.cat}</span>
-                    <span class="venn-panel-card-title">${p.title}</span>
-                </a>`;
-            });
-        }
-        html += '</div>';
-        vennPanel.innerHTML = html;
-    }
-
-    // ---- SVG highlight ----
-    const vennSvg = document.getElementById('vennSvg');
+    // ---- DOM refs ----
+    const vennPanel     = document.getElementById('vennPanel');
+    const vennSplit     = document.getElementById('vennSplit');
+    const vennSvg       = document.getElementById('vennSvg');
+    const vennSplitLeft = document.querySelector('.venn-split-left');
     const vcMap = {
         design:   document.querySelector('.vc-design'),
         tech:     document.querySelector('.vc-tech'),
@@ -914,15 +900,96 @@ function loadElements() {
         hlMap[k] = document.getElementById('hl-' + k);
     });
 
-    let activeRegion = null;
+    const EMPTY_HTML = '<p class="venn-panel-hint">Hover over the diagram<br>to explore projects</p>';
+
+    // ---- Reveal / hide panel ----
+    function reveal()   { if (vennSplit) vennSplit.classList.add('revealed'); }
+    function unreveal() { if (vennSplit) vennSplit.classList.remove('revealed'); }
+
+    function unlock() {
+        locked = false;
+        lockedRegion = null;
+        setRegion(null);
+        updatePanel(null);
+        unreveal();
+    }
+
+    // ---- Panel content ----
+    const SOLO_MSGS = {
+        design:   'There is no true design without thinking about technology or business.',
+        tech:     'There is no true technology without thinking about design or business.',
+        business: 'There is no true business without thinking about design or technology.',
+    };
+
+    function colorCat(bg) {
+        if (bg === '#C96832') return 'Industry';
+        if (bg === '#8B5A35') return 'Physical Product';
+        return 'Creative Sprint';
+    }
+
+    function updatePanel(region, isLocked) {
+        if (!vennPanel) return;
+        if (!region) { vennPanel.innerHTML = EMPTY_HTML; return; }
+
+        if (SOLO_MSGS[region]) {
+            vennPanel.innerHTML = `<p class="venn-panel-hint venn-panel-hint--quote">${SOLO_MSGS[region]}</p>`;
+            return;
+        }
+
+        const projects = REGION_PROJECTS[region] || [];
+        let html = `<div class="venn-panel-header">
+            <span class="venn-panel-label">${REGION_LABELS[region]}</span>
+            ${isLocked ? '<button class="venn-panel-unlock" id="vennUnlockBtn">&#215;</button>' : ''}
+        </div><div class="venn-panel-grid">`;
+
+        if (projects.length === 0) {
+            html += `<p class="venn-panel-hint" style="margin:1.5rem 0;font-size:0.9rem;">No exclusive projects in this region</p>`;
+        } else {
+            projects.forEach(p => {
+                html += `<a href="${p.href}" class="venn-panel-card" style="--card-bg:${p.bg};--card-text:${p.fg};">
+                    <span class="venn-panel-card-cat">${colorCat(p.bg)}</span>
+                    <span class="venn-panel-card-title">${p.title}</span>
+                    <div class="venn-panel-card-meta">
+                        <span>${p.role}</span>
+                        <span>${p.company} &middot; ${p.date}</span>
+                    </div>
+                </a>`;
+            });
+        }
+        html += '</div>';
+        vennPanel.innerHTML = html;
+
+        if (isLocked) {
+            const unlockBtn = document.getElementById('vennUnlockBtn');
+            if (unlockBtn) unlockBtn.addEventListener('click', e => { e.stopPropagation(); unlock(); });
+        }
+    }
+
+    // ---- SVG region highlight ----
+    const SOLO_REGIONS = new Set(['design', 'tech', 'business']);
 
     function setRegion(region) {
         activeRegion = region;
         Object.values(hlMap).forEach(el => el && el.setAttribute('display', 'none'));
         Object.values(vcMap).forEach(el => el && el.classList.remove('dimmed'));
-        if (!region) return;
+        if (!region || SOLO_REGIONS.has(region)) return;
         if (hlMap[region]) hlMap[region].setAttribute('display', '');
         Object.values(vcMap).forEach(el => el && el.classList.add('dimmed'));
+    }
+
+    // ---- Event listeners ----
+    if (vennSplitLeft) {
+        vennSplitLeft.addEventListener('mouseenter', reveal);
+    }
+
+    if (vennSplit) {
+        vennSplit.addEventListener('mouseleave', () => {
+            if (!locked) {
+                setRegion(null);
+                updatePanel(null);
+                unreveal();
+            }
+        });
     }
 
     if (vennSvg) {
@@ -931,19 +998,32 @@ function loadElements() {
             const svgX = (e.clientX - rect.left) * (420 / rect.width);
             const svgY = (e.clientY - rect.top)  * (390 / rect.height);
             const region = getRegionAtPoint(svgX, svgY);
-            vennSvg.style.cursor = region ? 'pointer' : 'default';
+            vennSvg.style.cursor = (region && !SOLO_REGIONS.has(region)) ? 'pointer' : 'default';
             if (region !== activeRegion) {
                 setRegion(region);
-                updatePanel(region);
+                if (!locked) updatePanel(region);
             }
         });
 
         vennSvg.addEventListener('mouseleave', () => {
             setRegion(null);
-            updatePanel(null);
+            if (!locked) updatePanel(null);
+        });
+
+        vennSvg.addEventListener('click', () => {
+            if (!activeRegion) return;
+            if (locked && lockedRegion === activeRegion) {
+                unlock();
+            } else {
+                locked = true;
+                lockedRegion = activeRegion;
+                updatePanel(activeRegion, true);
+                reveal();
+            }
         });
     }
 })();
+
 
 
 // Load elements on page load (for normal viewing)

@@ -53,20 +53,17 @@
             <span class="venn-hdr-hint">Hover to explore</span>
         </div>
 
-        <div class="venn-split">
+        <div class="venn-split" id="vennSplit">
 
             <!-- Left: Venn diagram -->
             <div class="venn-split-left">
                 <div class="venn-diagram">
-                    <div class="vc vc-design">
-                        <span class="vc-name">DESIGN</span>
-                    </div>
-                    <div class="vc vc-tech">
-                        <span class="vc-name">TECHNOLOGY</span>
-                    </div>
-                    <div class="vc vc-business">
-                        <span class="vc-name">BUSINESS</span>
-                    </div>
+                    <div class="vc vc-design"></div>
+                    <div class="vc vc-tech"></div>
+                    <div class="vc vc-business"></div>
+                    <span class="vc-label vc-label-design">DESIGN</span>
+                    <span class="vc-label vc-label-tech">TECHNOLOGY</span>
+                    <span class="vc-label vc-label-business">BUSINESS</span>
                     <svg class="venn-overlay" id="vennSvg" viewBox="0 0 420 390" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <clipPath id="cpD"><circle cx="130" cy="110" r="110"/></clipPath>
@@ -114,10 +111,10 @@
                         <rect   id="hl-design"   pointer-events="none" width="420" height="390" mask="url(#mDonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
                         <rect   id="hl-tech"     pointer-events="none" width="420" height="390" mask="url(#mTonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
                         <rect   id="hl-business" pointer-events="none" width="420" height="390" mask="url(#mBonly)"   fill="rgba(250,248,245,0.35)" display="none"/>
-                        <rect   id="hl-dt"       pointer-events="none" width="420" height="390" mask="url(#mDT)"      fill="rgba(250,248,245,0.35)" display="none"/>
-                        <rect   id="hl-db"       pointer-events="none" width="420" height="390" mask="url(#mDB)"      fill="rgba(250,248,245,0.35)" display="none"/>
-                        <rect   id="hl-tb"       pointer-events="none" width="420" height="390" mask="url(#mTB)"      fill="rgba(250,248,245,0.35)" display="none"/>
-                        <circle id="hl-dtb"      pointer-events="none" cx="210" cy="260" r="110" mask="url(#mDTbase)" fill="rgba(250,248,245,0.35)" display="none"/>
+                        <rect   id="hl-dt"       pointer-events="none" width="420" height="390" mask="url(#mDT)"      fill="rgba(201,100,45,0.65)"  display="none"/>
+                        <rect   id="hl-db"       pointer-events="none" width="420" height="390" mask="url(#mDB)"      fill="rgba(185,50,45,0.65)"   display="none"/>
+                        <rect   id="hl-tb"       pointer-events="none" width="420" height="390" mask="url(#mTB)"      fill="rgba(200,175,40,0.65)"  display="none"/>
+                        <circle id="hl-dtb"      pointer-events="none" cx="210" cy="260" r="110" mask="url(#mDTbase)" fill="rgba(80,160,80,0.65)"   display="none"/>
                         <!-- Transparent hit area (last = topmost for events) -->
                         <rect width="420" height="390" fill="transparent"/>
                     </svg>
@@ -125,8 +122,10 @@
             </div>
 
             <!-- Right: Projects panel -->
-            <div class="venn-panel" id="vennPanel">
-                <p class="venn-panel-hint">Hover over the diagram<br>to explore projects</p>
+            <div class="venn-panel-sizer">
+                <div class="venn-panel" id="vennPanel">
+                    <p class="venn-panel-hint">Hover over the diagram<br>to explore projects</p>
+                </div>
             </div>
 
         </div>

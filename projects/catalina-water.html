@@ -20,7 +20,6 @@
         <h1 class="project-hero-title">Re-thinking waste water management for Catalina Island</h1>
     </header>
 
-    <div class="project-cover" id="projectCover"></div>
 
     <main class="project-body">
         <div class="project-section">
@@ -28,6 +27,7 @@
             <p>Catalina Island is an isolated, ecologically sensitive environment with limited infrastructure and no connection to mainland water systems. Its existing wastewater management approach was neither scalable nor sustainable given the island's growing tourism load and environmental constraints.</p>
             <p>The challenge was to rethink the system from the ground up — balancing regulatory requirements, ecological preservation, community needs, and the logistical realities of island infrastructure.</p>
         </div>
+        <img class="project-img" src="" alt="">
         <div class="project-section">
             <h2>My Role</h2>
             <p>Strategist and researcher. Led qualitative research, stakeholder analysis, and systems-level strategic recommendations for the island's wastewater infrastructure redesign.</p>
@@ -38,26 +38,16 @@
                 <span class="project-tag">Sustainability</span>
             </div>
         </div>
+        <img class="project-img" src="" alt="">
         <div class="project-section">
             <h2>Pitch Deck</h2>
-            <div class="deck-area">
-                <div class="deck-placeholder" id="deckPlaceholder">
-                    <label class="deck-upload-label"><input type="file" accept=".pdf" id="deckFile">Upload PDF</label>
-                    <span class="deck-or">or</span>
-                    <div class="deck-url-row">
-                        <input type="text" class="deck-url-input" placeholder="Paste Google Slides or PDF link" id="deckUrl">
-                        <button class="deck-url-btn" id="deckUrlBtn">Embed</button>
-                    </div>
-                </div>
-                <div class="deck-viewer" id="deckViewer"></div>
-                <button class="deck-reset" id="deckReset">Remove deck</button>
-            </div>
+            <div class="pdf-viewer" data-src="../assets/pdfs/catalina-water.pdf"></div>
         </div>
     </main>
 
     <footer class="project-footer">
         <a href="../index.html#projects" class="project-footer-back">← Back to Projects</a>
     </footer>
-    <script src="../project.js"></script>
+    <script src="../pdf-viewer.js"></script>
 </body>
 </html>
