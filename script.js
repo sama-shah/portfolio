@@ -823,7 +823,8 @@ function loadElements() {
             { title: "A functional candy dispenser",               cat: "Engineering",       href: "projects/candy-dispenser.html", bg: "#8B5A35", fg: "#faf8f5", role: "Engineer & Designer",  company: "USC",      date: "2020" },
         ],
         db: [
-            { title: "I built a leash for your skateboard",               cat: "Creative Sprint", href: "projects/chindogu.html",  bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer & Builder", company: "USC",        date: "2022" },
+            { title: "I built a leash for your skateboard",               cat: "Creative Sprint", href: "projects/chindogu.html",          bg: "#DDD0B0", fg: "#1a1a1a", role: "Designer & Builder", company: "USC", date: "2022" },
+            { title: "Designed seating for individuals with herniated disk", cat: "Creative Sprint", href: "projects/inclusive-seating.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Inclusive Designer", company: "USC", date: "2022" },
             { title: "Marketing plan for will.i.am's FYI",                cat: "Industry",        href: "projects/fyi.html",       bg: "#C96832", fg: "#1a1a1a", role: "Strategist",         company: "FYI",        date: "2023" },
             { title: "American Heart Association CPR training campaign",  cat: "Industry",  href: "projects/aha-cpr.html",  bg: "#C96832", fg: "#1a1a1a", role: "Strategist", company: "AHA", date: "2023" },
             { title: "Designed the Howmet Material Science Lab",    cat: "Lab Design",     href: "projects/howmet-lab.html",      bg: "#C96832", fg: "#1a1a1a", role: "Design Lead",       company: "Howmet Aerospace", date: "2023" },
