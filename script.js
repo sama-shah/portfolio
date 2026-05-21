@@ -815,7 +815,6 @@ function loadElements() {
         business: [],
         dt: [
             { title: "Designed a Lab Rats-inspired potion bottle", cat: "Product Design",    href: "projects/potion-bottle.html",   bg: "#8B5A35", fg: "#faf8f5", role: "Solo Designer",        company: "Personal", date: "2021" },
-            { title: "How can we recreate and gift a memory?",     cat: "Experience",        href: "projects/recreate-memory.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Experience Designer",  company: "USC",      date: "2022" },
             { title: "I developed a VR game",                      cat: "Game Design",       href: "projects/vr-game.html",         bg: "#DDD0B0", fg: "#1a1a1a", role: "Developer & Designer", company: "USC",      date: "2022" },
             { title: "I designed a lamp",                          cat: "Industrial Design", href: "projects/lamp-designed.html",   bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer",  company: "USC",      date: "2021" },
             { title: "I welded spoons and forks into a dishwasher man", cat: "Fabrication", href: "projects/cutlery-sponge.html", bg: "#8B5A35", fg: "#faf8f5", role: "Fabricator", company: "USC", date: "2021" },
@@ -848,6 +847,7 @@ function loadElements() {
             { title: "Designed in-flight entertainment for commercial airlines",   cat: "UX Design",         href: "projects/thales-ife.html",          bg: "#C96832", fg: "#1a1a1a", role: "UX Designer",         company: "Thales",            date: "2022" },
             { title: "Redesigned signage in downtown LA",                          cat: "Urban Design",      href: "projects/arup-signage.html",        bg: "#C96832", fg: "#1a1a1a", role: "Urban Designer",      company: "Arup",              date: "2023" },
             { title: "A convention planning software tool",                        cat: "Software",          href: "projects/convention-software.html", bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",    company: "Personal",          date: "2022" },
+            { title: "How can we recreate and gift a memory?",                    cat: "Creative Sprint",   href: "projects/recreate-memory.html",     bg: "#DDD0B0", fg: "#1a1a1a", role: "Experience Designer", company: "USC",               date: "2022" },
             { title: "Foodie: A fridge that tracks your food expiration dates",    cat: "Product",           href: "projects/foodie.html",              bg: "#DDD0B0", fg: "#1a1a1a", role: "Product Designer",    company: "Personal",          date: "2021" },
             { title: "I designed a shoe",                                          cat: "Industrial Design", href: "projects/shoe.html",               bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer", company: "USC",               date: "2022" },
             { title: "I designed a speaker",                                       cat: "Industrial Design", href: "projects/speaker.html",            bg: "#8B5A35", fg: "#faf8f5", role: "Industrial Designer", company: "USC",               date: "2022" },
