@@ -835,6 +835,7 @@ function loadElements() {
             { title: "This portfolio website",     cat: "Web",        href: "index.html",                       bg: "#C96832", fg: "#1a1a1a", role: "Designer & Developer", company: "Personal", date: "2024" },
         ],
         dtb: [
+            { title: "Designed USC HackSC's login pages",                          cat: "Industry",          href: "projects/hacksc-login.html",        bg: "#C96832", fg: "#1a1a1a", role: "UI Designer",         company: "HackSC",            date: "2023" },
             { title: "The first smart jewelry for women going through menopause",  cat: "Femtech",           href: "projects/romi.html",               bg: "#C96832", fg: "#1a1a1a", role: "Founder & Designer",  company: "Romi",              date: "2023" },
             { title: "Visualized Oura Ring data for doctor-patient communication", cat: "Health Tech",       href: "projects/oura-ring.html",          bg: "#C96832", fg: "#1a1a1a", role: "UX Designer",         company: "USC / Oura",        date: "2023" },
             { title: "Wound assessment tool for Johnson & Johnson",                cat: "Medtech",           href: "projects/jj-wound.html",            bg: "#C96832", fg: "#1a1a1a", role: "UX Researcher",       company: "Johnson & Johnson", date: "2023" },
