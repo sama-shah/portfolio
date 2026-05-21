@@ -855,11 +855,11 @@ function loadElements() {
     const REGION_LABELS = {
         design:   'Design only',
         tech:     'Technology only',
-        business: 'Business only',
+        business: 'Communication only',
         dt:       'Design × Technology',
-        db:       'Design × Business',
-        tb:       'Technology × Business',
-        dtb:      'Design × Technology × Business',
+        db:       'Design × Communication',
+        tb:       'Technology × Communication',
+        dtb:      'Design × Technology × Communication',
     };
 
     const CIRCLE_DEFS = [
@@ -923,7 +923,7 @@ function loadElements() {
     const SOLO_MSGS = {
         design:   'There is no true design without thinking about technology or business.',
         tech:     'There is no true technology without thinking about design or business.',
-        business: 'There is no true business without thinking about design or technology.',
+        business: 'There is no true communication without thinking about design or technology.',
     };
 
     function colorCat(bg) {
