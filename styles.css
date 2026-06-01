@@ -261,6 +261,95 @@ nav.scrolled {
     color: var(--navy);
 }
 
+/* Key Projects */
+.key-projects {
+    padding: 6rem 3rem 4rem;
+}
+
+.key-projects-label {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--coral);
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.key-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.key-project-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--navy-light);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--cream);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.key-project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.key-project-card-stripe {
+    height: 6px;
+}
+
+.key-project-card-body {
+    padding: 1.75rem 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.key-project-card-cat {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.5;
+    margin-bottom: 0.75rem;
+}
+
+.key-project-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+}
+
+.key-project-card-sub {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    opacity: 0.6;
+    flex: 1;
+    margin-bottom: 1.5rem;
+}
+
+.key-project-card-cta {
+    font-family: 'Familjen Grotesk', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .key-projects-grid { grid-template-columns: 1fr; }
+    .key-projects { padding: 4rem 1.5rem 2rem; }
+}
+
 /* DIY Panel — hidden */
 .diy-panel {
     display: none;
